@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mon Équipe — Atlas Académie Entreprise</title>
+  <link rel="icon" type="image/png" href="assets/img/logo.png"/>
+  <link rel="stylesheet" href="assets/css/style.css"/>
+  <style>
+    body { background: var(--navy-dark); padding-top: 80px; }
+
+    .eq-body { max-width: 1000px; margin: 0 auto; padding: 2rem 1.5rem 5rem; }
+
+    /* ── HEADER ── */
+    .eq-header {
+      display:flex; align-items:center; justify-content:space-between;
+      gap:1rem; margin-bottom:2rem; flex-wrap:wrap;
+    }
+    .eq-header h1 {
+      font-family:var(--font-title); font-size:1.2rem;
+      color:var(--white); letter-spacing:.1em;
+    }
+    .eq-header h1 em { color:var(--gold); font-style:normal; }
+
+    /* ── GRILLE MEMBERS ── */
+    .eq-grid {
+      display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+      gap:1.1rem; margin-bottom:3rem;
+    }
+
+    .eq-card {
+      background:linear-gradient(135deg,rgba(13,27,62,.9),rgba(26,44,85,.7));
+      border:1px solid rgba(201,168,76,.15);
+      border-radius:14px; padding:1.5rem;
+      cursor:pointer; transition:transform .25s, border-color .25s;
+      position:relative;
+    }
+    .eq-card:hover { transform:translateY(-4px); border-color:rgba(201,168,76,.35); }
+    .eq-card.top { border-color:rgba(201,168,76,.4); box-shadow:0 0 20px rgba(201,168,76,.08); }
+
+    .eq-card-top {
+      display:flex; align-items:center; gap:.9rem; margin-bottom:1.1rem;
+    }
+    .eq-card-avatar {
+      width:48px; height:48px; border-radius:50%;
+      background:rgba(201,168,76,.12); border:2px solid rgba(201,168,76,.25);
+      display:flex; align-items:center; justify-content:center;
+      font-size:1.4rem; flex-shrink:0;
+    }
+    .eq-card.top .eq-card-avatar { border-color:rgba(201,168,76,.6); }
+    .eq-card-name {
+      font-family:var(--font-sub); font-weight:700;
+      font-size:.95rem; color:var(--white); margin-bottom:.2rem;
+    }
+    .eq-card-level {
+      font-size:.72rem; color:var(--gold); letter-spacing:.08em;
+    }
+    .eq-card-rank {
+      position:absolute; top:1rem; right:1rem;
+      font-family:var(--font-title); font-size:.65rem;
+      letter-spacing:.1em; padding:.2rem .65rem; border-radius:20px;
+    }
+    .eq-card-rank.r1 { background:rgba(255,215,0,.15); color:#FFD700; border:1px solid rgba(255,215,0,.3); }
+    .eq-card-rank.r2 { background:rgba(192,192,192,.1); color:#C0C0C0; border:1px solid rgba(192,192,192,.2); }
+    .eq-card-rank.r3 { background:rgba(205,127,50,.1); color:#CD7F32; border:1px solid rgba(205,127,50,.2); }
+
+    /* Stats inline */
+    .eq-card-stats {
+      display:grid; grid-template-columns:repeat(3,1fr); gap:.5rem;
+      margin-bottom:1rem;
+    }
+    .eq-stat {
+      background:rgba(255,255,255,.04); border-radius:7px;
+      padding:.55rem .5rem; text-align:center;
+    }
+    .eq-stat-num {
+      font-family:var(--font-title); font-size:.95rem; color:var(--gold);
+    }
+    .eq-stat-label { font-size:.6rem; color:var(--gray); letter-spacing:.05em; margin-top:.15rem; }
+
+    /* Barre de score */
+    .eq-score-wrap { margin-bottom:.9rem; }
+    .eq-score-top {
+      display:flex; justify-content:space-between;
+      font-size:.72rem; color:var(--gray); margin-bottom:.3rem;
+    }
+    .eq-score-track {
+      height:6px; background:rgba(255,255,255,.07);
+      border-radius:3px; overflow:hidden;
+    }
+    .eq-score-fill {
+      height:100%; border-radius:3px;
+      background:linear-gradient(90deg,var(--gold-dark),var(--gold));
+      transition:width .6s ease;
+    }
+
+    /* Activité + badges */
+    .eq-card-footer {
+      display:flex; align-items:center; justify-content:space-between; gap:.5rem;
+    }
+    .eq-last-seen { font-size:.7rem; color:var(--gray); }
+    .eq-diplome {
+      font-size:.72rem; padding:.2rem .65rem; border-radius:20px;
+    }
+    .eq-diplome.ultimate { background:rgba(255,215,0,.1); color:#FFD700; border:1px solid rgba(255,215,0,.2); }
+    .eq-diplome.elite    { background:rgba(232,201,106,.1); color:#E8C96A; border:1px solid rgba(232,201,106,.2); }
+    .eq-diplome.expert   { background:rgba(201,168,76,.1); color:var(--gold); border:1px solid rgba(201,168,76,.2); }
+
+    /* ── VUE DÉTAIL MEMBRE ── */
+    .eq-detail { display:none; }
+    .eq-detail.open { display:block; }
+
+    .eq-detail-back {
+      display:inline-flex; align-items:center; gap:.5rem;
+      font-family:var(--font-sub); font-size:.82rem; color:var(--gold);
+      cursor:pointer; margin-bottom:1.5rem;
+      background:none; border:none; padding:0;
+    }
+    .eq-detail-back:hover { text-decoration:underline; }
+
+    .eq-detail-header {
+      background:linear-gradient(135deg,rgba(13,27,62,.95),rgba(26,44,85,.8));
+      border:1px solid rgba(201,168,76,.2); border-radius:14px;
+      padding:1.75rem; display:flex; gap:1.5rem;
+      align-items:flex-start; margin-bottom:1.25rem; flex-wrap:wrap;
+    }
+    .eq-detail-avatar {
+      width:72px; height:72px; border-radius:50%;
+      background:rgba(201,168,76,.12); border:2px solid rgba(201,168,76,.35);
+      display:flex; align-items:center; justify-content:center;
+      font-size:2rem; flex-shrink:0;
+    }
+    .eq-detail-info { flex:1; }
+    .eq-detail-name {
+      font-family:var(--font-title); font-size:1.4rem;
+      color:var(--white); margin-bottom:.3rem;
+    }
+    .eq-detail-meta { font-size:.82rem; color:var(--gray); margin-bottom:.75rem; }
+    .eq-detail-badges { display:flex; gap:.5rem; flex-wrap:wrap; }
+
+    .eq-detail-kpis {
+      display:grid; grid-template-columns:repeat(4,1fr); gap:.75rem;
+      margin-bottom:1.25rem;
+    }
+    .eq-detail-kpi {
+      background:rgba(255,255,255,.04); border-radius:8px;
+      padding:.85rem; text-align:center;
+    }
+    .eq-detail-kpi-num {
+      font-family:var(--font-title); font-size:1.3rem; color:var(--gold);
+    }
+    .eq-detail-kpi-label { font-size:.65rem; color:var(--gray); margin-top:.25rem; }
+
+    /* Radar compétences */
+    .eq-competences {
+      display:grid; grid-template-columns:repeat(5,1fr); gap:.6rem;
+      margin-bottom:1.25rem;
+    }
+    .eq-comp {
+      background:rgba(255,255,255,.04); border-radius:9px;
+      padding:.85rem .5rem; text-align:center;
+    }
+    .eq-comp-score {
+      font-family:var(--font-title); font-size:1.1rem; color:var(--gold);
+      margin-bottom:.3rem;
+    }
+    .eq-comp-bar {
+      height:4px; background:rgba(255,255,255,.08);
+      border-radius:2px; overflow:hidden; margin:.3rem 0;
+    }
+    .eq-comp-bar-fill {
+      height:100%; border-radius:2px;
+      background:linear-gradient(90deg,var(--gold-dark),var(--gold));
+    }
+    .eq-comp-label { font-size:.62rem; color:var(--gray); line-height:1.4; }
+
+    /* Historique sessions */
+    .eq-sessions { display:flex; flex-direction:column; gap:.5rem; }
+    .eq-session-item {
+      display:flex; align-items:center; gap:1rem;
+      background:rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.06);
+      border-radius:8px; padding:.7rem 1rem;
+    }
+    .eq-session-date { font-size:.72rem; color:var(--gray); min-width:80px; }
+    .eq-session-product { flex:1; font-size:.82rem; color:var(--off-white); }
+    .eq-session-score {
+      font-family:var(--font-title); font-size:.85rem; color:var(--gold);
+      min-width:50px; text-align:right;
+    }
+    .eq-session-result { font-size:.7rem; padding:.2rem .6rem; border-radius:20px; }
+    .eq-session-result.won { background:rgba(34,197,94,.1); color:#4ade80; border:1px solid rgba(34,197,94,.2); }
+    .eq-session-result.lost { background:rgba(239,68,68,.08); color:#f87171; border:1px solid rgba(239,68,68,.15); }
+
+    .eq-card-section-title {
+      font-family:var(--font-title); font-size:.8rem;
+      color:var(--gold); letter-spacing:.12em; text-transform:uppercase;
+      margin:1.5rem 0 .9rem;
+      display:flex; align-items:center; gap:.75rem;
+    }
+    .eq-card-section-title::after {
+      content:''; flex:1; height:1px; background:rgba(201,168,76,.15);
+    }
+
+    @media (max-width:600px) {
+      .eq-detail-kpis { grid-template-columns:repeat(2,1fr); }
+      .eq-competences { grid-template-columns:repeat(3,1fr); }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <a href="index.html" class="nav-logo">
+    <img src="assets/img/logo.png" alt="Atlas Académie"/>
+    <div class="nav-logo-text">Atlas<span>Académie</span></div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html">Accueil</a></li>
+    <li><a href="decode-close.html">Decode &amp; Close™</a></li>
+    <li><a href="analyse-influence.html">Analyse &amp; Influence</a></li>
+    <li><a href="10-etapes.html">10 Étapes</a></li>
+    <li><a href="coaches.html">Coachs IA</a></li>
+    <li><a href="a-propos.html">À Propos</a></li>
+    <li><a href="mon-profil.html" style="color:var(--gold);">🧠 Mon Profil</a></li>
+    <li><a href="dashboard.html">📊 Dashboard</a></li>
+  </ul>
+  <span id="navAuthBtn">
+    <a href="auth.html" class="nav-cta" id="navLoginBtn">Connexion</a>
+  </span>
+  <button class="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
+<div class="mobile-menu">
+  <a href="index.html">🏠 Accueil</a>
+  <a href="decode-close.html">🎯 Decode &amp; Close™</a>
+  <a href="analyse-influence.html">🧠 Analyse &amp; Influence</a>
+  <a href="10-etapes.html">⚡ 10 Étapes de la Vente</a>
+  <a href="coaches.html">🤖 Coachs IA</a>
+  <a href="a-propos.html">🏛️ À Propos</a>
+  <a href="mon-profil.html" style="color:var(--gold);">🧠 Mon Profil</a>
+  <a href="auth.html" class="nav-cta" id="mobileLoginBtn">Connexion →</a>
+</div>
+<script>(function(){try{var u=JSON.parse(localStorage.getItem('atlas_user')||'null');if(u&&u.id){var b=document.getElementById('navLoginBtn');if(b){b.textContent='📊 Dashboard';b.href='dashboard.html';}}}catch(e){}})();<\/script><div class="eq-body">
+
+  <!-- VUE LISTE -->
+  <div id="listView">
+    <div class="eq-header">
+      <h1>👥 Mon <em>équipe</em></h1>
+      <a href="dashboard-manager.html" class="btn btn-outline btn-sm">← Dashboard manager</a>
+    </div>
+    <div class="eq-grid" id="teamGrid"></div>
+  </div>
+
+  <!-- VUE DÉTAIL -->
+  <div class="eq-detail" id="detailView">
+    <button class="eq-detail-back" onclick="showList()">← Retour à l'équipe</button>
+    <div id="detailContent"></div>
+  </div>
+
+</div>
+
+<script src="atlas-config.js"></script>
+<script>
+const MOCK_TEAM = [
+  { id:1, name:'Thomas M.',  avatar:'🦁', level:'Closer',      pts:920, sessions:8,  lastSeen:1,  diplome:'ultimate',
+    scores:{ accroche:13, objections:27, argumentation:22, closing:18, fluidite:9 },
+    history:[
+      { date:'14/04', product:'CRM HubSpot Pro', score:91, won:true },
+      { date:'10/04', product:'Assurance décès famille', score:78, won:true },
+      { date:'07/04', product:'Formation closing', score:88, won:true },
+      { date:'03/04', product:'Panneaux solaires', score:72, won:false },
+    ]
+  },
+  { id:2, name:'Sarah K.',   avatar:'👑', level:'Expert',      pts:780, sessions:7,  lastSeen:0,  diplome:'elite',
+    scores:{ accroche:12, objections:24, argumentation:20, closing:16, fluidite:8 },
+    history:[
+      { date:'14/04', product:'Tesla Model Y', score:82, won:true },
+      { date:'10/04', product:'MBA Executive', score:75, won:true },
+      { date:'07/04', product:'Pompe à chaleur', score:68, won:false },
+    ]
+  },
+  { id:3, name:'Lucas B.',   avatar:'🔥', level:'Vendeur',     pts:650, sessions:6,  lastSeen:2,  diplome:'expert',
+    scores:{ accroche:10, objections:20, argumentation:17, closing:13, fluidite:7 },
+    history:[
+      { date:'14/04', product:'Local commercial 150m²', score:74, won:false },
+      { date:'10/04', product:'Logiciel de paie Sage', score:79, won:true },
+    ]
+  },
+  { id:4, name:'Emma R.',    avatar:'💎', level:'Closer',      pts:510, sessions:5,  lastSeen:1,  diplome:'expert',
+    scores:{ accroche:9, objections:18, argumentation:15, closing:12, fluidite:7 },
+    history:[
+      { date:'14/04', product:'Mutuelle santé familiale', score:66, won:false },
+      { date:'10/04', product:'Abonnement salle sport', score:71, won:true },
+    ]
+  },
+  { id:5, name:'Maxime D.',  avatar:'⚡', level:'Apprenti',    pts:320, sessions:3,  lastSeen:5,  diplome:null,
+    scores:{ accroche:7, objections:13, argumentation:11, closing:9, fluidite:6 },
+    history:[
+      { date:'07/04', product:'Alarme maison', score:56, won:false },
+    ]
+  },
+  { id:6, name:'Léa V.',     avatar:'🎯', level:'Rookie',      pts:150, sessions:2,  lastSeen:8,  diplome:null,
+    scores:{ accroche:5, objections:9, argumentation:8, closing:6, fluidite:5 },
+    history:[
+      { date:'03/04', product:'Logiciel caisse resto', score:46, won:false },
+    ]
+  },
+  { id:7, name:'Antoine F.', avatar:'🐯', level:'Vendeur',     pts:480, sessions:4,  lastSeen:3,  diplome:'expert',
+    scores:{ accroche:9, objections:17, argumentation:14, closing:11, fluidite:7 },
+    history:[
+      { date:'10/04', product:'Coaching business', score:69, won:true },
+      { date:'07/04', product:'Formation Excel', score:72, won:true },
+    ]
+  },
+  { id:8, name:'Clara N.',   avatar:'🦅', level:'Rookie',      pts:80,  sessions:1,  lastSeen:12, diplome:null,
+    scores:{ accroche:4, objections:7, argumentation:6, closing:5, fluidite:4 },
+    history:[]
+  },
+];
+
+const DIPLOME_LABELS = { ultimate:'👑 Ultimate Closer', elite:"🥈 Closer d'Élite", expert:'🥉 Expert Closer' };
+const COMP_LABELS = { accroche:'Accroche', objections:'Objections', argumentation:'Argumen.', closing:'Closing', fluidite:'Fluidité' };
+const COMP_MAX = { accroche:15, objections:30, argumentation:25, closing:20, fluidite:10 };
+
+function showList() {
+  document.getElementById('listView').style.display = 'block';
+  document.getElementById('detailView').classList.remove('open');
+  window.scrollTo(0,0);
+}
+
+function showDetail(id) {
+  const m = MOCK_TEAM.find(x => x.id === id);
+  if (!m) return;
+
+  document.getElementById('listView').style.display = 'none';
+  document.getElementById('detailView').classList.add('open');
+
+  const rank = MOCK_TEAM.slice().sort((a,b)=>b.pts-a.pts).findIndex(x=>x.id===id)+1;
+  const avgScore = m.sessions > 0 ? Math.round(
+    Object.values(m.scores).reduce((s,v)=>s+v,0) / m.sessions * m.sessions / m.sessions
+  ) : 0;
+  const totalScore = Object.values(m.scores).reduce((s,v)=>s+v,0);
+  const wonCount = m.history.filter(h=>h.won).length;
+
+  document.getElementById('detailContent').innerHTML = `
+    <div class="eq-detail-header">
+      <div class="eq-detail-avatar">${m.avatar}</div>
+      <div class="eq-detail-info">
+        <div class="eq-detail-name">${m.name}</div>
+        <div class="eq-detail-meta">Niveau : ${m.level} · Rang équipe : #${rank} · Dernière activité : il y a ${m.lastSeen === 0 ? 'moins d\'1h' : m.lastSeen + ' jour(s)'}</div>
+        <div class="eq-detail-badges">
+          ${m.diplome ? `<span class="eq-diplome ${m.diplome}">${DIPLOME_LABELS[m.diplome]}</span>` : '<span style="font-size:.72rem;color:var(--gray);">Pas encore diplômé</span>'}
+        </div>
+      </div>
+    </div>
+
+    <div class="eq-detail-kpis">
+      <div class="eq-detail-kpi">
+        <div class="eq-detail-kpi-num">${m.pts}</div>
+        <div class="eq-detail-kpi-label">Points ce mois</div>
+      </div>
+      <div class="eq-detail-kpi">
+        <div class="eq-detail-kpi-num">${m.sessions}</div>
+        <div class="eq-detail-kpi-label">Sessions jouées</div>
+      </div>
+      <div class="eq-detail-kpi">
+        <div class="eq-detail-kpi-num">${wonCount}/${m.history.length}</div>
+        <div class="eq-detail-kpi-label">Ventes conclues</div>
+      </div>
+      <div class="eq-detail-kpi">
+        <div class="eq-detail-kpi-num">${totalScore}</div>
+        <div class="eq-detail-kpi-label">Score cumulé</div>
+      </div>
+    </div>
+
+    <div class="eq-card-section-title">✦ Compétences détaillées</div>
+    <div class="eq-competences">
+      ${Object.entries(m.scores).map(([key, val]) => {
+        const pct = Math.round((val / COMP_MAX[key]) * 100);
+        return `<div class="eq-comp">
+          <div class="eq-comp-score">${val}/${COMP_MAX[key]}</div>
+          <div class="eq-comp-bar"><div class="eq-comp-bar-fill" style="width:${pct}%"></div></div>
+          <div class="eq-comp-label">${COMP_LABELS[key]}</div>
+        </div>`;
+      }).join('')}
+    </div>
+
+    <div class="eq-card-section-title">✦ Historique des sessions</div>
+    <div class="eq-sessions">
+      ${m.history.length === 0
+        ? '<div style="color:var(--gray);font-size:.82rem;text-align:center;padding:1.5rem;">Aucune session enregistrée.</div>'
+        : m.history.map(h => `
+          <div class="eq-session-item">
+            <div class="eq-session-date">${h.date}/2026</div>
+            <div class="eq-session-product">${h.product}</div>
+            <div class="eq-session-score">${h.score}/100</div>
+            <div class="eq-session-result ${h.won?'won':'lost'}">${h.won?'✓ Vente':'✗ Échec'}</div>
+          </div>`).join('')
+      }
+    </div>
+
+    <div style="margin-top:1.5rem;display:flex;gap:.75rem;flex-wrap:wrap;">
+      <a href="dashboard-manager.html" class="btn btn-outline btn-sm">← Dashboard</a>
+      <button class="btn btn-primary btn-sm" onclick="alert('Fonctionnalité disponible après activation de Supabase.')">
+        📧 Envoyer un message
+      </button>
+    </div>
+  `;
+
+  window.scrollTo(0,0);
+}
+
+function renderTeam() {
+  const sorted = [...MOCK_TEAM].sort((a,b) => b.pts - a.pts);
+  const rankClasses = ['r1','r2','r3'];
+
+  document.getElementById('teamGrid').innerHTML = sorted.map((m, i) => {
+    const pct = Math.min(100, Math.round((m.pts / 1000) * 100));
+    const isTop = i < 3;
+    const totalScore = Object.values(m.scores).reduce((s,v)=>s+v,0);
+
+    return `<div class="eq-card${isTop?' top':''}" onclick="showDetail(${m.id})">
+      ${i < 3 ? `<div class="eq-card-rank ${rankClasses[i]}">#${i+1}</div>` : ''}
+      <div class="eq-card-top">
+        <div class="eq-card-avatar">${m.avatar}</div>
+        <div>
+          <div class="eq-card-name">${m.name}</div>
+          <div class="eq-card-level">${m.level}</div>
+        </div>
+      </div>
+      <div class="eq-card-stats">
+        <div class="eq-stat">
+          <div class="eq-stat-num">${m.pts}</div>
+          <div class="eq-stat-label">Points</div>
+        </div>
+        <div class="eq-stat">
+          <div class="eq-stat-num">${m.sessions}</div>
+          <div class="eq-stat-label">Sessions</div>
+        </div>
+        <div class="eq-stat">
+          <div class="eq-stat-num">${totalScore}</div>
+          <div class="eq-stat-label">Score total</div>
+        </div>
+      </div>
+      <div class="eq-score-wrap">
+        <div class="eq-score-top">
+          <span>Progression mensuelle</span>
+          <span>${pct}%</span>
+        </div>
+        <div class="eq-score-track">
+          <div class="eq-score-fill" style="width:${pct}%"></div>
+        </div>
+      </div>
+      <div class="eq-card-footer">
+        <div class="eq-last-seen">
+          ${m.lastSeen === 0 ? '🟢 Actif maintenant' : m.lastSeen <= 3 ? `🟡 Il y a ${m.lastSeen}j` : `🔴 Il y a ${m.lastSeen}j`}
+        </div>
+        ${m.diplome
+          ? `<span class="eq-diplome ${m.diplome}">${DIPLOME_LABELS[m.diplome]}</span>`
+          : '<span style="font-size:.7rem;color:var(--gray);">—</span>'
+        }
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// Check URL param pour ouvrir directement un membre
+const urlParams = new URLSearchParams(window.location.search);
+const memberId = parseInt(urlParams.get('member'));
+
+document.addEventListener('DOMContentLoaded', () => {
+  renderTeam();
+  if (memberId) showDetail(memberId);
+});
+
+const u = (() => { try { return JSON.parse(localStorage.getItem('atlas_user')||'null'); } catch {return null;} })();
+if (u) { const b = document.getElementById('navCta'); b.textContent = '📊 Dashboard'; b.href = 'dashboard.html'; }
+</script>
+</body>
+</html>

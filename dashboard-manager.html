@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard Manager — Atlas Académie Entreprise</title>
+  <link rel="icon" type="image/png" href="assets/img/logo.png"/>
+  <link rel="stylesheet" href="assets/css/style.css"/>
+  <style>
+    body { background: var(--navy-dark); padding-top: 80px; }
+
+    /* ── HEADER ── */
+    .mgr-header {
+      background: linear-gradient(135deg, rgba(13,27,62,.98), rgba(26,44,85,.9));
+      border-bottom: 1px solid rgba(201,168,76,.15);
+      padding: 1.5rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .mgr-header-left h1 {
+      font-family: var(--font-title);
+      font-size: 1.1rem; color: var(--white);
+      letter-spacing: .1em; margin-bottom: .2rem;
+    }
+    .mgr-header-left p {
+      font-size: .78rem; color: var(--gray);
+    }
+    .mgr-header-right { display:flex; gap:.75rem; align-items:center; flex-wrap:wrap; }
+    .mgr-period-btn {
+      font-family:var(--font-sub); font-size:.75rem; font-weight:600;
+      letter-spacing:.08em; padding:.4rem .9rem; border-radius:6px;
+      border:1px solid rgba(201,168,76,.25); background:transparent;
+      color:var(--gray); cursor:pointer; transition:all .2s;
+    }
+    .mgr-period-btn.active, .mgr-period-btn:hover {
+      background:rgba(201,168,76,.12); color:var(--gold);
+      border-color:rgba(201,168,76,.4);
+    }
+    .mgr-invite-btn {
+      font-family:var(--font-title); font-size:.72rem;
+      letter-spacing:.12em; padding:.5rem 1.1rem; border-radius:7px;
+      background:linear-gradient(135deg,var(--gold),var(--gold-light));
+      color:var(--navy-dark); border:none; cursor:pointer;
+      transition:opacity .2s;
+    }
+    .mgr-invite-btn:hover { opacity:.9; }
+
+    /* ── MAIN LAYOUT ── */
+    .mgr-body { padding: 1.5rem 2rem; max-width: 1200px; margin: 0 auto; }
+
+    /* ── KPI CARDS ── */
+    .mgr-kpis {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .mgr-kpi {
+      background: linear-gradient(135deg, rgba(13,27,62,.9), rgba(26,44,85,.7));
+      border: 1px solid rgba(201,168,76,.15);
+      border-radius: 12px;
+      padding: 1.25rem;
+    }
+    .mgr-kpi-top {
+      display:flex; align-items:center; justify-content:space-between;
+      margin-bottom:.75rem;
+    }
+    .mgr-kpi-label {
+      font-size:.7rem; color:var(--gray);
+      letter-spacing:.1em; text-transform:uppercase;
+    }
+    .mgr-kpi-icon { font-size:1.1rem; }
+    .mgr-kpi-value {
+      font-family:var(--font-title); font-size:1.8rem;
+      color:var(--white); line-height:1; margin-bottom:.25rem;
+    }
+    .mgr-kpi-sub {
+      font-size:.72rem; color:var(--gray);
+    }
+    .mgr-kpi-trend {
+      font-size:.72rem; margin-top:.3rem;
+    }
+    .mgr-kpi-trend.up { color:#4ade80; }
+    .mgr-kpi-trend.down { color:#f87171; }
+
+    /* ── GRILLE CENTRALE ── */
+    .mgr-grid {
+      display: grid;
+      grid-template-columns: 1fr 320px;
+      gap: 1.25rem;
+      margin-bottom: 1.5rem;
+    }
+
+    /* Carte générique */
+    .mgr-card {
+      background: linear-gradient(135deg, rgba(13,27,62,.9), rgba(26,44,85,.7));
+      border: 1px solid rgba(201,168,76,.12);
+      border-radius: 12px;
+      padding: 1.4rem;
+    }
+    .mgr-card-title {
+      font-family:var(--font-title); font-size:.8rem;
+      color:var(--gold); letter-spacing:.12em;
+      text-transform:uppercase; margin-bottom:1.1rem;
+      display:flex; align-items:center; gap:.5rem;
+    }
+
+    /* Tableau membres */
+    .mgr-table { width:100%; border-collapse:separate; border-spacing:0 .4rem; }
+    .mgr-table th {
+      font-size:.65rem; color:var(--gray);
+      letter-spacing:.1em; text-transform:uppercase;
+      padding:.4rem .75rem; text-align:left; font-weight:400;
+    }
+    .mgr-table th:last-child { text-align:right; }
+    .mgr-tr {
+      background:rgba(255,255,255,.03);
+      border-radius:8px; cursor:pointer;
+      transition:background .2s;
+    }
+    .mgr-tr:hover { background:rgba(255,255,255,.06); }
+    .mgr-tr td {
+      padding:.75rem .75rem; font-size:.83rem;
+      color:var(--off-white); vertical-align:middle;
+    }
+    .mgr-tr td:first-child { border-radius:8px 0 0 8px; }
+    .mgr-tr td:last-child { border-radius:0 8px 8px 0; text-align:right; }
+
+    .mgr-user-cell { display:flex; align-items:center; gap:.65rem; }
+    .mgr-avatar {
+      width:32px; height:32px; border-radius:50%;
+      background:rgba(201,168,76,.12); border:1px solid rgba(201,168,76,.2);
+      display:flex; align-items:center; justify-content:center;
+      font-size:.9rem; flex-shrink:0;
+    }
+    .mgr-user-name { font-weight:600; color:var(--white); font-size:.84rem; }
+    .mgr-user-level { font-size:.68rem; color:var(--gold); }
+
+    /* Score bar inline */
+    .mgr-score-bar {
+      display:flex; align-items:center; gap:.5rem;
+    }
+    .mgr-bar {
+      width:80px; height:5px; background:rgba(255,255,255,.08);
+      border-radius:3px; overflow:hidden; flex-shrink:0;
+    }
+    .mgr-bar-fill {
+      height:100%; border-radius:3px;
+      background:linear-gradient(90deg,var(--gold-dark),var(--gold));
+    }
+
+    /* Badge statut */
+    .mgr-status {
+      display:inline-block; font-size:.65rem;
+      padding:.2rem .6rem; border-radius:20px;
+      font-family:var(--font-sub); font-weight:600; letter-spacing:.05em;
+    }
+    .mgr-status.active { background:rgba(34,197,94,.1); color:#4ade80; border:1px solid rgba(34,197,94,.2); }
+    .mgr-status.inactive { background:rgba(239,68,68,.08); color:#f87171; border:1px solid rgba(239,68,68,.15); }
+    .mgr-status.new { background:rgba(201,168,76,.1); color:var(--gold); border:1px solid rgba(201,168,76,.2); }
+
+    /* Colonne droite */
+    .mgr-right { display:flex; flex-direction:column; gap:1.25rem; }
+
+    /* Activité récente */
+    .mgr-activity-list { display:flex; flex-direction:column; gap:.5rem; }
+    .mgr-activity-item {
+      display:flex; align-items:flex-start; gap:.65rem;
+      padding:.6rem .75rem;
+      background:rgba(255,255,255,.03); border-radius:7px;
+      border:1px solid rgba(255,255,255,.05);
+    }
+    .mgr-activity-icon { font-size:.9rem; flex-shrink:0; margin-top:.05rem; }
+    .mgr-activity-text { font-size:.78rem; color:var(--off-white); line-height:1.5; }
+    .mgr-activity-time { font-size:.68rem; color:var(--gray); margin-top:.15rem; }
+
+    /* Mini classement */
+    .mgr-rank-list { display:flex; flex-direction:column; gap:.4rem; }
+    .mgr-rank-item {
+      display:flex; align-items:center; gap:.65rem;
+      padding:.55rem .75rem;
+      background:rgba(255,255,255,.03); border-radius:7px;
+    }
+    .mgr-rank-pos {
+      font-family:var(--font-title); font-size:.85rem;
+      color:var(--gray); width:20px; text-align:center; flex-shrink:0;
+    }
+    .mgr-rank-pos.gold { color:var(--gold); }
+    .mgr-rank-pts {
+      font-family:var(--font-title); font-size:.78rem; color:var(--gold);
+      margin-left:auto;
+    }
+
+    /* Alertes manager */
+    .mgr-alerts { margin-bottom:1.5rem; display:flex; flex-direction:column; gap:.6rem; }
+    .mgr-alert {
+      display:flex; align-items:flex-start; gap:.75rem;
+      padding:.85rem 1.1rem; border-radius:10px;
+    }
+    .mgr-alert.warn {
+      background:rgba(251,191,36,.06); border:1px solid rgba(251,191,36,.2);
+    }
+    .mgr-alert.info {
+      background:rgba(201,168,76,.06); border:1px solid rgba(201,168,76,.15);
+    }
+    .mgr-alert.good {
+      background:rgba(34,197,94,.05); border:1px solid rgba(34,197,94,.15);
+    }
+    .mgr-alert-icon { font-size:1rem; flex-shrink:0; margin-top:.1rem; }
+    .mgr-alert-text { font-size:.8rem; line-height:1.6; }
+    .mgr-alert.warn .mgr-alert-text { color:#fde68a; }
+    .mgr-alert.info .mgr-alert-text { color:var(--gold); }
+    .mgr-alert.good .mgr-alert-text { color:#86efac; }
+
+    /* Modal inviter */
+    .mgr-modal-overlay {
+      position:fixed; top:0; left:0; right:0; bottom:0;
+      background:rgba(0,0,0,.7); z-index:1000;
+      display:flex; align-items:center; justify-content:center;
+      display:none;
+    }
+    .mgr-modal-overlay.open { display:flex; }
+    .mgr-modal {
+      background:linear-gradient(135deg,rgba(13,27,62,.98),rgba(26,44,85,.95));
+      border:1px solid rgba(201,168,76,.3); border-radius:16px;
+      padding:2rem; width:100%; max-width:440px; margin:1rem;
+    }
+    .mgr-modal h3 {
+      font-family:var(--font-title); font-size:1rem; color:var(--gold);
+      margin-bottom:.5rem;
+    }
+    .mgr-modal p { font-size:.82rem; color:var(--gray); margin-bottom:1.5rem; line-height:1.6; }
+    .mgr-input {
+      width:100%; background:rgba(255,255,255,.06);
+      border:1px solid rgba(201,168,76,.2); border-radius:8px;
+      color:var(--white); font-family:var(--font-body);
+      font-size:.9rem; padding:.75rem 1rem; outline:none;
+      margin-bottom:.75rem; transition:border-color .2s;
+    }
+    .mgr-input:focus { border-color:rgba(201,168,76,.5); }
+    .mgr-modal-actions { display:flex; gap:.75rem; justify-content:flex-end; }
+
+    @media (max-width:900px) {
+      .mgr-kpis { grid-template-columns:repeat(2,1fr); }
+      .mgr-grid { grid-template-columns:1fr; }
+      .mgr-body { padding:1rem; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <a href="index.html" class="nav-logo">
+    <img src="assets/img/logo.png" alt="Atlas Académie"/>
+    <div class="nav-logo-text">Atlas<span>Académie</span></div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html">Accueil</a></li>
+    <li><a href="decode-close.html">Decode &amp; Close™</a></li>
+    <li><a href="analyse-influence.html">Analyse &amp; Influence</a></li>
+    <li><a href="10-etapes.html">10 Étapes</a></li>
+    <li><a href="coaches.html">Coachs IA</a></li>
+    <li><a href="a-propos.html">À Propos</a></li>
+    <li><a href="mon-profil.html" style="color:var(--gold);">🧠 Mon Profil</a></li>
+    <li><a href="dashboard.html">📊 Dashboard</a></li>
+  </ul>
+  <span id="navAuthBtn">
+    <a href="auth.html" class="nav-cta" id="navLoginBtn">Connexion</a>
+  </span>
+  <button class="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
+<div class="mobile-menu">
+  <a href="index.html">🏠 Accueil</a>
+  <a href="decode-close.html">🎯 Decode &amp; Close™</a>
+  <a href="analyse-influence.html">🧠 Analyse &amp; Influence</a>
+  <a href="10-etapes.html">⚡ 10 Étapes de la Vente</a>
+  <a href="coaches.html">🤖 Coachs IA</a>
+  <a href="a-propos.html">🏛️ À Propos</a>
+  <a href="mon-profil.html" style="color:var(--gold);">🧠 Mon Profil</a>
+  <a href="auth.html" class="nav-cta" id="mobileLoginBtn">Connexion →</a>
+</div>
+<script>(function(){try{var u=JSON.parse(localStorage.getItem('atlas_user')||'null');if(u&&u.id){var b=document.getElementById('navLoginBtn');if(b){b.textContent='📊 Dashboard';b.href='dashboard.html';}}}catch(e){}})();<\/script><!-- HEADER MANAGER -->
+<div class="mgr-header">
+  <div class="mgr-header-left">
+    <h1>🏢 Dashboard Manager</h1>
+    <p id="teamName">Chargement de votre équipe…</p>
+  </div>
+  <div class="mgr-header-right">
+    <button class="mgr-period-btn active" onclick="setPeriod('month',this)">Ce mois</button>
+    <button class="mgr-period-btn" onclick="setPeriod('week',this)">Cette semaine</button>
+    <button class="mgr-period-btn" onclick="setPeriod('all',this)">Tout temps</button>
+    <button class="mgr-invite-btn" onclick="openInviteModal()">+ Inviter un membre</button>
+  </div>
+</div>
+
+<!-- BODY -->
+<div class="mgr-body">
+
+  <!-- Alertes -->
+  <div class="mgr-alerts" id="alerts"></div>
+
+  <!-- KPIs -->
+  <div class="mgr-kpis">
+    <div class="mgr-kpi">
+      <div class="mgr-kpi-top">
+        <div class="mgr-kpi-label">Membres actifs</div>
+        <div class="mgr-kpi-icon">👥</div>
+      </div>
+      <div class="mgr-kpi-value" id="kpiMembers">—</div>
+      <div class="mgr-kpi-sub" id="kpiMembersSub">sur l'équipe</div>
+      <div class="mgr-kpi-trend up" id="kpiMembersTrend"></div>
+    </div>
+    <div class="mgr-kpi">
+      <div class="mgr-kpi-top">
+        <div class="mgr-kpi-label">Score moyen</div>
+        <div class="mgr-kpi-icon">⚡</div>
+      </div>
+      <div class="mgr-kpi-value" id="kpiScore">—</div>
+      <div class="mgr-kpi-sub">sur 100 pts/session</div>
+      <div class="mgr-kpi-trend" id="kpiScoreTrend"></div>
+    </div>
+    <div class="mgr-kpi">
+      <div class="mgr-kpi-top">
+        <div class="mgr-kpi-label">Challenges joués</div>
+        <div class="mgr-kpi-icon">⚔️</div>
+      </div>
+      <div class="mgr-kpi-value" id="kpiChallenges">—</div>
+      <div class="mgr-kpi-sub">ce mois</div>
+      <div class="mgr-kpi-trend up" id="kpiChallengesTrend"></div>
+    </div>
+    <div class="mgr-kpi">
+      <div class="mgr-kpi-top">
+        <div class="mgr-kpi-label">Taux engagement</div>
+        <div class="mgr-kpi-icon">📈</div>
+      </div>
+      <div class="mgr-kpi-value" id="kpiEngagement">—</div>
+      <div class="mgr-kpi-sub">actifs cette semaine</div>
+      <div class="mgr-kpi-trend" id="kpiEngagementTrend"></div>
+    </div>
+  </div>
+
+  <!-- GRILLE PRINCIPALE -->
+  <div class="mgr-grid">
+    <!-- Tableau membres -->
+    <div class="mgr-card">
+      <div class="mgr-card-title">👥 Membres de l'équipe</div>
+      <table class="mgr-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Commercial</th>
+            <th>Score mois</th>
+            <th>Sessions</th>
+            <th>Statut</th>
+            <th>Diplôme</th>
+          </tr>
+        </thead>
+        <tbody id="membersTable"></tbody>
+      </table>
+    </div>
+
+    <!-- Colonne droite -->
+    <div class="mgr-right">
+      <!-- Mini classement interne -->
+      <div class="mgr-card">
+        <div class="mgr-card-title">🏆 Top 3 de l'équipe</div>
+        <div class="mgr-rank-list" id="top3List"></div>
+      </div>
+      <!-- Activité récente -->
+      <div class="mgr-card">
+        <div class="mgr-card-title">⚡ Activité récente</div>
+        <div class="mgr-activity-list" id="activityList"></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- MODAL INVITER -->
+<div class="mgr-modal-overlay" id="inviteModal">
+  <div class="mgr-modal">
+    <h3>Inviter un membre</h3>
+    <p>Entrez l'email de votre commercial. Il recevra un lien d'accès direct à la plateforme, rattaché à votre équipe.</p>
+    <input type="email" class="mgr-input" id="inviteEmail" placeholder="commercial@votre-entreprise.com"/>
+    <input type="text" class="mgr-input" id="inviteName" placeholder="Prénom Nom (optionnel)"/>
+    <div class="mgr-modal-actions">
+      <button class="btn btn-outline btn-sm" onclick="closeInviteModal()">Annuler</button>
+      <button class="btn btn-primary btn-sm" onclick="sendInvite()">Envoyer l'invitation →</button>
+    </div>
+  </div>
+</div>
+
+<script src="atlas-config.js"></script>
+<script src="assets/js/gamification.js"></script>
+<script src="assets/js/challenge-vente.js"></script>
+
+<script>
+/* ════════════════════════════════════════════════════════
+   DASHBOARD MANAGER — Atlas Académie Phase 7
+   Données simulées (remplacées par Supabase après activation)
+════════════════════════════════════════════════════════ */
+
+const MOCK_TEAM = [
+  { id:1, name:'Thomas M.',  avatar:'🦁', level:'Closer',      pts:920, sessions:8,  lastSeen:1,  diplome:'ultimate' },
+  { id:2, name:'Sarah K.',   avatar:'👑', level:'Expert',      pts:780, sessions:7,  lastSeen:0,  diplome:'elite'    },
+  { id:3, name:'Lucas B.',   avatar:'🔥', level:'Vendeur',     pts:650, sessions:6,  lastSeen:2,  diplome:'expert'   },
+  { id:4, name:'Emma R.',    avatar:'💎', level:'Closer',      pts:510, sessions:5,  lastSeen:1,  diplome:'expert'   },
+  { id:5, name:'Maxime D.',  avatar:'⚡', level:'Apprenti',    pts:320, sessions:3,  lastSeen:5,  diplome:null       },
+  { id:6, name:'Léa V.',     avatar:'🎯', level:'Rookie',      pts:150, sessions:2,  lastSeen:8,  diplome:null       },
+  { id:7, name:'Antoine F.', avatar:'🐯', level:'Vendeur',     pts:480, sessions:4,  lastSeen:3,  diplome:'expert'   },
+  { id:8, name:'Clara N.',   avatar:'🦅', level:'Rookie',      pts:80,  sessions:1,  lastSeen:12, diplome:null       },
+];
+
+const ACTIVITY = [
+  { icon:'⚔️', text:'Thomas M. a joué le challenge du lundi — score 91/100', time:'Il y a 2h' },
+  { icon:'🏆', text:'Sarah K. a obtenu le diplôme Closer d\'Élite', time:'Il y a 5h' },
+  { icon:'📈', text:'Lucas B. a progressé de 12 pts sur ses objections', time:'Hier' },
+  { icon:'🤖', text:'Emma R. a complété 3 sessions avec Le Stratège', time:'Hier' },
+  { icon:'⚔️', text:'Antoine F. a joué le challenge du jeudi — score 76/100', time:'Il y a 2 jours' },
+];
+
+const DIPLOME_LABELS = {
+  ultimate: '👑 Ultimate',
+  elite: '🥈 Élite',
+  expert: '🥉 Expert',
+};
+
+let currentPeriod = 'month';
+
+function setPeriod(period, btn) {
+  currentPeriod = period;
+  document.querySelectorAll('.mgr-period-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  render();
+}
+
+function render() {
+  const sorted = [...MOCK_TEAM].sort((a, b) => b.pts - a.pts);
+
+  // KPIs
+  const active = sorted.filter(m => m.lastSeen <= 7).length;
+  const avgScore = Math.round(sorted.reduce((s,m) => s + (m.pts / Math.max(m.sessions,1)), 0) / sorted.length);
+  const totalSessions = sorted.reduce((s,m) => s + m.sessions, 0);
+  const engagement = Math.round((active / sorted.length) * 100);
+
+  document.getElementById('kpiMembers').textContent    = active;
+  document.getElementById('kpiMembersSub').textContent = `sur ${sorted.length} dans l'équipe`;
+  document.getElementById('kpiScore').textContent      = avgScore;
+  document.getElementById('kpiChallenges').textContent = totalSessions;
+  document.getElementById('kpiEngagement').textContent = engagement + '%';
+
+  // Tendances
+  document.getElementById('kpiScoreTrend').textContent = avgScore > 70 ? '↑ +8% vs mois dernier' : '↓ -3% vs mois dernier';
+  document.getElementById('kpiScoreTrend').className   = 'mgr-kpi-trend ' + (avgScore > 70 ? 'up' : 'down');
+  document.getElementById('kpiEngagementTrend').textContent = '↑ +12% vs semaine dernière';
+  document.getElementById('kpiEngagementTrend').className   = 'mgr-kpi-trend up';
+  document.getElementById('kpiChallengesTrend').textContent = '↑ +3 vs mois dernier';
+
+  // Tableau membres
+  document.getElementById('membersTable').innerHTML = sorted.map((m, i) => {
+    const scoreAvg = Math.round(m.pts / Math.max(m.sessions, 1));
+    const pct = Math.min(100, Math.round((m.pts / 1000) * 100));
+    const status = m.lastSeen <= 3 ? 'active' : m.lastSeen <= 7 ? 'new' : 'inactive';
+    const statusLabel = m.lastSeen <= 3 ? 'Actif' : m.lastSeen <= 7 ? 'Récent' : 'Inactif';
+    return `<tr class="mgr-tr" onclick="viewMember(${m.id})">
+      <td style="color:var(--gray);font-family:var(--font-title);">${i+1}</td>
+      <td>
+        <div class="mgr-user-cell">
+          <div class="mgr-avatar">${m.avatar}</div>
+          <div>
+            <div class="mgr-user-name">${m.name}</div>
+            <div class="mgr-user-level">${m.level}</div>
+          </div>
+        </div>
+      </td>
+      <td>
+        <div class="mgr-score-bar">
+          <div class="mgr-bar"><div class="mgr-bar-fill" style="width:${pct}%"></div></div>
+          <span style="font-family:var(--font-title);font-size:.78rem;color:var(--gold);">${m.pts}</span>
+        </div>
+      </td>
+      <td style="color:var(--gray);font-size:.8rem;">${m.sessions} sess.</td>
+      <td><span class="mgr-status ${status}">${statusLabel}</span></td>
+      <td style="text-align:right;">${m.diplome ? DIPLOME_LABELS[m.diplome] : '<span style="color:var(--gray);font-size:.72rem;">—</span>'}</td>
+    </tr>`;
+  }).join('');
+
+  // Top 3
+  document.getElementById('top3List').innerHTML = sorted.slice(0,3).map((m, i) => {
+    const medals = ['🥇','🥈','🥉'];
+    return `<div class="mgr-rank-item">
+      <div class="mgr-rank-pos ${i===0?'gold':''}">${medals[i]}</div>
+      <div class="mgr-avatar" style="width:28px;height:28px;font-size:.8rem;">${m.avatar}</div>
+      <div style="font-size:.82rem;color:var(--white);font-weight:600;">${m.name}</div>
+      <div class="mgr-rank-pts">${m.pts} pts</div>
+    </div>`;
+  }).join('');
+
+  // Activité
+  document.getElementById('activityList').innerHTML = ACTIVITY.map(a => `
+    <div class="mgr-activity-item">
+      <div class="mgr-activity-icon">${a.icon}</div>
+      <div>
+        <div class="mgr-activity-text">${a.text}</div>
+        <div class="mgr-activity-time">${a.time}</div>
+      </div>
+    </div>`).join('');
+
+  // Alertes
+  const alerts = [];
+  const inactive = sorted.filter(m => m.lastSeen > 7);
+  if (inactive.length > 0) {
+    alerts.push({ type:'warn', icon:'⚠️', text:`<strong>${inactive.map(m=>m.name).join(', ')}</strong> n'ont pas été actifs depuis plus de 7 jours. Pensez à les relancer.` });
+  }
+  const diplomable = sorted.filter(m => m.pts >= 500 && !m.diplome);
+  if (diplomable.length > 0) {
+    alerts.push({ type:'info', icon:'🏆', text:`<strong>${diplomable[0].name}</strong> est éligible à un diplôme Expert Closer ce mois-ci.` });
+  }
+  if (avgScore > 75) {
+    alerts.push({ type:'good', icon:'📈', text:`Score moyen de l'équipe en hausse. <strong>${sorted[0].name}</strong> est en tête avec ${sorted[0].pts} points.` });
+  }
+  document.getElementById('alerts').innerHTML = alerts.map(a =>
+    `<div class="mgr-alert ${a.type}"><div class="mgr-alert-icon">${a.icon}</div><div class="mgr-alert-text">${a.text}</div></div>`
+  ).join('');
+
+  // Nom équipe
+  const mgr = (() => { try { return JSON.parse(localStorage.getItem('atlas_user_profile')||'{}'); } catch {return {};} })();
+  document.getElementById('teamName').textContent = mgr.company ? `Équipe ${mgr.company}` : 'Mon équipe commerciale · ' + sorted.length + ' membres';
+}
+
+function viewMember(id) {
+  window.location.href = `equipe.html?member=${id}`;
+}
+
+function openInviteModal()  { document.getElementById('inviteModal').classList.add('open'); }
+function closeInviteModal() { document.getElementById('inviteModal').classList.remove('open'); }
+
+function sendInvite() {
+  const email = document.getElementById('inviteEmail').value.trim();
+  if (!email) return;
+  alert(`✓ Invitation envoyée à ${email}\n\nFonctionnalité disponible après activation de Supabase.`);
+  closeInviteModal();
+}
+
+// Nav
+const u = (() => { try { return JSON.parse(localStorage.getItem('atlas_user')||'null'); } catch {return null;} })();
+if (u) { const b = document.getElementById('navCta'); b.textContent = '📊 Dashboard'; b.href = 'dashboard.html'; }
+
+document.addEventListener('DOMContentLoaded', render);
+</script>
+</body>
+</html>

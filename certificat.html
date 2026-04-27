@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Certificat — Atlas Académie</title>
+  <link rel="icon" type="image/png" href="assets/img/logo.png"/>
+  <link rel="stylesheet" href="assets/css/style.css"/>
+  <style>
+    body { display:flex; flex-direction:column; align-items:center; min-height:100dvh; padding-top:80px; background:var(--navy-dark); }
+
+    /* ── Actions ─────────────────────────────────────────────────── */
+    .cert-actions {
+      display: flex; gap: .75rem; margin-bottom: 2rem;
+      flex-wrap: wrap; justify-content: center;
+    }
+    .cert-btn {
+      font-family: var(--font-title);
+      font-size: .75rem;
+      letter-spacing: .12em;
+      padding: .65rem 1.4rem;
+      border-radius: 8px;
+      cursor: pointer;
+      border: none;
+      transition: all .2s;
+    }
+    .cert-btn-primary {
+      background: linear-gradient(135deg, var(--gold), var(--gold-light));
+      color: var(--navy-dark);
+    }
+    .cert-btn-primary:hover { opacity: .9; }
+    .cert-btn-outline {
+      background: transparent;
+      border: 1px solid rgba(201,168,76,0.35);
+      color: var(--gold);
+    }
+    .cert-btn-outline:hover { background: rgba(201,168,76,.1); }
+
+    /* ── Le certificat ───────────────────────────────────────────── */
+    #certCanvas {
+      border-radius: 12px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.6), 0 0 0 1px rgba(201,168,76,0.2);
+      max-width: 100%;
+    }
+
+    /* ── État "non débloqué" ─────────────────────────────────────── */
+    .cert-locked {
+      text-align: center;
+      max-width: 420px;
+      padding: 2rem;
+    }
+    .cert-locked-icon { font-size: 4rem; margin-bottom: 1rem; }
+    .cert-locked-title { font-family: var(--font-title); font-size: 1.4rem; color: var(--gold); margin-bottom: .75rem; }
+    .cert-locked-desc { color: var(--gray); font-size: .88rem; line-height: 1.7; margin-bottom: 1.5rem; }
+    .cert-progress-bar {
+      background: rgba(255,255,255,0.06);
+      border-radius: 4px; height: 8px;
+      margin-bottom: .4rem;
+      overflow: hidden;
+    }
+    .cert-progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--gold-dark), var(--gold));
+      border-radius: 4px;
+      transition: width .8s ease;
+    }
+    .cert-progress-label { font-size: .72rem; color: var(--gray); text-align: right; }
+
+    /* ── Sélecteur de certificat ─────────────────────────────────── */
+    .cert-selector {
+      display: flex; gap: .5rem; margin-bottom: 1.5rem; flex-wrap: wrap; justify-content: center;
+    }
+    .cert-type-btn {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: var(--gray);
+      border-radius: 6px;
+      padding: .4rem 1rem;
+      font-size: .75rem;
+      cursor: pointer;
+      transition: all .2s;
+      font-family: var(--font-sub);
+    }
+    .cert-type-btn.active, .cert-type-btn:hover {
+      background: rgba(201,168,76,.12);
+      border-color: rgba(201,168,76,.35);
+      color: var(--gold);
+    }
+
+    @media print {
+      body { padding-top: 0; background: white; }
+      .cert-actions, .cert-selector, nav, footer { display: none !important; }
+      #certCanvas { box-shadow: none; border-radius: 0; max-width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <a href="index.html" class="nav-logo">
+    <img src="assets/img/logo.png" alt="Atlas Académie"/>
+    <div class="nav-logo-text">Atlas<span>Académie</span></div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html">Accueil</a></li>
+    <li><a href="decode-close.html">Decode &amp; Close™</a></li>
+    <li><a href="analyse-influence.html">Analyse &amp; Influence</a></li>
+    <li><a href="10-etapes.html">10 Étapes</a></li>
+    <li><a href="coaches.html">Coachs IA</a></li>
+    <li><a href="a-propos.html">À Propos</a></li>
+    <li><a href="mon-profil.html" style="color:var(--gold);">🧠 Mon Profil</a></li>
+    <li><a href="dashboard.html">📊 Dashboard</a></li>
+  </ul>
+  <span id="navAuthBtn">
+    <a href="auth.html" class="nav-cta" id="navLoginBtn">Connexion</a>
+  </span>
+  <button class="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
+<div class="mobile-menu">
+  <a href="index.html">🏠 Accueil</a>
+  <a href="decode-close.html">🎯 Decode &amp; Close™</a>
+  <a href="analyse-influence.html">🧠 Analyse &amp; Influence</a>
+  <a href="10-etapes.html">⚡ 10 Étapes de la Vente</a>
+  <a href="coaches.html">🤖 Coachs IA</a>
+  <a href="a-propos.html">🏛️ À Propos</a>
+  <a href="mon-profil.html" style="color:var(--gold);">🧠 Mon Profil</a>
+  <a href="auth.html" class="nav-cta" id="mobileLoginBtn">Connexion →</a>
+</div>
+<script>(function(){try{var u=JSON.parse(localStorage.getItem('atlas_user')||'null');if(u&&u.id){var b=document.getElementById('navLoginBtn');if(b){b.textContent='📊 Dashboard';b.href='dashboard.html';}}}catch(e){}})();<\/script><!-- Contenu principal -->
+<div id="certLocked" class="cert-locked" style="display:none;">
+  <div class="cert-locked-icon">📜</div>
+  <div class="cert-locked-title">Certificat non débloqué</div>
+  <div class="cert-locked-desc">Continue ta progression pour débloquer ton premier certificat. Il suffit d'atteindre le niveau <strong style="color:var(--gold);">Closer (Niveau 5)</strong>.</div>
+  <div class="cert-progress-bar"><div class="cert-progress-fill" id="certProgressFill" style="width:0%"></div></div>
+  <div class="cert-progress-label" id="certProgressLabel">0 / 1000 XP</div>
+  <a href="coaches.html" style="display:inline-block;margin-top:1.5rem;color:var(--gold);font-size:.85rem;">Entraîne-toi avec un coach →</a>
+</div>
+
+<div id="certUnlocked" style="display:none;">
+  <!-- Sélecteur de type de certificat -->
+  <div class="cert-selector" id="certSelector"></div>
+
+  <!-- Actions -->
+  <div class="cert-actions">
+    <button class="cert-btn cert-btn-primary" id="downloadBtn">⬇ Télécharger le certificat</button>
+    <button class="cert-btn cert-btn-outline" id="shareBtn">🔗 Partager</button>
+    <button class="cert-btn cert-btn-outline" id="printBtn">🖨 Imprimer</button>
+  </div>
+
+  <!-- Canvas du certificat -->
+  <canvas id="certCanvas" width="1200" height="848"></canvas>
+</div>
+
+<br/><br/>
+
+<script>
+/* ── GARDE D'ACCÈS — Redirection si non connecté ── */
+(function() {
+  try {
+    var u = JSON.parse(localStorage.getItem('atlas_user') || 'null');
+    if (!u || !u.id) {
+      localStorage.setItem('atlas_auth_return', window.location.pathname.split('/').pop());
+      window.location.href = 'auth.html';
+    }
+  } catch(e) {
+    window.location.href = 'auth.html';
+  }
+})();
+</script>
+<script src="atlas-config.js"></script>
+<script src="assets/js/supabase-client.js"></script>
+<script src="assets/js/gamification.js"></script>
+<script src="assets/js/memory.js"></script>
+
+<script>
+(function () {
+  'use strict';
+
+  // ── Niveaux débloquant un certificat ─────────────────────────
+  const CERT_TYPES = [
+    { id: 'closer',        minLevel: 5,  label: 'Closer',         color1: '#0D1B3E', color2: '#1A2C55', accent: '#C9A84C', title: 'CERTIFICAT CLOSER' },
+    { id: 'elite_closer',  minLevel: 6,  label: 'Elite Closer',   color1: '#0D1B3E', color2: '#1A1A2E', accent: '#E8C96A', title: 'CERTIFICAT ELITE CLOSER' },
+    { id: 'master',        minLevel: 8,  label: 'Master Closer',  color1: '#070D1E', color2: '#0D1B3E', accent: '#FFD700', title: 'CERTIFICAT MASTER CLOSER' },
+    { id: 'atlas_elite',   minLevel: 10, label: '⚡ ATLAS ELITE', color1: '#000000', color2: '#0D1B3E', accent: '#FFFFFF', title: '⚡ ATLAS ELITE CERTIFICATE' },
+  ];
+
+  let currentCertType = null;
+
+  // ── Récupérer les infos utilisateur ──────────────────────────
+  function getUserInfo() {
+    const gam  = window.AtlasGamification ? window.AtlasGamification.getSummary() : null;
+    const auth = window.AtlasAuth ? window.AtlasAuth.getUser() : null;
+    let name   = 'Closer';
+    try {
+      const p = JSON.parse(localStorage.getItem('atlas_user_profile') || '{}');
+      name = p.name || (auth ? auth.email.split('@')[0] : 'Closer');
+    } catch {}
+    return { gam, auth, name };
+  }
+
+  // ── Dessiner le certificat sur canvas ────────────────────────
+  function drawCertificate(type) {
+    const canvas = document.getElementById('certCanvas');
+    const ctx    = canvas.getContext('2d');
+    const W = canvas.width, H = canvas.height;
+    const { gam, name } = getUserInfo();
+
+    const now   = new Date();
+    const date  = now.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+    const code  = 'ATLAS-' + Math.random().toString(36).substr(2, 8).toUpperCase();
+
+    // ── Fond dégradé ──────────────────────────────────────────
+    const bg = ctx.createLinearGradient(0, 0, W, H);
+    bg.addColorStop(0, type.color1);
+    bg.addColorStop(1, type.color2);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // ── Motif de fond (grille subtile) ────────────────────────
+    ctx.strokeStyle = `${type.accent}08`;
+    ctx.lineWidth   = 1;
+    for (let x = 0; x < W; x += 60) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke(); }
+    for (let y = 0; y < H; y += 60) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke(); }
+
+    // ── Bordure dorée ─────────────────────────────────────────
+    const bw = 18;
+    ctx.strokeStyle = type.accent;
+    ctx.lineWidth   = bw;
+    ctx.strokeRect(bw/2, bw/2, W - bw, H - bw);
+
+    // Bordure intérieure fine
+    ctx.strokeStyle = `${type.accent}40`;
+    ctx.lineWidth   = 1;
+    ctx.strokeRect(bw + 12, bw + 12, W - (bw+12)*2, H - (bw+12)*2);
+
+    // ── Coins décoratifs ──────────────────────────────────────
+    function drawCorner(x, y, flipX, flipY) {
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.scale(flipX ? -1 : 1, flipY ? -1 : 1);
+      ctx.strokeStyle = type.accent;
+      ctx.lineWidth   = 2;
+      ctx.beginPath(); ctx.moveTo(0, 50); ctx.lineTo(0, 0); ctx.lineTo(50, 0); ctx.stroke();
+      ctx.restore();
+    }
+    const m = 35;
+    drawCorner(m, m, false, false);
+    drawCorner(W-m, m, true, false);
+    drawCorner(m, H-m, false, true);
+    drawCorner(W-m, H-m, true, true);
+
+    // ── Logo / Titre ──────────────────────────────────────────
+    ctx.textAlign  = 'center';
+    ctx.fillStyle  = type.accent;
+    ctx.font       = `700 16px 'Georgia', serif`;
+    ctx.letterSpacing = '0.3em';
+    ctx.fillText('ATLAS ACADÉMIE', W/2, 95);
+
+    ctx.fillStyle  = `${type.accent}60`;
+    ctx.font       = '12px Georgia';
+    ctx.letterSpacing = '0.15em';
+    ctx.fillText('FORMATION EN VENTE & CLOSING', W/2, 118);
+
+    // Ligne décorative
+    const lineGrad = ctx.createLinearGradient(W/2 - 180, 0, W/2 + 180, 0);
+    lineGrad.addColorStop(0, 'transparent');
+    lineGrad.addColorStop(.5, type.accent);
+    lineGrad.addColorStop(1, 'transparent');
+    ctx.strokeStyle = lineGrad;
+    ctx.lineWidth   = 1;
+    ctx.beginPath(); ctx.moveTo(W/2 - 180, 130); ctx.lineTo(W/2 + 180, 130); ctx.stroke();
+
+    // ── Titre du certificat ───────────────────────────────────
+    ctx.fillStyle   = '#FFFFFF';
+    ctx.font        = `bold 42px 'Georgia', serif`;
+    ctx.letterSpacing = '0.08em';
+    const titleWords = type.title.split(' ');
+    ctx.fillText(type.title, W/2, 200);
+
+    // Sous-titre
+    ctx.fillStyle   = `${type.accent}80`;
+    ctx.font        = '14px Georgia';
+    ctx.letterSpacing = '0.2em';
+    ctx.fillText('DÉCERNÉ À', W/2, 248);
+
+    // ── Nom du titulaire ──────────────────────────────────────
+    ctx.fillStyle = type.accent;
+    ctx.font      = `italic bold 58px 'Georgia', serif`;
+    ctx.letterSpacing = '0.05em';
+    ctx.fillText(name.charAt(0).toUpperCase() + name.slice(1), W/2, 320);
+
+    // Ligne sous le nom
+    ctx.strokeStyle = lineGrad;
+    ctx.lineWidth   = 1;
+    ctx.beginPath(); ctx.moveTo(W/2 - 220, 338); ctx.lineTo(W/2 + 220, 338); ctx.stroke();
+
+    // ── Description ───────────────────────────────────────────
+    ctx.fillStyle   = `rgba(245,240,232,0.85)`;
+    ctx.font        = '16px Georgia';
+    ctx.letterSpacing = '0.05em';
+    ctx.fillText('Pour avoir complété avec succès la formation Atlas Académie', W/2, 382);
+
+    ctx.fillStyle   = type.accent;
+    ctx.font        = `bold 22px 'Georgia', serif`;
+    ctx.letterSpacing = '0.08em';
+    ctx.fillText(`et atteint le niveau "${type.label}"`, W/2, 415);
+
+    // ── Stats ─────────────────────────────────────────────────
+    if (gam) {
+      const stats = [
+        { label: 'XP Total',   val: `${gam.xp.toLocaleString('fr-FR')} XP` },
+        { label: 'Niveau',     val: `${gam.level.level} / 10` },
+        { label: 'Badges',     val: `${gam.badges.length} obtenus` },
+      ];
+      const statW  = 200;
+      const startX = W/2 - (stats.length - 1) * statW / 2;
+
+      stats.forEach((s, i) => {
+        const x = startX + i * statW;
+        ctx.fillStyle   = type.accent;
+        ctx.font        = `bold 22px 'Georgia', serif`;
+        ctx.letterSpacing = '0.05em';
+        ctx.fillText(s.val, x, 490);
+        ctx.fillStyle   = `${type.accent}70`;
+        ctx.font        = '11px Georgia';
+        ctx.letterSpacing = '0.15em';
+        ctx.fillText(s.label.toUpperCase(), x, 510);
+      });
+
+      // Ligne déco sous les stats
+      ctx.strokeStyle = `${type.accent}25`;
+      ctx.lineWidth   = 1;
+      ctx.beginPath(); ctx.moveTo(W/2 - 280, 525); ctx.lineTo(W/2 + 280, 525); ctx.stroke();
+    }
+
+    // ── Sceau / Médaille ──────────────────────────────────────
+    ctx.save();
+    ctx.translate(W/2, 600);
+    // Cercle extérieur
+    ctx.strokeStyle = type.accent;
+    ctx.lineWidth   = 3;
+    ctx.beginPath(); ctx.arc(0, 0, 52, 0, Math.PI * 2); ctx.stroke();
+    // Cercle intérieur
+    ctx.lineWidth   = 1;
+    ctx.strokeStyle = `${type.accent}50`;
+    ctx.beginPath(); ctx.arc(0, 0, 45, 0, Math.PI * 2); ctx.stroke();
+    // Fond cercle
+    const sealGrad = ctx.createRadialGradient(0, 0, 0, 0, 0, 52);
+    sealGrad.addColorStop(0, `${type.accent}22`);
+    sealGrad.addColorStop(1, `${type.accent}05`);
+    ctx.fillStyle = sealGrad;
+    ctx.beginPath(); ctx.arc(0, 0, 52, 0, Math.PI * 2); ctx.fill();
+    // Icône au centre
+    ctx.font      = '36px serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('🏆', 0, 12);
+    ctx.restore();
+
+    // ── Signature / Date ──────────────────────────────────────
+    const colLeft  = W * 0.28;
+    const colRight = W * 0.72;
+    const lineY    = 700;
+
+    // Signature gauche
+    ctx.fillStyle   = type.accent;
+    ctx.font        = `italic 22px 'Georgia', serif`;
+    ctx.letterSpacing = '0.03em';
+    ctx.textAlign   = 'center';
+    ctx.fillText('Saint-Thomas', colLeft, lineY - 8);
+    ctx.fillStyle   = `${type.accent}50`;
+    ctx.lineWidth   = 1;
+    ctx.strokeStyle = `${type.accent}40`;
+    ctx.beginPath(); ctx.moveTo(colLeft - 80, lineY + 4); ctx.lineTo(colLeft + 80, lineY + 4); ctx.stroke();
+    ctx.fillStyle   = `rgba(245,240,232,0.5)`;
+    ctx.font        = '11px Georgia';
+    ctx.letterSpacing = '0.12em';
+    ctx.fillText('DIRECTEUR — ATLAS ACADÉMIE', colLeft, lineY + 22);
+
+    // Date droite
+    ctx.fillStyle   = `rgba(245,240,232,0.7)`;
+    ctx.font        = '15px Georgia';
+    ctx.letterSpacing = '0.05em';
+    ctx.fillText(`Délivré le ${date}`, colRight, lineY - 8);
+    ctx.strokeStyle = `${type.accent}40`;
+    ctx.beginPath(); ctx.moveTo(colRight - 80, lineY + 4); ctx.lineTo(colRight + 80, lineY + 4); ctx.stroke();
+    ctx.fillStyle   = `rgba(245,240,232,0.4)`;
+    ctx.font        = '11px Georgia';
+    ctx.letterSpacing = '0.12em';
+    ctx.fillText('DATE DE DÉLIVRANCE', colRight, lineY + 22);
+
+    // ── Code de vérification ──────────────────────────────────
+    ctx.fillStyle   = `${type.accent}50`;
+    ctx.font        = '11px monospace';
+    ctx.letterSpacing = '0.1em';
+    ctx.textAlign   = 'center';
+    ctx.fillText(`Code de vérification : ${code}`, W/2, H - 30);
+
+    // Stocker le code pour partage
+    canvas.dataset.verifyCode = code;
+    canvas.dataset.certType   = type.id;
+  }
+
+  // ── Init ─────────────────────────────────────────────────────
+  const { gam, name } = getUserInfo();
+  const currentLevel  = gam ? gam.level.level : 0;
+
+  // Auth nav
+  const u = (() => { try { return JSON.parse(localStorage.getItem('atlas_user') || 'null'); } catch { return null; }})();
+  if (u && u.id) {
+    const b = document.getElementById('navLoginBtn');
+    if (b) { b.textContent = '📊 Dashboard'; b.href = 'dashboard.html'; }
+  }
+
+  // Vérifier si un cert est débloqué
+  const unlockedCerts = CERT_TYPES.filter(c => currentLevel >= c.minLevel);
+
+  if (unlockedCerts.length === 0) {
+    // Pas encore débloqué
+    document.getElementById('certLocked').style.display = 'block';
+    const target = 1000; // XP pour niveau 5
+    const xp     = gam ? gam.xp : 0;
+    const pct    = Math.min(100, Math.round((xp / target) * 100));
+    document.getElementById('certProgressFill').style.width  = pct + '%';
+    document.getElementById('certProgressLabel').textContent = `${xp.toLocaleString('fr-FR')} / ${target.toLocaleString('fr-FR')} XP pour Niveau 5`;
+  } else {
+    // Au moins un certificat débloqué
+    document.getElementById('certUnlocked').style.display = 'block';
+    currentCertType = unlockedCerts[unlockedCerts.length - 1]; // le plus haut
+
+    // Sélecteur de types
+    const selector = document.getElementById('certSelector');
+    unlockedCerts.forEach(ct => {
+      const btn = document.createElement('button');
+      btn.className = 'cert-type-btn' + (ct.id === currentCertType.id ? ' active' : '');
+      btn.textContent = ct.label;
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.cert-type-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentCertType = ct;
+        drawCertificate(ct);
+      });
+      selector.appendChild(btn);
+    });
+
+    drawCertificate(currentCertType);
+  }
+
+  // ── Télécharger ───────────────────────────────────────────────
+  document.getElementById('downloadBtn')?.addEventListener('click', () => {
+    const canvas = document.getElementById('certCanvas');
+    const link   = document.createElement('a');
+    link.download = `certificat-atlas-academie-${name.toLowerCase().replace(/\s+/g, '-')}.png`;
+    link.href     = canvas.toDataURL('image/png', 1.0);
+    link.click();
+  });
+
+  // ── Partager ──────────────────────────────────────────────────
+  document.getElementById('shareBtn')?.addEventListener('click', async () => {
+    const canvas = document.getElementById('certCanvas');
+    const code   = canvas.dataset.verifyCode || '';
+    const text   = `🏆 Je viens d'obtenir mon certificat ${currentCertType?.label || ''} sur Atlas Académie ! Code : ${code}`;
+
+    if (navigator.share) {
+      try {
+        const blob = await new Promise(r => canvas.toBlob(r, 'image/png'));
+        const file = new File([blob], 'certificat-atlas.png', { type: 'image/png' });
+        await navigator.share({ title: 'Mon certificat Atlas Académie', text, files: [file] });
+      } catch {
+        await navigator.clipboard.writeText(`${text}\nhttps://atlasacademie.netlify.app`).catch(() => {});
+        alert('Lien copié dans le presse-papier !');
+      }
+    } else {
+      await navigator.clipboard.writeText(`${text}\nhttps://atlasacademie.netlify.app`).catch(() => {});
+      alert('Lien copié dans le presse-papier !');
+    }
+  });
+
+  // ── Imprimer ──────────────────────────────────────────────────
+  document.getElementById('printBtn')?.addEventListener('click', () => window.print());
+
+})();
+</script>
+</body>
+</html>

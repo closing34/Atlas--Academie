@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Ton Profil Closer — Atlas Académie</title>
+  <link rel="icon" type="image/png" href="assets/img/logo.png"/>
+  <link rel="stylesheet" href="assets/css/style.css"/>
+  <style>
+    .quiz-page { min-height: 100vh; display: flex; align-items: center; justify-content: center;
+      background: linear-gradient(135deg, var(--navy-dark) 0%, var(--navy) 100%); padding: 2rem; }
+
+    .quiz-wrap { width: 100%; max-width: 620px; }
+
+    .quiz-logo { text-align: center; margin-bottom: 2.5rem; }
+    .quiz-logo img { width: 90px; margin: 0 auto 1rem; }
+    .quiz-logo-title { font-family: var(--font-title); font-size: 1rem; color: var(--gold); letter-spacing: 0.2em; }
+
+    .quiz-card {
+      background: rgba(255,255,255,0.03); border: 1px solid rgba(201,168,76,0.2);
+      border-radius: 16px; padding: 2.5rem; display: none;
+    }
+    .quiz-card.active { display: block; animation: fadeSlide 0.4s ease; }
+    @keyframes fadeSlide { from { opacity:0; transform: translateY(16px); } to { opacity:1; transform: translateY(0); } }
+
+    .quiz-step { font-size: 0.7rem; color: var(--gray); letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 0.75rem; }
+    .quiz-q { font-family: var(--font-title); font-size: 1.4rem; color: var(--white); margin-bottom: 0.5rem; line-height: 1.4; }
+    .quiz-sub { font-size: 0.9rem; color: var(--gray); margin-bottom: 2rem; }
+
+    .quiz-options { display: flex; flex-direction: column; gap: 0.75rem; }
+    .quiz-option {
+      display: flex; align-items: center; gap: 1rem;
+      padding: 1rem 1.25rem; border-radius: 10px;
+      border: 1px solid rgba(201,168,76,0.2); background: rgba(255,255,255,0.03);
+      cursor: pointer; transition: var(--transition);
+    }
+    .quiz-option:hover, .quiz-option.selected {
+      border-color: var(--gold); background: rgba(201,168,76,0.1);
+    }
+    .quiz-option-icon { font-size: 1.5rem; width: 36px; text-align: center; flex-shrink: 0; }
+    .quiz-option-text { flex: 1; }
+    .quiz-option-label { font-weight: 600; color: var(--off-white); font-size: 0.95rem; }
+    .quiz-option-desc  { font-size: 0.8rem; color: var(--gray); margin-top: 0.2rem; }
+    .quiz-option.selected .quiz-option-label { color: var(--gold); }
+
+    .quiz-input {
+      width: 100%; padding: 0.9rem 1.1rem; border-radius: 8px;
+      background: rgba(255,255,255,0.05); border: 1px solid rgba(201,168,76,0.2);
+      color: var(--white); font-size: 1rem; font-family: var(--font-body);
+      outline: none; transition: var(--transition);
+    }
+    .quiz-input:focus { border-color: var(--gold); background: rgba(201,168,76,0.06); }
+    .quiz-input::placeholder { color: var(--gray); }
+
+    .quiz-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 2rem; }
+    .quiz-btn {
+      padding: 0.85rem 2rem; border-radius: 50px; font-family: var(--font-title);
+      font-size: 0.8rem; letter-spacing: 0.1em; cursor: pointer; transition: var(--transition);
+    }
+    .quiz-btn-next { background: var(--gold); color: var(--navy-dark); border: none; }
+    .quiz-btn-next:hover { background: var(--gold-light); transform: translateY(-2px); }
+    .quiz-btn-next:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+    .quiz-btn-back { background: transparent; color: var(--gray); border: 1px solid rgba(255,255,255,0.1); }
+    .quiz-btn-back:hover { color: var(--white); border-color: rgba(255,255,255,0.3); }
+
+    /* Progress bar */
+    .quiz-progress { margin-bottom: 2rem; }
+    .quiz-progress-track { height: 4px; background: rgba(255,255,255,0.08); border-radius: 2px; overflow: hidden; }
+    .quiz-progress-fill { height: 100%; background: linear-gradient(90deg, var(--gold-dark), var(--gold)); border-radius: 2px; transition: width 0.4s ease; }
+    .quiz-progress-text { font-size: 0.75rem; color: var(--gray); margin-top: 0.5rem; text-align: right; }
+
+    /* Résultat */
+    .quiz-result { text-align: center; }
+    .quiz-result-icon { font-size: 4rem; margin-bottom: 1rem; }
+    .quiz-result-title { font-family: var(--font-title); font-size: 1.6rem; color: var(--gold); margin-bottom: 0.5rem; }
+    .quiz-result-sub { color: var(--gray); margin-bottom: 2rem; line-height: 1.7; }
+    .quiz-result-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; margin-bottom: 2rem; }
+    .quiz-tag {
+      background: rgba(201,168,76,0.12); border: 1px solid rgba(201,168,76,0.3);
+      color: var(--gold); font-size: 0.75rem; padding: 0.35rem 0.9rem; border-radius: 50px;
+    }
+    .quiz-result-btn {
+      display: inline-block; padding: 1rem 2.5rem; border-radius: 50px;
+      background: var(--gold); color: var(--navy-dark);
+      font-family: var(--font-title); font-size: 0.85rem; letter-spacing: 0.1em;
+      text-decoration: none; transition: var(--transition);
+    }
+    .quiz-result-btn:hover { background: var(--gold-light); transform: translateY(-2px); }
+  </style>
+</head>
+<body>
+<div class="quiz-page">
+  <div class="quiz-wrap">
+
+    <div class="quiz-logo">
+      <img src="assets/img/logo.png" alt="Atlas Académie"/>
+      <div class="quiz-logo-title">Atlas Académie</div>
+    </div>
+
+    <!-- Progress -->
+    <div class="quiz-progress">
+      <div class="quiz-progress-track"><div class="quiz-progress-fill" id="progressFill" style="width:0%"></div></div>
+      <div class="quiz-progress-text" id="progressText">Étape 1 / 5</div>
+    </div>
+
+    <!-- Étape 1 : Prénom -->
+    <div class="quiz-card active" id="step1">
+      <div class="quiz-step">Étape 1 / 5</div>
+      <div class="quiz-q">Comment tu t'appelles ?</div>
+      <div class="quiz-sub">On va personnaliser ton expérience.</div>
+      <input type="text" class="quiz-input" id="inputName" placeholder="Ton prénom..." maxlength="30" autocomplete="off"/>
+      <div class="quiz-nav">
+        <span></span>
+        <button class="quiz-btn quiz-btn-next" id="btn1" onclick="goNext(1)" disabled>Continuer →</button>
+      </div>
+    </div>
+
+    <!-- Étape 2 : Niveau -->
+    <div class="quiz-card" id="step2">
+      <div class="quiz-step">Étape 2 / 5</div>
+      <div class="quiz-q">Quel est ton niveau en vente ?</div>
+      <div class="quiz-sub">Sois honnête — ça calibre les conseils de ton coach.</div>
+      <div class="quiz-options" id="opts2">
+        <div class="quiz-option" onclick="selectOpt(2,'debutant',this)">
+          <div class="quiz-option-icon">🌱</div>
+          <div class="quiz-option-text">
+            <div class="quiz-option-label">Débutant</div>
+            <div class="quiz-option-desc">Je découvre la vente, j'ai peu ou pas d'expérience</div>
+          </div>
+        </div>
+        <div class="quiz-option" onclick="selectOpt(2,'intermediaire',this)">
+          <div class="quiz-option-icon">🔥</div>
+          <div class="quiz-option-text">
+            <div class="quiz-option-label">Intermédiaire</div>
+            <div class="quiz-option-desc">Je vends déjà, j'ai des résultats mais je veux progresser</div>
+          </div>
+        </div>
+        <div class="quiz-option" onclick="selectOpt(2,'avance',this)">
+          <div class="quiz-option-icon">⚡</div>
+          <div class="quiz-option-text">
+            <div class="quiz-option-label">Avancé</div>
+            <div class="quiz-option-desc">Je close régulièrement, je veux affiner mes techniques élite</div>
+          </div>
+        </div>
+      </div>
+      <div class="quiz-nav">
+        <button class="quiz-btn quiz-btn-back" onclick="goBack(2)">← Retour</button>
+        <button class="quiz-btn quiz-btn-next" id="btn2" onclick="goNext(2)" disabled>Continuer →</button>
+      </div>
+    </div>
+
+    <!-- Étape 3 : Niche -->
+    <div class="quiz-card" id="step3">
+      <div class="quiz-step">Étape 3 / 5</div>
+      <div class="quiz-q">Dans quel domaine tu vends ?</div>
+      <div class="quiz-sub">Ton coach adapte ses scripts à ton secteur.</div>
+      <div class="quiz-options" id="opts3">
+        <div class="quiz-option" onclick="selectOpt(3,'closer-independant',this)">
+          <div class="quiz-option-icon">🎯</div>
+          <div class="quiz-option-text">
+            <div class="quiz-option-label">Closer indépendant</div>
+            <div class="quiz-option-desc">Tu closes pour des entrepreneurs / infopreneurs</div>
+          </div>
+        </div>
+        <div class="quiz-option" onclick="selectOpt(3,'commercial',this)">
+          <div class="quiz-option-icon">🏢</div>
+          <div class="quiz-option-text">
+            <div class="quiz-option-label">Commercial / Sales</div>
+            <div class="quiz-option-desc">Tu travailles dans une entreprise avec un portefeuille clients</div>
+          </div>
+        </div>
+        <div class="quiz-option" onclick="selectOpt(3,'entrepreneur',this)">
+          <div class="quiz-option-icon">🚀</div>
+          <div class="quiz-option-text">
+            <div class="quiz-option-label">Entrepreneur</div>
+            <div class="quiz-option-desc">Tu vends tes propres offres / services</div>
+          </div>
+        </div>
+        <div class="quiz-option" onclick="selectOpt(3,'autre',this)">
+          <div class="quiz-option-icon">💼</div>
+          <div class="quiz-option-text">
+            <div class="quiz-option-label">Autre secteur</div>
+            <div class="quiz-option-desc">Immobilier, assurance, coaching, B2B, etc.</div>
+          </div>
+        </div>
+      </div>
+      <div class="quiz-nav">
+        <button class="quiz-btn quiz-btn-back" onclick="goBack(3)">← Retour</button>
+        <button class="quiz-btn quiz-btn-next" id="btn3" onclick="goNext(3)" disabled>Continuer →</button>
+      </div>
+    </div>
+
+    <!-- Étape 4 : Objectif -->
+    <div class="quiz-card" id="step4">
+      <div class="quiz-step">Étape 4 / 5</div>
+      <div class="quiz-q">Quel est ton objectif principal ?</div>
+      <div class="quiz-sub">On va cibler les entraînements sur ce qui compte le plus pour toi.</div>
+      <div class="quiz-options" id="opts4">
+        <div class="quiz-option" onclick="selectOpt(4,'taux-closing',this)">
+          <div class="quiz-option-icon">📈</div>
+          <div class="quiz-option-text">
+            <div class="quiz-option-label">Augmenter mon taux de closing</div>
+            <div class="quiz-option-desc">Je perds trop de deals, je veux closer plus</div>
+          </div>
+        </div>
+        <div class="quiz-option" onclick="selectOpt(4,'objections',this)">
+          <div class="quiz-option-icon">🛡️</div>
+          <div class="quiz-option-text">
+            <div class="quiz-option-label">Gérer les objections</div>
+            <div class="quiz-option-desc">Prix, délai, "j'y réfléchis" — je veux des scripts qui marchent</div>
+          </div>
+        </div>
+        <div class="quiz-option" onclick="selectOpt(4,'mindset',this)">
+          <div class="quiz-option-icon">🧠</div>
+          <div class="quiz-option-text">
+            <div class="quiz-option-label">Travailler mon mental</div>
+            <div class="quiz-option-desc">Confiance, peur du rejet, discipline, performance</div>
+          </div>
+        </div>
+        <div class="quiz-option" onclick="selectOpt(4,'psychologie',this)">
+          <div class="quiz-option-icon">🎭</div>
+          <div class="quiz-option-text">
+            <div class="quiz-option-label">Comprendre les prospects</div>
+            <div class="quiz-option-desc">Profiling DISC, psychologie d'achat, influence éthique</div>
+          </div>
+        </div>
+      </div>
+      <div class="quiz-nav">
+        <button class="quiz-btn quiz-btn-back" onclick="goBack(4)">← Retour</button>
+        <button class="quiz-btn quiz-btn-next" id="btn4" onclick="goNext(4)" disabled>Continuer →</button>
+      </div>
+    </div>
+
+    <!-- Étape 5 : Style coaching -->
+    <div class="quiz-card" id="step5">
+      <div class="quiz-step">Étape 5 / 5</div>
+      <div class="quiz-q">Comment tu aimes être coaché ?</div>
+      <div class="quiz-sub">Ça détermine le style de réponse de ton coach IA.</div>
+      <div class="quiz-options" id="opts5">
+        <div class="quiz-option" onclick="selectOpt(5,'direct',this)">
+          <div class="quiz-option-icon">⚡</div>
+          <div class="quiz-option-text">
+            <div class="quiz-option-label">Direct et sans filtre</div>
+            <div class="quiz-option-desc">Va droit au but, donne-moi le script, pas de blabla</div>
+          </div>
+        </div>
+        <div class="quiz-option" onclick="selectOpt(5,'pedagogique',this)">
+          <div class="quiz-option-icon">📚</div>
+          <div class="quiz-option-text">
+            <div class="quiz-option-label">Pédagogique et structuré</div>
+            <div class="quiz-option-desc">Explique-moi le pourquoi avant le comment</div>
+          </div>
+        </div>
+        <div class="quiz-option" onclick="selectOpt(5,'intensif',this)">
+          <div class="quiz-option-icon">🔥</div>
+          <div class="quiz-option-text">
+            <div class="quiz-option-label">Intensif haute pression</div>
+            <div class="quiz-option-desc">Challenge-moi, pousse mes limites, ne tolère pas les excuses</div>
+          </div>
+        </div>
+      </div>
+      <div class="quiz-nav">
+        <button class="quiz-btn quiz-btn-back" onclick="goBack(5)">← Retour</button>
+        <button class="quiz-btn quiz-btn-next" id="btn5" onclick="saveAndFinish()" disabled>Voir mon profil →</button>
+      </div>
+    </div>
+
+    <!-- Résultat -->
+    <div class="quiz-card" id="stepResult">
+      <div class="quiz-result">
+        <div class="quiz-result-icon" id="resultIcon">🎯</div>
+        <div class="quiz-result-title" id="resultTitle">Profil créé !</div>
+        <div class="quiz-result-sub" id="resultSub"></div>
+        <div class="quiz-result-tags" id="resultTags"></div>
+        <div style="background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.2);border-radius:10px;padding:0.75rem 1rem;margin-bottom:1.5rem;font-family:var(--font-title);font-size:0.8rem;color:var(--gold);">
+          ⚡ +30 XP crédités pour avoir complété ton profil
+        </div>
+        <a href="coaches.html" class="quiz-result-btn" id="resultCoachBtn">Démarrer avec mon Coach IA →</a>
+        <br/><br/>
+        <a href="dashboard.html" style="color:var(--gray); font-size:0.85rem;">Voir mon dashboard →</a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+/* ── GARDE D'ACCÈS — Redirection si non connecté ── */
+(function() {
+  try {
+    var u = JSON.parse(localStorage.getItem('atlas_user') || 'null');
+    if (!u || !u.id) {
+      localStorage.setItem('atlas_auth_return', window.location.pathname.split('/').pop());
+      window.location.href = 'auth.html';
+    }
+  } catch(e) {
+    window.location.href = 'auth.html';
+  }
+})();
+</script>
+<script src="atlas-config.js"></script>
+<script src="assets/js/supabase-client.js"></script>
+<script src="assets/js/usage.js"></script>
+<script src="assets/js/memory.js"></script>
+<script src="assets/js/gamification.js"></script>
+<script>
+(function () {
+  const answers = { name: '', level: '', niche: '', goal: '', style: '' };
+  const TOTAL_STEPS = 5;
+
+  const COACH_RECO = {
+    debutant:       { coach: 'mentor',     label: 'Le Mentor',           icon: '📚' },
+    intermediaire:  { coach: 'stratege',   label: 'Le Stratège',         icon: '🧊' },
+    avance:         { coach: 'architecte', label: "L'Architecte",        icon: '⚡' },
+  };
+
+  function updateProgress(step) {
+    const pct = ((step - 1) / TOTAL_STEPS) * 100;
+    document.getElementById('progressFill').style.width = pct + '%';
+    document.getElementById('progressText').textContent = `Étape ${step} / ${TOTAL_STEPS}`;
+  }
+
+  window.goNext = function (step) {
+    document.getElementById('step' + step).classList.remove('active');
+    document.getElementById('step' + (step + 1)).classList.add('active');
+    updateProgress(step + 1);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  window.goBack = function (step) {
+    document.getElementById('step' + step).classList.remove('active');
+    document.getElementById('step' + (step - 1)).classList.add('active');
+    updateProgress(step - 1);
+  };
+
+  window.selectOpt = function (step, value, el) {
+    document.querySelectorAll('#opts' + step + ' .quiz-option').forEach(o => o.classList.remove('selected'));
+    el.classList.add('selected');
+    const keys = ['', 'name', 'level', 'niche', 'goal', 'style'];
+    answers[keys[step]] = value;
+    document.getElementById('btn' + step).disabled = false;
+  };
+
+  // Étape 1 : input texte
+  const nameInput = document.getElementById('inputName');
+  nameInput.addEventListener('input', function () {
+    answers.name = this.value.trim();
+    document.getElementById('btn1').disabled = answers.name.length < 2;
+  });
+  nameInput.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' && answers.name.length >= 2) goNext(1);
+  });
+
+  window.saveAndFinish = function () {
+    // ── 1. Sauvegarder dans AtlasMemory (bugfix: setProfile au lieu de updateUser)
+    if (window.AtlasMemory) {
+      AtlasMemory.setProfile({
+        name:  answers.name,
+        level: answers.level,
+        niche: answers.niche,
+        goal:  answers.goal,
+        style: answers.style,
+      });
+    }
+
+    // ── 2. Sauvegarder en localStorage direct pour accès rapide
+    localStorage.setItem('atlas_user_profile', JSON.stringify({
+      ...answers,
+      completedAt: new Date().toISOString()
+    }));
+
+    // ── 3. XP pour avoir complété le quiz
+    if (window.AtlasGamification) {
+      AtlasGamification.addXP(30, 'bonus', { silent: false });
+    }
+
+    // ── 4. Afficher le résultat avec lien direct vers le bon coach
+    const reco = COACH_RECO[answers.level] || COACH_RECO.intermediaire;
+    const NICHE_LABELS  = { 'closer-independant': 'Closer indépendant', commercial: 'Commercial', entrepreneur: 'Entrepreneur', autre: 'Autre secteur' };
+    const GOAL_LABELS   = { 'taux-closing': 'Augmenter le taux de closing', objections: 'Gérer les objections', mindset: 'Travailler le mental', psychologie: 'Comprendre les prospects' };
+    const STYLE_LABELS  = { direct: 'Style direct', pedagogique: 'Style pédagogique', intensif: 'Style intensif' };
+
+    document.getElementById('resultIcon').textContent  = reco.icon;
+    document.getElementById('resultTitle').textContent = `Parfait, ${answers.name} !`;
+    document.getElementById('resultSub').innerHTML     =
+      `Ton profil est configuré.<br/>Coach recommandé : <strong style="color:var(--gold)">${reco.label}</strong>`;
+    document.getElementById('resultTags').innerHTML    = [
+      NICHE_LABELS[answers.niche], GOAL_LABELS[answers.goal], STYLE_LABELS[answers.style]
+    ].map(t => `<span class="quiz-tag">${t}</span>`).join('');
+
+    // Lien direct vers le coach recommandé (ou URL de retour si redirect)
+    const returnUrl = new URLSearchParams(window.location.search).get('return');
+    const coachLink = document.getElementById('resultCoachBtn');
+    coachLink.href        = returnUrl ? decodeURIComponent(returnUrl) : `chat.html?coach=${reco.coach}`;
+    coachLink.textContent = `Démarrer avec ${reco.label} →`;
+
+    document.getElementById('step5').classList.remove('active');
+    document.getElementById('stepResult').classList.add('active');
+    document.getElementById('progressFill').style.width = '100%';
+    document.getElementById('progressText').textContent = 'Profil complété ✓';
+  };
+
+  // Si déjà complété → rediriger
+  const existing = localStorage.getItem('atlas_user_profile');
+  if (existing) {
+    try {
+      const p = JSON.parse(existing);
+      if (p.name && p.level) window.location.href = 'coaches.html';
+    } catch {}
+  }
+
+  updateProgress(1);
+})();
+</script>
+</body>
+</html>

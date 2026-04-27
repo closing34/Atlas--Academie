@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Analyse Comportementale Gratuite — Atlas Académie</title>
+  <meta name="description" content="Découvre ton profil de vendeur en 3 minutes. Analyse comportementale Big Five gratuite par Atlas Académie."/>
+  <link rel="icon" type="image/png" href="assets/img/logo.png"/>
+  <link rel="stylesheet" href="assets/css/style.css"/>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{background:var(--navy-dark);min-height:100vh;font-family:var(--font-body);}
+
+    /* ── NAV ── */
+    .ag-nav{
+      position:fixed;top:0;left:0;right:0;z-index:100;
+      background:rgba(10,22,40,0.97);border-bottom:1px solid rgba(201,168,76,0.12);
+      padding:0 5%;display:flex;align-items:center;justify-content:space-between;height:56px;
+    }
+    .ag-nav-logo{font-family:var(--font-title);font-size:.95rem;color:var(--gold);letter-spacing:.15em;text-decoration:none;}
+    .ag-nav-back{font-size:.75rem;color:var(--gray);text-decoration:none;}
+    .ag-nav-back:hover{color:var(--gold);}
+
+    /* ── HERO ── */
+    .ag-hero{
+      padding:100px 20px 50px;text-align:center;
+      background:linear-gradient(160deg,#0A1628 0%,#0D1B3E 60%,#1A2C55 100%);
+      position:relative;overflow:hidden;
+    }
+    .ag-hero::before{
+      content:'';position:absolute;inset:0;
+      background:radial-gradient(ellipse at 60% 40%,rgba(201,168,76,0.07) 0%,transparent 65%);
+    }
+    .ag-badge{
+      display:inline-flex;align-items:center;gap:.5rem;
+      background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.3);
+      color:var(--gold);font-family:var(--font-title);font-size:.62rem;letter-spacing:.18em;
+      padding:.4rem 1rem;border-radius:50px;margin-bottom:1.25rem;
+    }
+    .ag-hero h1{font-family:var(--font-title);font-size:clamp(1.6rem,4vw,2.6rem);color:#fff;margin-bottom:.75rem;line-height:1.25;}
+    .ag-hero h1 span{color:var(--gold);}
+    .ag-hero p{font-size:.95rem;color:var(--gray);max-width:500px;margin:0 auto 2rem;line-height:1.7;}
+    .ag-stats{display:flex;justify-content:center;gap:2.5rem;flex-wrap:wrap;margin-bottom:2.5rem;}
+    .ag-stat strong{display:block;font-size:1.3rem;color:var(--gold);font-family:var(--font-title);}
+    .ag-stat span{font-size:.75rem;color:var(--gray);}
+    .btn-start{
+      background:linear-gradient(135deg,var(--gold),var(--gold-light));
+      color:var(--navy-dark);font-family:var(--font-title);font-size:.8rem;
+      font-weight:700;letter-spacing:.15em;padding:1rem 2.5rem;
+      border-radius:50px;border:none;cursor:pointer;transition:all .2s;
+    }
+    .btn-start:hover{opacity:.9;transform:translateY(-2px);}
+    .hero-note{font-size:.72rem;color:var(--gray);margin-top:.9rem;}
+
+    /* ── CHAT WINDOW ── */
+    .chat-section{
+      display:none;max-width:700px;margin:0 auto;
+      padding:30px 16px 100px;
+    }
+    .chat-section.active{display:block;}
+
+    .chat-header{
+      display:flex;align-items:center;gap:.9rem;
+      background:linear-gradient(135deg,rgba(13,27,62,.98),rgba(26,44,85,.9));
+      border:1px solid rgba(201,168,76,.15);border-radius:16px 16px 0 0;
+      padding:1rem 1.25rem;margin-bottom:2px;
+    }
+    .chat-avatar{
+      width:42px;height:42px;border-radius:50%;
+      background:linear-gradient(135deg,var(--gold),var(--gold-light));
+      display:flex;align-items:center;justify-content:center;
+      font-size:1.1rem;flex-shrink:0;
+      box-shadow:0 0 20px rgba(201,168,76,0.3);
+    }
+    .chat-info{}
+    .chat-name{font-family:var(--font-title);font-size:.82rem;color:#fff;letter-spacing:.08em;}
+    .chat-status{font-size:.68rem;color:var(--gold);display:flex;align-items:center;gap:.35rem;}
+    .chat-dot{width:6px;height:6px;border-radius:50%;background:var(--gold);animation:pulse 1.5s infinite;}
+    @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
+
+    /* Progress bar */
+    .chat-progress{
+      background:rgba(13,27,62,.95);border-left:1px solid rgba(201,168,76,.1);
+      border-right:1px solid rgba(201,168,76,.1);
+      padding:.6rem 1.25rem;display:flex;align-items:center;gap:1rem;
+    }
+    .cp-bar{flex:1;height:3px;background:rgba(255,255,255,.07);border-radius:2px;overflow:hidden;}
+    .cp-fill{height:100%;background:linear-gradient(90deg,var(--gold-dark),var(--gold));border-radius:2px;transition:width .5s ease;}
+    .cp-label{font-size:.65rem;color:var(--gray);white-space:nowrap;font-family:var(--font-title);letter-spacing:.08em;}
+
+    /* Messages list */
+    .chat-messages{
+      background:rgba(10,20,38,.96);
+      border-left:1px solid rgba(201,168,76,.1);border-right:1px solid rgba(201,168,76,.1);
+      padding:1.5rem 1.25rem;min-height:300px;
+      display:flex;flex-direction:column;gap:1rem;
+    }
+
+    /* Bubble AI */
+    .msg-ai{display:flex;gap:.75rem;align-items:flex-end;animation:msgIn .3s ease;}
+    .msg-ai-avatar{
+      width:30px;height:30px;border-radius:50%;flex-shrink:0;
+      background:linear-gradient(135deg,var(--gold),var(--gold-light));
+      display:flex;align-items:center;justify-content:center;font-size:.75rem;
+    }
+    .msg-ai-bubble{
+      background:linear-gradient(135deg,rgba(26,44,85,.95),rgba(13,27,62,.9));
+      border:1px solid rgba(201,168,76,.15);border-radius:18px 18px 18px 4px;
+      padding:.85rem 1.1rem;max-width:85%;
+    }
+    .msg-ai-bubble p{font-size:.88rem;color:#dde3ef;line-height:1.6;}
+    .msg-ai-bubble .q-number{font-size:.65rem;color:var(--gold);font-family:var(--font-title);letter-spacing:.12em;margin-bottom:.4rem;}
+    .msg-ai-bubble strong{color:#fff;}
+
+    /* Bubble user */
+    .msg-user{display:flex;justify-content:flex-end;animation:msgIn .3s ease;}
+    .msg-user-bubble{
+      background:linear-gradient(135deg,rgba(201,168,76,.2),rgba(201,168,76,.12));
+      border:1px solid rgba(201,168,76,.3);border-radius:18px 18px 4px 18px;
+      padding:.7rem 1rem;max-width:75%;
+      font-size:.88rem;color:#fff;
+    }
+
+    /* Typing indicator */
+    .msg-typing{display:flex;gap:.75rem;align-items:flex-end;}
+    .typing-bubble{
+      background:linear-gradient(135deg,rgba(26,44,85,.95),rgba(13,27,62,.9));
+      border:1px solid rgba(201,168,76,.12);border-radius:18px 18px 18px 4px;
+      padding:.75rem 1.1rem;
+    }
+    .typing-dots{display:flex;gap:4px;align-items:center;}
+    .typing-dot{width:7px;height:7px;border-radius:50%;background:var(--gold);opacity:.4;}
+    .typing-dot:nth-child(1){animation:dot .9s .0s infinite;}
+    .typing-dot:nth-child(2){animation:dot .9s .15s infinite;}
+    .typing-dot:nth-child(3){animation:dot .9s .30s infinite;}
+    @keyframes dot{0%,80%,100%{opacity:.25;transform:translateY(0);}40%{opacity:1;transform:translateY(-4px);}}
+
+    @keyframes msgIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+
+    /* Options */
+    .chat-options{
+      background:rgba(10,20,38,.94);
+      border:1px solid rgba(201,168,76,.1);border-radius:0 0 16px 16px;
+      padding:1rem 1.25rem;display:flex;flex-direction:column;gap:.55rem;
+    }
+    .opt-btn{
+      display:flex;align-items:center;gap:.85rem;
+      background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);
+      border-radius:10px;padding:.75rem 1rem;cursor:pointer;
+      transition:all .18s;text-align:left;width:100%;
+    }
+    .opt-btn:hover{border-color:rgba(201,168,76,.4);background:rgba(201,168,76,.07);}
+    .opt-btn:active{transform:scale(.99);}
+    .opt-num{
+      width:28px;height:28px;border-radius:50%;flex-shrink:0;
+      background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);
+      display:flex;align-items:center;justify-content:center;
+      font-size:.72rem;font-family:var(--font-title);color:var(--gray);
+      transition:all .18s;
+    }
+    .opt-btn:hover .opt-num{background:var(--gold);color:var(--navy-dark);border-color:var(--gold);}
+    .opt-label{font-size:.83rem;color:var(--gray);line-height:1.4;transition:color .18s;}
+    .opt-btn:hover .opt-label{color:#fff;}
+
+    /* ── BILAN ── */
+    .bilan-section{
+      display:none;max-width:700px;margin:0 auto;padding:30px 16px 80px;
+    }
+    .bilan-section.active{display:block;}
+
+    .bilan-top{
+      background:linear-gradient(135deg,rgba(13,27,62,.98),rgba(26,44,85,.9));
+      border:1px solid rgba(201,168,76,.2);border-radius:20px;
+      padding:2.5rem 2rem;text-align:center;margin-bottom:1.25rem;
+      position:relative;overflow:hidden;
+    }
+    .bilan-top::before{
+      content:'';position:absolute;inset:0;
+      background:radial-gradient(ellipse at 50% 0%,rgba(201,168,76,.07) 0%,transparent 60%);
+    }
+    .bilan-emoji{font-size:2.8rem;margin-bottom:.75rem;}
+    .bilan-nom{font-family:var(--font-title);font-size:1.7rem;color:#fff;margin-bottom:.3rem;}
+    .bilan-sub{font-size:.8rem;color:var(--gold);letter-spacing:.1em;margin-bottom:1.25rem;}
+    .bilan-desc{font-size:.9rem;color:var(--gray);line-height:1.75;max-width:500px;margin:0 auto;}
+
+    /* Barres */
+    .barres-card{
+      background:linear-gradient(135deg,rgba(13,27,62,.95),rgba(26,44,85,.85));
+      border:1px solid rgba(201,168,76,.1);border-radius:16px;
+      padding:1.5rem 1.5rem;margin-bottom:1.25rem;
+    }
+    .barres-title{font-family:var(--font-title);font-size:.72rem;letter-spacing:.15em;color:var(--gold);margin-bottom:1.25rem;}
+    .barre-row{margin-bottom:1rem;}
+    .barre-head{display:flex;justify-content:space-between;margin-bottom:.4rem;}
+    .barre-name{font-size:.78rem;color:#fff;font-family:var(--font-title);letter-spacing:.06em;}
+    .barre-pct{font-size:.72rem;font-weight:700;}
+    .barre-bg{height:8px;background:rgba(255,255,255,.07);border-radius:4px;overflow:hidden;}
+    .barre-fill{height:100%;border-radius:4px;width:0;transition:width 1.4s cubic-bezier(.25,.46,.45,.94);}
+
+    /* Insights grid */
+    .insights-grid{display:grid;grid-template-columns:1fr 1fr;gap:.9rem;margin-bottom:1.25rem;}
+    @media(max-width:500px){.insights-grid{grid-template-columns:1fr;}}
+    .insight-card{
+      background:linear-gradient(135deg,rgba(13,27,62,.95),rgba(26,44,85,.85));
+      border:1px solid rgba(201,168,76,.1);border-radius:12px;padding:1.15rem;
+    }
+    .ic-icon{font-size:1.3rem;margin-bottom:.5rem;}
+    .ic-title{font-size:.68rem;font-family:var(--font-title);letter-spacing:.1em;color:var(--gold);margin-bottom:.35rem;}
+    .ic-text{font-size:.82rem;color:var(--gray);line-height:1.6;}
+
+    /* Phrase choc */
+    .phrase-choc{
+      background:linear-gradient(135deg,rgba(13,27,62,.97),rgba(26,44,85,.9));
+      border:1px solid rgba(201,168,76,.2);border-left:4px solid var(--gold);
+      border-radius:14px;padding:2rem 1.75rem;text-align:center;margin-bottom:1.25rem;
+    }
+    .pc-title{font-family:var(--font-title);font-size:1.3rem;color:#fff;margin-bottom:.75rem;line-height:1.35;}
+    .pc-sub{font-size:.92rem;color:var(--gray);line-height:1.75;max-width:460px;margin:0 auto;}
+    .pc-sub span{color:var(--gold);font-weight:600;}
+
+    /* CTA */
+    .cta-card{
+      background:linear-gradient(135deg,rgba(13,27,62,.98),rgba(26,44,85,.95));
+      border:1px solid rgba(201,168,76,.25);border-radius:20px;
+      padding:2.5rem 2rem;text-align:center;position:relative;overflow:hidden;
+    }
+    .cta-card::after{
+      content:'';position:absolute;inset:0;
+      background:radial-gradient(ellipse at 50% 100%,rgba(201,168,76,.06) 0%,transparent 60%);
+      pointer-events:none;
+    }
+    .cta-eyebrow{font-size:.65rem;font-family:var(--font-title);letter-spacing:.2em;color:var(--gold);margin-bottom:.65rem;}
+    .cta-title{font-family:var(--font-title);font-size:1.35rem;color:#fff;margin-bottom:.65rem;}
+    .cta-desc{font-size:.85rem;color:var(--gray);line-height:1.7;max-width:440px;margin:0 auto 1.5rem;}
+    .cta-feats{display:flex;flex-direction:column;gap:.35rem;margin-bottom:1.75rem;}
+    .cta-feat{font-size:.82rem;color:var(--gray);}
+    .cta-feat b{color:var(--gold);}
+    .btn-cta{
+      display:inline-block;background:linear-gradient(135deg,var(--gold),var(--gold-light));
+      color:var(--navy-dark);font-family:var(--font-title);font-size:.8rem;font-weight:700;
+      letter-spacing:.15em;padding:.95rem 2.2rem;border-radius:50px;border:none;
+      cursor:pointer;transition:all .2s;text-decoration:none;
+    }
+    .btn-cta:hover{opacity:.9;transform:translateY(-2px);}
+    .btn-refaire{
+      display:block;margin:1rem auto 0;background:none;border:none;
+      color:var(--gray);font-size:.75rem;cursor:pointer;text-decoration:underline;
+    }
+    .btn-refaire:hover{color:#fff;}
+  </style>
+</head>
+<body>
+
+<nav class="ag-nav">
+  <a href="index.html" class="ag-nav-logo">ATLAS ACADÉMIE</a>
+  <a href="index.html" class="ag-nav-back">← Retour</a>
+</nav>
+
+<!-- ══ HERO ══ -->
+<section class="ag-hero" id="heroSection">
+  <div class="ag-badge">🧠 Analyse Big Five · Comportement de vente</div>
+  <h1>Ton <span>Profil de Vendeur</span><br/>en 3 minutes</h1>
+  <p>15 questions. Une analyse comportementale complète. Découvre exactement comment tu vends — et ce qui te freine sans que tu t'en rendes compte.</p>
+  <div class="ag-stats">
+    <div class="ag-stat"><strong>15</strong><span>Questions</span></div>
+    <div class="ag-stat"><strong>3 min</strong><span>Durée</span></div>
+    <div class="ag-stat"><strong>Gratuit</strong><span>Sans email</span></div>
+  </div>
+  <button class="btn-start" onclick="startChat()">Commencer l'analyse →</button>
+  <p class="hero-note">Sans inscription · Résultat immédiat · 100% confidentiel</p>
+</section>
+
+<!-- ══ CHAT ══ -->
+<div class="chat-section" id="chatSection">
+
+  <div class="chat-header">
+    <div class="chat-avatar">🧠</div>
+    <div class="chat-info">
+      <div class="chat-name">ATLAS — Coach Comportemental</div>
+      <div class="chat-status"><span class="chat-dot"></span>Analyse en cours</div>
+    </div>
+  </div>
+
+  <div class="chat-progress">
+    <div class="cp-bar"><div class="cp-fill" id="cpFill" style="width:0%"></div></div>
+    <div class="cp-label" id="cpLabel">0 / 15</div>
+  </div>
+
+  <div class="chat-messages" id="chatMessages"></div>
+
+  <div class="chat-options" id="chatOptions"></div>
+
+</div>
+
+<!-- ══ BILAN ══ -->
+<div class="bilan-section" id="bilanSection">
+
+  <div class="bilan-top">
+    <div class="bilan-emoji" id="bilanEmoji"></div>
+    <div class="bilan-nom" id="bilanNom"></div>
+    <div class="bilan-sub" id="bilanSub"></div>
+    <div class="bilan-desc" id="bilanDesc"></div>
+  </div>
+
+  <div class="barres-card">
+    <div class="barres-title">TES 5 DIMENSIONS COMPORTEMENTALES</div>
+    <div id="barresGrid"></div>
+  </div>
+
+  <div class="insights-grid" id="insightsGrid"></div>
+
+  <div class="phrase-choc">
+    <div class="pc-title">Tu t'es reconnu ?</div>
+    <div class="pc-sub">
+      Un simple questionnaire vient de te décrire mieux que la plupart de tes proches.<br/>
+      <span>Imagine ce que tu peux faire quand tu sais lire un prospect aussi précisément.</span>
+    </div>
+  </div>
+
+  <div class="cta-card">
+    <div class="cta-eyebrow">VA PLUS LOIN</div>
+    <div class="cta-title">Formation Lecture Comportementale</div>
+    <div class="cta-desc" id="ctaDesc"></div>
+    <div class="cta-feats">
+      <div class="cta-feat"><b>→</b> Les 4 profils DISC appliqués à la vente</div>
+      <div class="cta-feat"><b>→</b> Lire un prospect en moins de 60 secondes</div>
+      <div class="cta-feat"><b>→</b> Scripts adaptés à chaque profil</div>
+      <div class="cta-feat"><b>→</b> Simulations IA avec feedback immédiat</div>
+    </div>
+    <a href="formation-player.html?id=lecture-comportementale" class="btn-cta">Accéder à la formation →</a>
+    <button class="btn-refaire" onclick="restart()">Refaire l'analyse</button>
+  </div>
+
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════
+   ATLAS ACADÉMIE — ANALYSE COMPORTEMENTALE CHAT
+═══════════════════════════════════════════════════════════ */
+
+var DIMS = {
+  A:{ name:'Agréabilité',    color:'#4A9EFF', desc:'Coopération & empathie' },
+  E:{ name:'Extraversion',   color:'#C9A84C', desc:'Assertivité sociale' },
+  N:{ name:'Neuroticisme',   color:'#FF6B6B', desc:'Réactivité émotionnelle' },
+  C:{ name:'Conscienciosité',color:'#66BB6A', desc:'Discipline & rigueur' },
+  O:{ name:'Ouverture',      color:'#BA68C8', desc:'Curiosité & adaptabilité' },
+};
+
+var QS = [
+  { dim:'A', inv:false, q:"Dans une négociation, tu cherches naturellement un accord qui satisfait les deux parties — même si tu pourrais obtenir plus.",
+    opts:["Jamais — je maximize toujours","Rarement","Parfois","Souvent","Toujours — l'harmonie d'abord"] },
+  { dim:'A', inv:true, q:"Face à une objection forte, tu maintiens ta position sans chercher à rassurer le prospect.",
+    opts:["Toujours — je tiens ma position","Souvent","Parfois","Rarement","Jamais — je cherche à rassurer"] },
+  { dim:'A', inv:false, q:"Tu adaptes ton discours pour ne pas mettre le prospect dans une position inconfortable.",
+    opts:["Jamais","Rarement","Parfois","Souvent","Toujours"] },
+  { dim:'E', inv:false, q:"Dans un call ou une réunion, tu prends naturellement de la place et tu guides la conversation.",
+    opts:["Jamais — je laisse l'autre mener","Rarement","Parfois","Souvent","Toujours — je prends le lead"] },
+  { dim:'E', inv:false, q:"Appeler un inconnu ou entrer quelque part sans rendez-vous ne te pose aucun problème.",
+    opts:["C'est un vrai frein pour moi","Ça me demande un effort","Ça dépend","Assez naturellement","Naturellement, sans hésiter"] },
+  { dim:'E', inv:true, q:"Après une longue journée de calls ou de réunions, tu te sens épuisé et tu as besoin de silence.",
+    opts:["Jamais — les gens me rechargent","Rarement","Parfois","Souvent","Toujours — les gens me vident"] },
+  { dim:'N', inv:false, q:"Un refus brutal ou une mauvaise réaction d'un prospect te perturbe et impacte tes appels suivants.",
+    opts:["Jamais — je rebondis immédiatement","Rarement","Parfois","Souvent","Toujours — ça me reste en tête"] },
+  { dim:'N', inv:false, q:"Sous pression — quota, deadline, gros deal — ton anxiété monte significativement.",
+    opts:["Jamais — la pression me stimule","Rarement","Parfois","Souvent","Toujours — je stresse beaucoup"] },
+  { dim:'N', inv:true, q:"Tu remarques que tu changes de comportement selon ton humeur ou les circonstances du moment.",
+    opts:["Toujours — je suis très variable","Souvent","Parfois","Rarement","Jamais — je suis constant"] },
+  { dim:'C', inv:false, q:"Tu suis un process de vente structuré — tu ne sautes pas d'étapes même si le prospect semble pressé.",
+    opts:["Jamais — j'improvise","Rarement","Parfois","Souvent","Toujours — mon process est non négociable"] },
+  { dim:'C', inv:true, q:"Il t'arrive de partir en rendez-vous sans avoir préparé tes arguments ou relu le dossier.",
+    opts:["Toujours — j'improvise tout","Souvent","Parfois","Rarement","Jamais — je prépare toujours"] },
+  { dim:'C', inv:false, q:"Tu notes tes calls, tu suis rigoureusement ton pipeline et tu respectes tes relances.",
+    opts:["Jamais — pas ma priorité","Rarement","Parfois","Souvent","Toujours — tout est tracké"] },
+  { dim:'O', inv:false, q:"Tu remets régulièrement en question tes méthodes de vente et tu cherches à les améliorer.",
+    opts:["Jamais — ma méthode fonctionne","Rarement","Parfois","Souvent","Toujours — je cherche toujours mieux"] },
+  { dim:'O', inv:false, q:"Tu intègres facilement de nouvelles techniques ou de nouveaux outils dans ta pratique.",
+    opts:["Très difficilement","Difficilement","Ça dépend","Assez facilement","Très facilement"] },
+  { dim:'O', inv:true, q:"Tu préfères t'appuyer sur des techniques éprouvées plutôt qu'expérimenter de nouvelles approches.",
+    opts:["Toujours — je reste sur du solide","Souvent","Parfois","Rarement","Jamais — j'expérimente constamment"] },
+];
+
+var dimIntros = {
+  A:"Première série — on regarde comment tu te positionnes dans la relation avec le prospect.",
+  E:"Maintenant on analyse ton niveau d'énergie sociale et de prise en charge.",
+  N:"On passe à ta stabilité émotionnelle — c'est souvent là que tout se joue.",
+  C:"On regarde ta structure. Ta façon de préparer et d'organiser ton travail.",
+  O:"Dernière série — curiosité et adaptabilité.",
+};
+
+var currentQ = 0;
+var answers  = {};
+var prevDim  = null;
+
+function startChat(){
+  document.getElementById('heroSection').style.display='none';
+  document.getElementById('chatSection').classList.add('active');
+  window.scrollTo(0,0);
+  setTimeout(function(){ showTyping(function(){ showWelcome(); }); }, 300);
+}
+
+/* ── Messages ── */
+function addAI(html, cb){
+  var msgs = document.getElementById('chatMessages');
+  var div  = document.createElement('div');
+  div.className = 'msg-ai';
+  div.innerHTML = '<div class="msg-ai-avatar">🧠</div><div class="msg-ai-bubble">'+html+'</div>';
+  msgs.appendChild(div);
+  scrollDown();
+  if(cb) setTimeout(cb, 400);
+}
+
+function addUser(text){
+  var msgs = document.getElementById('chatMessages');
+  var div  = document.createElement('div');
+  div.className = 'msg-user';
+  div.innerHTML = '<div class="msg-user-bubble">'+text+'</div>';
+  msgs.appendChild(div);
+  scrollDown();
+}
+
+function showTyping(cb){
+  var msgs = document.getElementById('chatMessages');
+  var div  = document.createElement('div');
+  div.className = 'msg-typing';
+  div.id = 'typingIndicator';
+  div.innerHTML = '<div class="msg-ai-avatar">🧠</div><div class="typing-bubble"><div class="typing-dots"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div></div>';
+  msgs.appendChild(div);
+  scrollDown();
+  setTimeout(function(){
+    var t = document.getElementById('typingIndicator');
+    if(t) t.remove();
+    if(cb) cb();
+  }, 1100);
+}
+
+function scrollDown(){
+  var msgs = document.getElementById('chatMessages');
+  msgs.scrollTop = msgs.scrollHeight;
+  var cs = document.getElementById('chatSection');
+  if(cs) window.scrollTo({top: cs.offsetTop - 60, behavior:'smooth'});
+}
+
+/* ── Welcome ── */
+function showWelcome(){
+  addAI('<p>Bonjour 👋<br/>Je suis le coach comportemental d\'Atlas Académie.<br/>Je vais analyser ton profil de vendeur à travers <strong>15 questions</strong>.</p><p style="margin-top:.5rem;font-size:.8rem;color:var(--gold);">Réponds instinctivement — il n\'y a pas de bonne ou mauvaise réponse.</p>',
+    function(){ setTimeout(function(){ showTyping(function(){ showQuestion(0); }); }, 500); }
+  );
+}
+
+/* ── Question ── */
+function showQuestion(idx){
+  var q   = QS[idx];
+  var pct = Math.round((idx / QS.length) * 100);
+  document.getElementById('cpFill').style.width  = pct+'%';
+  document.getElementById('cpLabel').textContent = idx+' / '+QS.length;
+
+  // Intro de dimension
+  if(q.dim !== prevDim && dimIntros[q.dim]){
+    prevDim = q.dim;
+    addAI('<p style="font-size:.78rem;color:var(--gold);">— '+dimIntros[q.dim]+' —</p>', function(){
+      setTimeout(function(){ showTyping(function(){ renderQuestion(idx); }); }, 300);
+    });
+    return;
+  }
+  renderQuestion(idx);
+}
+
+function renderQuestion(idx){
+  var q = QS[idx];
+  addAI('<div class="q-number">QUESTION '+(idx+1)+' / '+QS.length+'</div><p><strong>'+q.q+'</strong></p>',
+    function(){ renderOptions(idx); }
+  );
+}
+
+function renderOptions(idx){
+  var q   = QS[idx];
+  var box = document.getElementById('chatOptions');
+  box.innerHTML = '';
+  q.opts.forEach(function(opt, i){
+    var score = q.inv ? (5-i) : (i+1);
+    var btn   = document.createElement('button');
+    btn.className = 'opt-btn';
+    btn.innerHTML = '<div class="opt-num">'+(i+1)+'</div><div class="opt-label">'+opt+'</div>';
+    btn.onclick = function(){ selectAnswer(idx, score, i+1, opt); };
+    box.appendChild(btn);
+  });
+  scrollDown();
+}
+
+function selectAnswer(idx, score, num, label){
+  // Désactiver les options
+  document.getElementById('chatOptions').innerHTML = '';
+  answers[idx] = score;
+
+  // Message user
+  addUser(num+' — '+label);
+
+  currentQ = idx + 1;
+
+  if(currentQ >= QS.length){
+    setTimeout(function(){
+      showTyping(function(){
+        addAI('<p>Parfait. J\'ai toutes les données nécessaires.<br/><strong>Je génère ton profil complet...</strong></p>',
+          function(){ setTimeout(showBilan, 1200); }
+        );
+      });
+    }, 400);
+  } else {
+    setTimeout(function(){
+      showTyping(function(){ showQuestion(currentQ); });
+    }, 400);
+  }
+}
+
+/* ── Calcul ── */
+function calcScores(){
+  var s={A:0,E:0,N:0,C:0,O:0}, n={A:0,E:0,N:0,C:0,O:0};
+  QS.forEach(function(q,i){
+    if(answers[i]!==undefined){ s[q.dim]+=answers[i]; n[q.dim]++; }
+  });
+  var r={};
+  Object.keys(s).forEach(function(d){ r[d]=n[d]>0?Math.round((s[d]/(n[d]*5))*100):50; });
+  return r;
+}
+
+function getProfile(sc){
+  var A=sc.A,E=sc.E,N=sc.N,C=sc.C,O=sc.O;
+  if(E>=65&&A<55) return {
+    emoji:'🔴',nom:'Le Closer Dominant',sub:'Extraversion élevée · Compétitif',
+    desc:'Tu prends naturellement le lead dans les conversations. Tu avances avec assurance, tu assumes tes positions et tu guides le prospect vers la décision sans te poser trop de questions. Ton avantage : tu closes vite. Ton risque : brusquer les profils sensibles.',
+    force:'Présence, leadership naturel, conviction',aveugle:'Tu passes à côté des acheteurs discrets',
+    vendre:'Va droit au but. Le prospect dominant te respectera si tu n\'as pas peur de lui.',
+    closer:'Le silence stratégique — difficile pour toi mais dévastateur face à un miroir.',
+    prospect:'Face à un Dominant : résultats, chiffres, rapidité. Pas de détails inutiles.',
+    cta:'Tu es dominant — imagine quand tu sais adapter ton registre à chaque profil en face de toi.'
+  };
+  if(A>=65&&N<55) return {
+    emoji:'🟢',nom:'L\'Empathique Naturel',sub:'Agréabilité élevée · Très stable',
+    desc:'Tu établis une connexion forte et rapide avec tes prospects. Tu les écoutes vraiment, tu t\'adaptes à leur rythme et tu crées un climat de confiance rare. Ton risque : trop d\'empathie peut retarder le closing. Tu dois apprendre à fermer.',
+    force:'Écoute active, création de confiance, lecture émotionnelle',aveugle:'Tu évites les confrontations nécessaires au closing',
+    vendre:'Utilise ta connexion pour identifier la vraie douleur — puis close avec bienveillance mais fermeté.',
+    closer:'Le closing inversé — tu inverses la pression naturellement, sans forcer.',
+    prospect:'Face à un Empathique : parle impact humain, relation long terme, suivi personnalisé.',
+    cta:'Tu connectes mieux que la plupart — imagine quand tu sais aussi décoder leur frein en 60 secondes.'
+  };
+  if(C>=80) return {
+    emoji:'🔵',nom:'L\'Analyste Structuré',sub:'Conscienciosité très élevée · Rigoureux',
+    desc:'Tu es méthodique, préparé et fiable. Tes prospects savent qu\'ils peuvent compter sur toi. Tu maîtrises ton pipeline mieux que quiconque. Ton risque : sur-préparer au détriment de l\'adaptation émotionnelle en temps réel.',
+    force:'Préparation, rigueur, fiabilité absolue',aveugle:'Tu peux perdre le fil émotionnel du prospect',
+    vendre:'Ton arme : les données. Montre les chiffres, les résultats, les preuves. Le prospect logique achète ta rigueur.',
+    closer:'Closing par résumé de valeur — tu excelles à synthétiser et convaincre par la logique.',
+    prospect:'Face à un Analytique : sois précis, donne-lui le temps de réfléchir, montre les chiffres.',
+    cta:'Tu es structuré et fiable — imagine quand tu sais aussi lire les émotions cachées de chaque prospect.'
+  };
+  if(N>=65) return {
+    emoji:'🟠',nom:'Le Réactif Émotionnel',sub:'Neuroticisme élevé · Très perceptif',
+    desc:'Tu ressens tout intensément. Ce trait te rend hyper-attentif aux signaux émotionnels de tes prospects — tu perçois ce que les autres ratent. Ton risque : un refus peut t\'affecter durablement et impacter ta performance.',
+    force:'Détection émotionnelle fine, profondeur de connexion',aveugle:'Ton état interne impacte directement ta performance',
+    vendre:'Crée une routine pré-call pour te calibrer. Stabilisé, ton empathie devient ton super-pouvoir.',
+    closer:'Le closing sur la douleur future — tu ressens les douleurs du prospect et tu les exprimes mieux que lui.',
+    prospect:'Face à un Réactif : sois rassurant, garantis, réduis le risque perçu à chaque étape.',
+    cta:'Tu perçois les émotions — imagine quand tu sais systématiser cette lecture pour ne plus jamais rater un signal d\'achat.'
+  };
+  if(O>=65) return {
+    emoji:'🟣',nom:'Le Stratège Curieux',sub:'Ouverture très élevée · Adaptabilité',
+    desc:'Tu questionnes tout, tu t\'adaptes vite et tu es toujours en recherche de meilleures méthodes. Tu es le vendeur qui teste, qui itère et qui progresse constamment. Ton risque : trop analyser et pas assez exécuter.',
+    force:'Adaptabilité, apprentissage rapide, pensée critique',aveugle:'Paralysie par l\'analyse — tu procrastines parfois le closing',
+    vendre:'Utilise ton cerveau analytique pour préparer des scripts hyper-personnalisés par profil prospect.',
+    closer:'La technique des 3 Oui — tu construis des séquences logiques naturellement.',
+    prospect:'Face à un Ouvert : parle innovation, tendances, nouveautés. Il veut être en avance.',
+    cta:'Tu t\'adaptes vite — imagine quand tu as un framework précis pour décoder chaque profil en moins d\'une minute.'
+  };
+  return {
+    emoji:'⚖️',nom:'Le Vendeur Équilibré',sub:'Profil mixte · Grande flexibilité',
+    desc:'Tu n\'as pas de dimension écrasante — c\'est une force rare. Tu t\'adaptes naturellement à différents profils de prospects et tu peux jouer sur tous les registres : logique, émotion, relation, pression. Ta clé : l\'intentionnalité.',
+    force:'Adaptabilité, polyvalence, lecture des situations',aveugle:'Manque de signature — les prospects te mémorisent moins',
+    vendre:'Crée une identité de vendeur forte. Même équilibré, tu dois avoir une marque perçue.',
+    closer:'L\'alternative et le résumé de valeur — techniques universelles qui correspondent à ta nature flexible.',
+    prospect:'Tu peux t\'adapter à tous les profils — détecte la dominante de l\'autre rapidement.',
+    cta:'Tu es flexible — imagine quand tu sais instantanément quel registre activer selon le profil en face.'
+  };
+}
+
+/* ── Bilan ── */
+function showBilan(){
+  document.getElementById('chatSection').classList.remove('active');
+  var bs = document.getElementById('bilanSection');
+  bs.classList.add('active');
+  window.scrollTo({top: bs.offsetTop - 70, behavior:'smooth'});
+
+  var sc  = calcScores();
+  var prf = getProfile(sc);
+
+  document.getElementById('bilanEmoji').textContent = prf.emoji;
+  document.getElementById('bilanNom').textContent   = prf.nom;
+  document.getElementById('bilanSub').textContent   = prf.sub;
+  document.getElementById('bilanDesc').textContent  = prf.desc;
+  document.getElementById('ctaDesc').textContent    = prf.cta;
+
+  // Barres
+  var barGrid = document.getElementById('barresGrid');
+  barGrid.innerHTML = '';
+  ['A','E','N','C','O'].forEach(function(d){
+    var pct = sc[d], dim = DIMS[d];
+    var label = pct>=70?'Élevé':pct>=40?'Modéré':'Faible';
+    var col   = pct>=70?dim.color:(pct>=40?'rgba(255,255,255,0.4)':'rgba(255,255,255,0.2)');
+    barGrid.innerHTML +=
+      '<div class="barre-row">'+
+      '<div class="barre-head">'+
+      '<span class="barre-name">'+dim.name+' <span style="font-weight:400;font-size:.65rem;color:var(--gray);">— '+dim.desc+'</span></span>'+
+      '<span class="barre-pct" style="color:'+dim.color+'">'+label+' · '+pct+'%</span>'+
+      '</div>'+
+      '<div class="barre-bg"><div class="barre-fill" data-pct="'+pct+'" style="background:'+dim.color+'"></div></div>'+
+      '</div>';
+  });
+
+  // Insights
+  var ins = document.getElementById('insightsGrid');
+  ins.innerHTML = [
+    {icon:'💪',title:'TA FORCE EN VENTE',    text:prf.force},
+    {icon:'⚠️',title:'TON ANGLE MORT',       text:prf.aveugle},
+    {icon:'🎯',title:'COMMENT TU VENDS',     text:prf.vendre},
+    {icon:'🔑',title:'TON CLOSING NATUREL',  text:prf.closer},
+    {icon:'🧩',title:'FACE À UN PROSPECT',   text:prf.prospect},
+    {icon:'📈',title:'TON PROCHAIN PAS',     text:'Identifie la dominante de ton prochain prospect dès les 3 premières phrases. Adapte ton script en conséquence.'},
+  ].map(function(d){
+    return '<div class="insight-card"><div class="ic-icon">'+d.icon+'</div><div class="ic-title">'+d.title+'</div><div class="ic-text">'+d.text+'</div></div>';
+  }).join('');
+
+  // Animer les barres
+  setTimeout(function(){
+    document.querySelectorAll('.barre-fill').forEach(function(el){
+      el.style.width = el.dataset.pct+'%';
+    });
+  }, 300);
+
+  // Sauvegarder le bilan dans localStorage (visible depuis dashboard)
+  try {
+    var today = new Date();
+    var dateStr = today.toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'});
+    localStorage.setItem('atlas_bilan', JSON.stringify({
+      profile: prf.nom,
+      emoji: prf.emoji,
+      sub: prf.sub,
+      scores: sc,
+      date: dateStr
+    }));
+  } catch(e) {}
+}
+
+function restart(){
+  currentQ=0; answers={}; prevDim=null;
+  document.getElementById('chatMessages').innerHTML='';
+  document.getElementById('chatOptions').innerHTML='';
+  document.getElementById('cpFill').style.width='0%';
+  document.getElementById('cpLabel').textContent='0 / 15';
+  document.getElementById('bilanSection').classList.remove('active');
+  document.getElementById('chatSection').classList.add('active');
+  window.scrollTo({top:document.getElementById('chatSection').offsetTop-60,behavior:'smooth'});
+  setTimeout(function(){ showTyping(function(){ showWelcome(); }); }, 300);
+}
+</script>
+</body>
+</html>

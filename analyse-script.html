@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Analyse de Script — Atlas Académie</title>
+  <meta name="description" content="Colle ton script de vente ou tes notes d'appel. L'IA Atlas analyse chaque phase et te donne un feedback structuré pour closer mieux."/>
+  <link rel="icon" type="image/png" href="assets/img/logo.png"/>
+  <link rel="stylesheet" href="assets/css/style.css"/>
+  <style>
+    *{box-sizing:border-box;}
+    body{background:var(--navy-dark);min-height:100vh;}
+
+    /* ── HERO ── */
+    .as-hero{
+      padding:110px 20px 50px;text-align:center;
+      background:linear-gradient(160deg,#0A1628 0%,#0D1B3E 55%,#1A2C55 100%);
+      position:relative;overflow:hidden;
+    }
+    .as-hero::before{
+      content:'';position:absolute;inset:0;
+      background:radial-gradient(ellipse at 70% 30%,rgba(201,168,76,.09) 0%,transparent 60%);
+      pointer-events:none;
+    }
+    .as-badge{
+      display:inline-flex;align-items:center;gap:.5rem;
+      background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.3);
+      color:var(--gold);font-family:var(--font-title);font-size:.62rem;letter-spacing:.18em;
+      padding:.4rem 1rem;border-radius:50px;margin-bottom:1.25rem;
+    }
+    .as-hero h1{font-family:var(--font-title);font-size:clamp(1.6rem,4vw,2.4rem);color:#fff;margin-bottom:.75rem;line-height:1.25;}
+    .as-hero h1 span{color:var(--gold);}
+    .as-hero p{font-size:.95rem;color:var(--gray);max-width:520px;margin:0 auto 2rem;line-height:1.75;}
+    .as-stats{display:flex;justify-content:center;gap:2.5rem;flex-wrap:wrap;margin-bottom:.5rem;}
+    .as-stat strong{display:block;font-size:1.3rem;color:var(--gold);font-family:var(--font-title);}
+    .as-stat span{font-size:.75rem;color:var(--gray);}
+
+    /* ── PAGE WRAPPER ── */
+    .as-page{max-width:860px;margin:0 auto;padding:40px 20px 100px;}
+
+    /* ── CARDS ── */
+    .as-card{
+      background:linear-gradient(135deg,rgba(13,27,62,.97),rgba(26,44,85,.9));
+      border:1px solid rgba(201,168,76,.15);border-radius:18px;
+      padding:1.75rem 2rem;margin-bottom:1.25rem;
+    }
+    .as-card-title{
+      font-family:var(--font-title);font-size:.72rem;letter-spacing:.15em;
+      color:var(--gold);margin-bottom:1.1rem;
+    }
+
+    /* ── TEXTAREA ── */
+    .script-area{
+      width:100%;min-height:220px;
+      background:rgba(10,22,40,.8);border:1px solid rgba(201,168,76,.2);
+      border-radius:12px;padding:1.1rem 1.25rem;
+      color:#dde3ef;font-size:.88rem;line-height:1.75;
+      font-family:var(--font-body);resize:vertical;
+      transition:border-color .2s;
+    }
+    .script-area:focus{outline:none;border-color:rgba(201,168,76,.5);}
+    .script-area::placeholder{color:rgba(136,153,170,.5);}
+
+    .area-meta{display:flex;justify-content:space-between;align-items:center;margin-top:.6rem;}
+    .char-count{font-size:.7rem;color:var(--gray);}
+    .char-count span{color:var(--gold);}
+
+    /* ── TYPE SELECTOR ── */
+    .type-btns{display:flex;gap:.6rem;flex-wrap:wrap;margin-bottom:1.1rem;}
+    .type-btn{
+      padding:.45rem 1rem;border-radius:8px;font-size:.75rem;font-family:var(--font-title);
+      letter-spacing:.08em;cursor:pointer;border:1px solid rgba(201,168,76,.2);
+      background:rgba(255,255,255,.03);color:var(--gray);transition:all .18s;
+    }
+    .type-btn:hover,.type-btn.active{
+      background:rgba(201,168,76,.12);border-color:rgba(201,168,76,.5);color:var(--gold);
+    }
+
+    /* ── ANALYSE BUTTON ── */
+    .btn-analyse{
+      width:100%;background:linear-gradient(135deg,var(--gold),var(--gold-light));
+      color:var(--navy-dark);font-family:var(--font-title);font-size:.85rem;font-weight:700;
+      letter-spacing:.15em;padding:1.1rem 2rem;border-radius:50px;border:none;
+      cursor:pointer;transition:all .2s;box-shadow:0 4px 24px rgba(201,168,76,.35);
+      margin-top:1rem;
+    }
+    .btn-analyse:hover{opacity:.9;transform:translateY(-2px);box-shadow:0 8px 32px rgba(201,168,76,.5);}
+    .btn-analyse:disabled{opacity:.4;cursor:not-allowed;transform:none;}
+
+    /* ── LOADING ── */
+    .analyse-loading{
+      display:none;text-align:center;padding:3rem 1rem;
+    }
+    .analyse-loading.active{display:block;}
+    .loading-ring{
+      width:56px;height:56px;border:3px solid rgba(201,168,76,.15);
+      border-top-color:var(--gold);border-radius:50%;
+      animation:spin 1s linear infinite;margin:0 auto 1.25rem;
+    }
+    @keyframes spin{to{transform:rotate(360deg);}}
+    .loading-text{font-family:var(--font-title);font-size:.8rem;letter-spacing:.12em;color:var(--gold);}
+    .loading-sub{font-size:.78rem;color:var(--gray);margin-top:.5rem;}
+    .loading-steps{display:flex;flex-direction:column;gap:.5rem;margin-top:1.5rem;max-width:320px;margin-left:auto;margin-right:auto;}
+    .loading-step{
+      display:flex;align-items:center;gap:.75rem;
+      font-size:.78rem;color:rgba(136,153,170,.5);
+      transition:color .3s;
+    }
+    .loading-step.done{color:var(--gold);}
+    .loading-step-dot{width:6px;height:6px;border-radius:50%;background:currentColor;flex-shrink:0;}
+
+    /* ── RÉSULTATS ── */
+    .results-section{display:none;}
+    .results-section.active{display:block;}
+
+    /* Score global */
+    .score-global{
+      background:linear-gradient(135deg,rgba(13,27,62,.98),rgba(26,44,85,.95));
+      border:1px solid rgba(201,168,76,.25);border-radius:20px;
+      padding:2.5rem 2rem;text-align:center;margin-bottom:1.25rem;
+      position:relative;overflow:hidden;
+    }
+    .score-global::before{
+      content:'';position:absolute;inset:0;
+      background:radial-gradient(ellipse at 50% 0%,rgba(201,168,76,.08) 0%,transparent 60%);
+    }
+    .sg-label{font-size:.7rem;font-family:var(--font-title);letter-spacing:.2em;color:var(--gold);margin-bottom:.75rem;}
+    .sg-ring{position:relative;width:130px;height:130px;margin:0 auto 1.25rem;}
+    .sg-ring svg{transform:rotate(-90deg);}
+    .sg-ring-bg{fill:none;stroke:rgba(255,255,255,.07);stroke-width:10;}
+    .sg-ring-fill{fill:none;stroke-width:10;stroke-linecap:round;transition:stroke-dashoffset 1.5s cubic-bezier(.25,.46,.45,.94);}
+    .sg-number{
+      position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+      font-family:var(--font-title);font-size:2rem;color:#fff;font-weight:900;
+    }
+    .sg-number span{font-size:.75rem;color:var(--gray);font-weight:400;}
+    .sg-profil-badge{
+      display:inline-block;font-family:var(--font-title);font-size:.7rem;letter-spacing:.15em;
+      padding:.4rem 1.25rem;border-radius:50px;margin-bottom:.75rem;
+    }
+    .sg-title{font-family:var(--font-title);font-size:1.3rem;color:#fff;margin-bottom:.5rem;}
+    .sg-desc{font-size:.87rem;color:var(--gray);line-height:1.7;max-width:480px;margin:0 auto;}
+
+    /* Barres des 5 dimensions */
+    .dims-card{
+      background:linear-gradient(135deg,rgba(13,27,62,.95),rgba(26,44,85,.85));
+      border:1px solid rgba(201,168,76,.1);border-radius:16px;
+      padding:1.5rem;margin-bottom:1.25rem;
+    }
+    .dims-title{font-family:var(--font-title);font-size:.7rem;letter-spacing:.15em;color:var(--gold);margin-bottom:1.25rem;}
+    .dim-row{margin-bottom:1.1rem;}
+    .dim-row:last-child{margin-bottom:0;}
+    .dim-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:.5rem;}
+    .dim-name{font-size:.8rem;font-weight:700;color:#fff;}
+    .dim-sub{font-size:.65rem;color:var(--gray);margin-left:.4rem;}
+    .dim-score-tag{font-size:.72rem;font-weight:700;padding:2px 8px;border-radius:4px;}
+    .dim-bg{height:7px;background:rgba(255,255,255,.07);border-radius:4px;overflow:hidden;}
+    .dim-fill{height:100%;border-radius:4px;width:0;transition:width 1.3s cubic-bezier(.25,.46,.45,.94);}
+    .dim-feedback{font-size:.78rem;color:var(--gray);margin-top:.4rem;line-height:1.5;}
+
+    /* Insights */
+    .insights-grid{display:grid;grid-template-columns:1fr 1fr;gap:.9rem;margin-bottom:1.25rem;}
+    @media(max-width:500px){.insights-grid{grid-template-columns:1fr;}}
+    .ins-card{
+      background:linear-gradient(135deg,rgba(13,27,62,.95),rgba(26,44,85,.85));
+      border:1px solid rgba(201,168,76,.1);border-radius:12px;padding:1.15rem;
+    }
+    .ins-icon{font-size:1.25rem;margin-bottom:.5rem;}
+    .ins-title{font-size:.65rem;font-family:var(--font-title);letter-spacing:.12em;color:var(--gold);margin-bottom:.4rem;}
+    .ins-text{font-size:.82rem;color:var(--gray);line-height:1.6;}
+
+    /* Points clés détectés */
+    .detected-card{
+      background:linear-gradient(135deg,rgba(13,27,62,.95),rgba(26,44,85,.85));
+      border:1px solid rgba(201,168,76,.1);border-radius:16px;
+      padding:1.5rem;margin-bottom:1.25rem;
+    }
+    .detected-title{font-family:var(--font-title);font-size:.7rem;letter-spacing:.15em;color:var(--gold);margin-bottom:1rem;}
+    .detected-list{display:flex;flex-direction:column;gap:.55rem;}
+    .det-item{
+      display:flex;align-items:flex-start;gap:.85rem;
+      padding:.75rem 1rem;border-radius:10px;
+    }
+    .det-item.ok{background:rgba(102,187,106,.07);border:1px solid rgba(102,187,106,.15);}
+    .det-item.warn{background:rgba(255,183,77,.06);border:1px solid rgba(255,183,77,.15);}
+    .det-item.miss{background:rgba(239,83,80,.06);border:1px solid rgba(239,83,80,.12);}
+    .det-icon{font-size:1rem;flex-shrink:0;margin-top:.05rem;}
+    .det-text{font-size:.82rem;color:#dde3ef;line-height:1.5;}
+    .det-text strong{color:#fff;}
+
+    /* CTA refaire */
+    .refaire-bar{
+      text-align:center;padding:1.5rem;
+      background:linear-gradient(135deg,rgba(13,27,62,.97),rgba(26,44,85,.9));
+      border:1px solid rgba(201,168,76,.15);border-radius:16px;
+    }
+    .refaire-bar p{font-size:.85rem;color:var(--gray);margin-bottom:1rem;}
+    .btn-refaire-2{
+      background:linear-gradient(135deg,var(--gold),var(--gold-light));
+      color:var(--navy-dark);font-family:var(--font-title);font-size:.78rem;font-weight:700;
+      letter-spacing:.12em;padding:.85rem 2rem;border-radius:50px;border:none;
+      cursor:pointer;transition:all .2s;margin-right:.75rem;
+    }
+    .btn-refaire-2:hover{opacity:.9;transform:translateY(-2px);}
+    .btn-coaches{
+      background:none;border:1px solid rgba(201,168,76,.35);color:var(--gold);
+      font-family:var(--font-title);font-size:.78rem;letter-spacing:.1em;
+      padding:.85rem 1.75rem;border-radius:50px;cursor:pointer;transition:all .2s;
+      text-decoration:none;display:inline-block;
+    }
+    .btn-coaches:hover{background:rgba(201,168,76,.1);}
+  </style>
+</head>
+<body>
+
+<!-- ═══ NAVBAR ═══ -->
+<nav class="navbar">
+  <a href="index.html" class="nav-logo">
+    <img src="assets/img/logo.png" alt="Atlas Académie"/>
+    <div class="nav-logo-text">Atlas<span>Académie</span></div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html">Accueil</a></li>
+    <li><a href="decode-close.html">Decode & Close™</a></li>
+    <li><a href="analyse-influence.html">Analyse & Influence</a></li>
+    <li><a href="10-etapes.html">10 Étapes</a></li>
+    <li><a href="coaches.html">Coachs IA</a></li>
+    <li><a href="a-propos.html">À Propos</a></li>
+    <li><a href="mon-profil.html" style="color:var(--gold);">🧠 Mon Profil</a></li>
+    <li><a href="dashboard.html">📊 Dashboard</a></li>
+  </ul>
+  <span id="navAuthBtn">
+    <a href="auth.html" class="nav-cta" id="navLoginBtn">Connexion</a>
+  </span>
+  <button class="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
+<div class="mobile-menu">
+  <a href="index.html">🏠 Accueil</a>
+  <a href="decode-close.html">🎯 Decode & Close™</a>
+  <a href="analyse-influence.html">🧠 Analyse & Influence</a>
+  <a href="10-etapes.html">⚡ 10 Étapes de la Vente</a>
+  <a href="coaches.html">🤖 Coachs IA</a>
+  <a href="a-propos.html">🏛️ À Propos</a>
+  <a href="mon-profil.html" style="color:var(--gold);">🧠 Mon Profil</a>
+  <a href="auth.html" class="nav-cta" id="mobileLoginBtn">Connexion →</a>
+</div>
+<script>(function(){try{var u=JSON.parse(localStorage.getItem('atlas_user')||'null');if(u&&u.id){var b=document.getElementById('navLoginBtn');if(b){b.textContent='📊 Dashboard';b.href='dashboard.html';}}}catch(e){}})();</script>
+
+<!-- ═══ HERO ═══ -->
+<section class="as-hero">
+  <div class="as-badge">🔍 Analyse IA · Script & Appels</div>
+  <h1>Analyse ton <span>Script de Vente</span><br/>en 30 secondes</h1>
+  <p>Colle tes notes d'appel, ton script ou tes arguments. L'IA Atlas détecte tes forces, tes manques et te donne un feedback structuré phase par phase.</p>
+  <div class="as-stats">
+    <div class="as-stat"><strong>5</strong><span>Dimensions analysées</span></div>
+    <div class="as-stat"><strong>100%</strong><span>Frontend — Instantané</span></div>
+    <div class="as-stat"><strong>Gratuit</strong><span>Sans inscription</span></div>
+  </div>
+</section>
+
+<!-- ═══ PAGE ═══ -->
+<div class="as-page">
+
+  <!-- INPUT -->
+  <div class="as-card" id="inputSection">
+    <div class="as-card-title">TYPE DE CONTENU À ANALYSER</div>
+    <div class="type-btns">
+      <button class="type-btn active" data-type="script" onclick="setType(this)">📝 Script écrit</button>
+      <button class="type-btn" data-type="notes" onclick="setType(this)">📞 Notes d'appel</button>
+      <button class="type-btn" data-type="objections" onclick="setType(this)">🛡️ Gestion objections</button>
+      <button class="type-btn" data-type="pitch" onclick="setType(this)">🎯 Pitch produit</button>
+    </div>
+
+    <div class="as-card-title">COLLE TON CONTENU ICI</div>
+    <textarea
+      class="script-area"
+      id="scriptInput"
+      placeholder="Exemple :&#10;&#10;« Bonjour [Prénom], c'est Thomas d'Atlas Académie. Je vous appelle car on accompagne des closers comme vous à doubler leur taux de closing en 30 jours. Vous avez 2 minutes ?&#10;&#10;— Parfait. Aujourd'hui, qu'est-ce qui vous pose le plus de problème dans vos ventes ? Les objections prix ? Le manque de structure ?&#10;&#10;[Écoute]&#10;&#10;— D'accord, donc si je comprends bien... »"
+      oninput="updateCount()"
+    ></textarea>
+    <div class="area-meta">
+      <span class="char-count">Mots : <span id="wordCount">0</span> · Caractères : <span id="charCount">0</span></span>
+      <span style="font-size:.7rem;color:var(--gray);">Min. 50 mots pour une analyse précise</span>
+    </div>
+
+    <button class="btn-analyse" onclick="lancerAnalyse()">Analyser mon script →</button>
+  </div>
+
+  <!-- LOADING -->
+  <div class="as-card analyse-loading" id="loadingSection">
+    <div class="loading-ring"></div>
+    <div class="loading-text">ANALYSE EN COURS...</div>
+    <div class="loading-sub">L'IA passe ton contenu au crible</div>
+    <div class="loading-steps">
+      <div class="loading-step" id="ls1"><div class="loading-step-dot"></div>Détection de la structure</div>
+      <div class="loading-step" id="ls2"><div class="loading-step-dot"></div>Analyse de l'ouverture</div>
+      <div class="loading-step" id="ls3"><div class="loading-step-dot"></div>Scoring des objections</div>
+      <div class="loading-step" id="ls4"><div class="loading-step-dot"></div>Évaluation du closing</div>
+      <div class="loading-step" id="ls5"><div class="loading-step-dot"></div>Génération du rapport</div>
+    </div>
+  </div>
+
+  <!-- RÉSULTATS -->
+  <div class="results-section" id="resultsSection">
+
+    <!-- Score global -->
+    <div class="score-global">
+      <div class="sg-label">TON CLOSING SCORE</div>
+      <div class="sg-ring">
+        <svg width="130" height="130" viewBox="0 0 130 130">
+          <circle class="sg-ring-bg" cx="65" cy="65" r="55"/>
+          <circle class="sg-ring-fill" id="ringFill" cx="65" cy="65" r="55"
+            stroke-dasharray="345.4"
+            stroke-dashoffset="345.4"/>
+        </svg>
+        <div class="sg-number" id="scoreNumber">0<span>/100</span></div>
+      </div>
+      <div class="sg-profil-badge" id="scoreBadge"></div>
+      <div class="sg-title" id="scoreTitle"></div>
+      <div class="sg-desc" id="scoreDesc"></div>
+    </div>
+
+    <!-- 5 Dimensions -->
+    <div class="dims-card">
+      <div class="dims-title">ANALYSE PAR PHASE DE VENTE</div>
+      <div id="dimsGrid"></div>
+    </div>
+
+    <!-- Points détectés -->
+    <div class="detected-card">
+      <div class="detected-title">POINTS CLÉS DÉTECTÉS DANS TON SCRIPT</div>
+      <div class="detected-list" id="detectedList"></div>
+    </div>
+
+    <!-- 4 insights -->
+    <div class="insights-grid" id="insightsGrid"></div>
+
+    <!-- Refaire -->
+    <div class="refaire-bar">
+      <p>Améliore ton script sur les points faibles, puis relance l'analyse pour voir ta progression.</p>
+      <button class="btn-refaire-2" onclick="refaire()">↩ Analyser un autre script</button>
+      <a href="coaches.html" class="btn-coaches">🤖 Entraîner avec un coach IA →</a>
+    </div>
+
+  </div>
+</div><!-- /as-page -->
+
+<script>
+/* ═══════════════════════════════════
+   ATLAS ACADÉMIE — Analyse de Script
+   Engine frontend — pattern matching
+═══════════════════════════════════ */
+
+var currentType = 'script';
+
+function setType(btn){
+  document.querySelectorAll('.type-btn').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+  currentType = btn.dataset.type;
+}
+
+function updateCount(){
+  var txt = document.getElementById('scriptInput').value;
+  var words = txt.trim() ? txt.trim().split(/\s+/).length : 0;
+  document.getElementById('wordCount').textContent = words;
+  document.getElementById('charCount').textContent = txt.length;
+}
+
+/* ─── ANALYSE ENGINE ─── */
+function analyseScript(txt){
+  var t = txt.toLowerCase();
+  var words = txt.trim().split(/\s+/).length;
+
+  /* ── 1. OUVERTURE (0-100) ── */
+  var ouv = 50;
+  // Personnalisation
+  if(/\bprénom\b|\bvotre nom\b|\bje vous appelle\b|\bje t'appelle\b|\bc'est \w+\b/.test(t)) ouv += 12;
+  // Raison d'appel claire
+  if(/j'appelle car|je vous contacte|je vous contact|raison de|objet de|je reviens/.test(t)) ouv += 10;
+  // Permission ou accroche
+  if(/avez.{0,15}minutes?|as.{0,10}deux.{0,10}min|est.{0,10}bon moment|disponible/.test(t)) ouv += 10;
+  // Empathy opener
+  if(/félicitations|vu que|j'ai vu|j'ai remarqué|on m'a parlé de/.test(t)) ouv += 8;
+  // Trop direct / agressif
+  if(/j'ai une offre|j'ai un produit|je vends|est-ce que vous voulez acheter/.test(t)) ouv -= 15;
+  ouv = Math.min(100, Math.max(10, ouv));
+
+  /* ── 2. DÉCOUVERTE (0-100) ── */
+  var dec = 40;
+  var questions = (txt.match(/\?/g)||[]).length;
+  dec += Math.min(30, questions * 6);
+  // Questions ouvertes
+  if(/comment.{0,40}\?|qu'est.{0,30}\?|quoi.{0,30}\?|pourquoi.{0,30}\?|qu'est.ce.{0,30}\?/.test(t)) dec += 12;
+  if(/quel est votre|quelle est votre|qu'est-ce qui|qu'est ce qui/.test(t)) dec += 8;
+  // Reformulation / écoute
+  if(/donc si je comprends|si je résume|ce que j'entends|autrement dit|en d'autres termes/.test(t)) dec += 12;
+  if(/\[écoute\]|\[pause\]|\[silence\]/.test(t)) dec += 8;
+  // Découverte de la douleur
+  if(/problème|douleur|difficulté|frein|blocage|challenge|objectif|résultat|priorité/.test(t)) dec += 10;
+  dec = Math.min(100, Math.max(10, dec));
+
+  /* ── 3. PITCH / VALEUR (0-100) ── */
+  var pitch = 40;
+  // Bénéfices vs features
+  if(/vous permet|te permet|ça vous|ça te|vous allez|tu vas|résultat|gain|économie|temps|argent/.test(t)) pitch += 15;
+  if(/grâce à|avec notre|en utilisant|notre méthode|notre programme/.test(t)) pitch += 8;
+  // Preuve sociale
+  if(/client|utilisateur|témoignage|résultat obtenu|cas concret|exemple|comme|d'autres/.test(t)) pitch += 10;
+  // Chiffres et données
+  if(/\d+\s*%|\d+\s*fois|\d+\s*euros?|\d+\s*jours?|\d+\s*semaines?|\d+\s*mois/.test(t)) pitch += 12;
+  // Différenciation
+  if(/contrairement|à la différence|unique|seul|exclusif|personne d'autre/.test(t)) pitch += 8;
+  // Trop générique
+  if(/meilleur du marché|numéro 1|révolutionnaire|incroyable/.test(t)) pitch -= 8;
+  pitch = Math.min(100, Math.max(10, pitch));
+
+  /* ── 4. OBJECTIONS (0-100) ── */
+  var obj = 35;
+  // Traitement d'objections
+  if(/c'est trop cher|trop cher|pas le budget|budget|prix/.test(t)) obj += 10;
+  if(/je comprends|je vois|c'est une préoccupation|c'est normal|je vous entends/.test(t)) obj += 12;
+  // Techniques de reframing
+  if(/si ce n'était pas|investissement|par rapport à|comparé à|ROI|retour sur/.test(t)) obj += 12;
+  if(/pas le bon moment|besoin de réfléchir|je dois en parler/.test(t)) obj += 8;
+  // Question de clarification post-objection
+  if(/qu'est-ce qui vous|qu'est ce qui vous|c'est quoi exactement|pouvez-vous préciser/.test(t)) obj += 10;
+  // Gestion professionnelle
+  if(/tout à fait|absolument|bien sûr|effectivement/.test(t)) obj += 5;
+  obj = Math.min(100, Math.max(10, obj));
+
+  /* ── 5. CLOSING (0-100) ── */
+  var clos = 35;
+  // Appel à l'action clair
+  if(/on démarre|on commence|vous démarrez|on y va|la prochaine étape|prochaine étape/.test(t)) clos += 15;
+  if(/confirmer|valider|signer|accord|ok pour vous|ça vous convient|on fait quoi/.test(t)) clos += 12;
+  // Question de closing
+  if(/qu'est.ce.{0,20}vous.{0,20}retient|qu'est.ce.{0,20}t'.{0,20}retient|il vous manque quoi|il te manque quoi/.test(t)) clos += 10;
+  // Urgence / deadline
+  if(/avant le|d'ici|cette semaine|aujourd'hui|maintenant|limité|places/.test(t)) clos += 8;
+  // Résumé de valeur avant closing
+  if(/récapitulatif|pour résumer|en résumé|donc ce que vous obtenez/.test(t)) clos += 10;
+  // Alternative close
+  if(/plutôt le|ou bien|lundi ou mardi|option a|option b|formule \w/.test(t)) clos += 8;
+  clos = Math.min(100, Math.max(10, clos));
+
+  /* ── Score global ── */
+  var global = Math.round((ouv * 0.15 + dec * 0.25 + pitch * 0.25 + obj * 0.2 + clos * 0.15));
+
+  // Bonus longueur
+  if(words > 200) global = Math.min(100, global + 5);
+  if(words < 50)  global = Math.max(10, global - 15);
+
+  return { ouverture:ouv, decouverte:dec, pitch:pitch, objections:obj, closing:clos, global:global, words:words };
+}
+
+/* ─── DÉTECTIONS ─── */
+function detectPoints(txt, scores){
+  var t = txt.toLowerCase();
+  var items = [];
+
+  // BONNES PRATIQUES
+  if((txt.match(/\?/g)||[]).length >= 3)
+    items.push({type:'ok', icon:'✅', text:'<strong>Plusieurs questions détectées</strong> — tu crées du dialogue, pas un monologue.'});
+  if(/donc si je comprends|si je résume|ce que j'entends/.test(t))
+    items.push({type:'ok', icon:'✅', text:'<strong>Reformulation présente</strong> — tu montres que tu écoutes vraiment.'});
+  if(/\d+\s*%|\d+\s*fois|\d+\s*euros?/.test(t))
+    items.push({type:'ok', icon:'✅', text:'<strong>Données chiffrées</strong> — les preuves concrètes renforcent la crédibilité.'});
+  if(/client|témoignage|résultat obtenu|exemple/.test(t))
+    items.push({type:'ok', icon:'✅', text:'<strong>Preuve sociale détectée</strong> — les exemples concrets rassurent le prospect.'});
+  if(/je comprends|je vois|je vous entends/.test(t))
+    items.push({type:'ok', icon:'✅', text:'<strong>Empathie exprimée</strong> — tu valides avant de répondre aux objections.'});
+
+  // AVERTISSEMENTS
+  if((txt.match(/\?/g)||[]).length < 2)
+    items.push({type:'warn', icon:'⚠️', text:'<strong>Peu de questions</strong> — un bon vendeur écoute 70% du temps. Ajoute des questions ouvertes.'});
+  if(!/donc si je comprends|si je résume|ce que j'entends|autrement dit/.test(t))
+    items.push({type:'warn', icon:'⚠️', text:'<strong>Pas de reformulation</strong> — valide ta compréhension avant de pitcher pour éviter le tir à côté.'});
+  if(!/résultat|gain|vous permet|te permet|grâce à/.test(t))
+    items.push({type:'warn', icon:'⚠️', text:'<strong>Bénéfices peu visibles</strong> — parle plus de ce que le prospect GAGNE, pas de ce que tu VENDS.'});
+
+  // MANQUES
+  if(!/prochaine étape|on démarre|confirmer|valider|accord/.test(t))
+    items.push({type:'miss', icon:'❌', text:'<strong>Closing absent ou implicite</strong> — termine toujours avec une étape concrète et une question directe.'});
+  if(!/budget|prix|trop cher|je comprends|investissement/.test(t))
+    items.push({type:'miss', icon:'❌', text:'<strong>Gestion des objections non préparée</strong> — anticipe l\'objection prix ou timing dans ton script.'});
+  if(scores.words < 80)
+    items.push({type:'miss', icon:'❌', text:'<strong>Script trop court</strong> (' + scores.words + ' mots) — un appel de vente fait en moyenne 200-400 mots. Détaille davantage chaque phase.'});
+
+  return items.slice(0, 7);
+}
+
+/* ─── PROFILS PAR SCORE ─── */
+function getScoreProfile(s){
+  if(s >= 80) return {
+    label:'🏆 EXPERT', color:'#C9A84C',
+    bg:'rgba(201,168,76,.15)', border:'rgba(201,168,76,.4)',
+    title:'Script de haut niveau',
+    desc:'Ton script couvre les phases essentielles avec précision. Tu poses les bonnes questions, tu traites les objections et tu closes avec intention. Continue à affiner sur les points faibles.'
+  };
+  if(s >= 65) return {
+    label:'🟢 BON NIVEAU', color:'#66BB6A',
+    bg:'rgba(102,187,106,.12)', border:'rgba(102,187,106,.35)',
+    title:'Script solide avec des manques',
+    desc:'La structure est bonne mais certaines phases sont incomplètes. Travaille spécifiquement les dimensions en rouge — un effort ciblé peut te faire gagner 15 à 20 points rapidement.'
+  };
+  if(s >= 45) return {
+    label:'🟡 EN PROGRESSION', color:'#FFB300',
+    bg:'rgba(255,179,0,.1)', border:'rgba(255,179,0,.3)',
+    title:'Script à structurer',
+    desc:'Tu as des éléments intéressants mais le script manque de structure. Reprends chaque phase (Ouverture → Découverte → Pitch → Objections → Closing) et construis un script complet.'
+  };
+  return {
+    label:'🔴 À REFAIRE', color:'#FF6B6B',
+    bg:'rgba(239,83,80,.1)', border:'rgba(239,83,80,.25)',
+    title:'Script incomplet',
+    desc:'Le contenu actuel ne couvre pas les phases essentielles d\'un appel de vente efficace. Commence par structurer ton script en 5 parties, puis entraîne-toi avec un coach IA.'
+  };
+}
+
+/* ─── DIMENSIONS CONFIG ─── */
+var DIMS = [
+  { key:'ouverture',  label:'Ouverture',        sub:'Accroche & permission', color:'#4A9EFF' },
+  { key:'decouverte', label:'Découverte',        sub:'Questions & écoute',    color:'#BA68C8' },
+  { key:'pitch',      label:'Pitch & Valeur',    sub:'Bénéfices & preuves',   color:'#C9A84C' },
+  { key:'objections', label:'Gestion Objections',sub:'Réponses & reframing',  color:'#66BB6A' },
+  { key:'closing',    label:'Closing',           sub:'Action & décision',     color:'#FF6B6B' },
+];
+
+/* ─── LANCER L'ANALYSE ─── */
+function lancerAnalyse(){
+  var txt = document.getElementById('scriptInput').value.trim();
+  if(!txt || txt.split(/\s+/).length < 20){
+    alert('Colle au moins 20 mots pour démarrer l\'analyse.');
+    return;
+  }
+
+  // Cacher input, montrer loading
+  document.getElementById('inputSection').style.display = 'none';
+  document.getElementById('loadingSection').classList.add('active');
+  document.getElementById('resultsSection').classList.remove('active');
+
+  // Simulation étapes loading
+  var steps = ['ls1','ls2','ls3','ls4','ls5'];
+  var delays = [400, 900, 1400, 1900, 2400];
+  steps.forEach(function(id, i){
+    setTimeout(function(){ document.getElementById(id).classList.add('done'); }, delays[i]);
+  });
+
+  // Analyse réelle + affichage résultat
+  setTimeout(function(){
+    var scores = analyseScript(txt);
+    var detected = detectPoints(txt, scores);
+    afficherResultats(scores, detected);
+  }, 3000);
+}
+
+/* ─── AFFICHER RÉSULTATS ─── */
+function afficherResultats(sc, detected){
+  document.getElementById('loadingSection').classList.remove('active');
+  document.getElementById('resultsSection').classList.add('active');
+
+  var prf = getScoreProfile(sc.global);
+
+  // Score ring
+  var circumference = 345.4;
+  var offset = circumference - (sc.global / 100) * circumference;
+  var ring = document.getElementById('ringFill');
+  ring.style.stroke = prf.color;
+  setTimeout(function(){ ring.style.strokeDashoffset = offset; }, 100);
+
+  // Numéro animé
+  var num = document.getElementById('scoreNumber');
+  var current = 0;
+  var interval = setInterval(function(){
+    current = Math.min(sc.global, current + 2);
+    num.innerHTML = current + '<span>/100</span>';
+    if(current >= sc.global) clearInterval(interval);
+  }, 30);
+
+  // Badge profil
+  var badge = document.getElementById('scoreBadge');
+  badge.textContent = prf.label;
+  badge.style.background = prf.bg;
+  badge.style.border = '1px solid ' + prf.border;
+  badge.style.color = prf.color;
+
+  document.getElementById('scoreTitle').textContent = prf.title;
+  document.getElementById('scoreDesc').textContent = prf.desc;
+
+  // Dimensions
+  var dimsHTML = '';
+  DIMS.forEach(function(d){
+    var s = sc[d.key];
+    var lbl = s >= 70 ? 'Fort' : s >= 45 ? 'Moyen' : 'Faible';
+    var lblColor = s >= 70 ? '#66BB6A' : s >= 45 ? '#FFB300' : '#FF6B6B';
+    var lblBg = s >= 70 ? 'rgba(102,187,106,.12)' : s >= 45 ? 'rgba(255,179,0,.1)' : 'rgba(239,83,80,.1)';
+    var feedbacks = getDimFeedback(d.key, s);
+    dimsHTML +=
+      '<div class="dim-row">' +
+      '<div class="dim-head">' +
+      '<span class="dim-name">' + d.label + ' <span class="dim-sub">— ' + d.sub + '</span></span>' +
+      '<span class="dim-score-tag" style="color:' + lblColor + ';background:' + lblBg + ';">' + lbl + ' · ' + s + '%</span>' +
+      '</div>' +
+      '<div class="dim-bg"><div class="dim-fill" data-val="' + s + '" style="background:' + d.color + ';"></div></div>' +
+      '<div class="dim-feedback">' + feedbacks + '</div>' +
+      '</div>';
+  });
+  document.getElementById('dimsGrid').innerHTML = dimsHTML;
+
+  // Animate bars
+  setTimeout(function(){
+    document.querySelectorAll('.dim-fill').forEach(function(el){
+      el.style.width = el.dataset.val + '%';
+    });
+  }, 200);
+
+  // Points détectés
+  var detHTML = detected.map(function(d){
+    return '<div class="det-item ' + d.type + '"><div class="det-icon">' + d.icon + '</div><div class="det-text">' + d.text + '</div></div>';
+  }).join('');
+  document.getElementById('detectedList').innerHTML = detHTML;
+
+  // 4 Insights
+  var insights = buildInsights(sc);
+  document.getElementById('insightsGrid').innerHTML = insights.map(function(ins){
+    return '<div class="ins-card"><div class="ins-icon">' + ins.icon + '</div><div class="ins-title">' + ins.title + '</div><div class="ins-text">' + ins.text + '</div></div>';
+  }).join('');
+
+  // Scroll
+  window.scrollTo({ top: document.getElementById('resultsSection').offsetTop - 100, behavior:'smooth' });
+}
+
+/* ─── FEEDBACKS PAR DIMENSION ─── */
+function getDimFeedback(key, score){
+  var fb = {
+    ouverture:{
+      low:'Ton ouverture ne crée pas encore d\'accroche. Ajoute une raison d\'appel précise + une question de permission.',
+      mid:'Ouverture correcte. Pour la booster : ajoute une accroche personnalisée basée sur quelque chose que tu as observé.',
+      high:'Excellente ouverture. Tu crées l\'intérêt immédiatement et poses le cadre.'
+    },
+    decouverte:{
+      low:'Trop peu de questions. Le prospect ne se sent pas écouté. Vise 5+ questions ouvertes avant de pitcher.',
+      mid:'Découverte en place. Ajoute des reformulations pour montrer que tu as bien compris la douleur.',
+      high:'Découverte solide. Tu creuses la douleur et tu écoutes vraiment avant de pitcher.'
+    },
+    pitch:{
+      low:'Pitch centré sur les fonctionnalités, pas sur les bénéfices. Reformule chaque argument en "ça vous permet de...".',
+      mid:'Pitch correct. Ajoute des chiffres concrets et 1-2 preuves sociales pour renforcer la crédibilité.',
+      high:'Pitch orienté bénéfices avec preuves concrètes. Tu parles le langage du prospect.'
+    },
+    objections:{
+      low:'Les objections ne sont pas anticipées. Prépare des réponses aux 3 objections les plus fréquentes de tes prospects.',
+      mid:'Quelques réponses aux objections. Travaille le reframing : transforme chaque objection en argument d\'achat.',
+      high:'Gestion des objections structurée. Tu valides, tu reformules et tu retournes l\'objection.'
+    },
+    closing:{
+      low:'Pas de closing clair. Chaque appel doit se terminer par une question de closing + une prochaine étape concrète.',
+      mid:'Closing présent mais hésitant. Sois plus direct : "Qu\'est-ce qui vous retient de démarrer maintenant ?"',
+      high:'Closing assertif et structuré. Tu poses la question, tu assumes la décision.'
+    }
+  };
+  var level = score >= 70 ? 'high' : score >= 45 ? 'mid' : 'low';
+  return fb[key][level];
+}
+
+/* ─── INSIGHTS ─── */
+function buildInsights(sc){
+  var weak = Object.entries({
+    ouverture:sc.ouverture, decouverte:sc.decouverte,
+    pitch:sc.pitch, objections:sc.objections, closing:sc.closing
+  }).sort(function(a,b){return a[1]-b[1];});
+
+  var labelsMap = {
+    ouverture:'Ouverture', decouverte:'Découverte',
+    pitch:'Pitch', objections:'Objections', closing:'Closing'
+  };
+
+  var top = weak[weak.length-1][0];
+  var bot = weak[0][0];
+  var bot2 = weak[1][0];
+
+  return [
+    {
+      icon:'💪',
+      title:'TA MEILLEURE PHASE',
+      text:'Ta phase "' + labelsMap[top] + '" est ton point fort avec ' + sc[top] + '/100. C\'est là que ton naturel parle — continue à t\'appuyer dessus.'
+    },
+    {
+      icon:'🎯',
+      title:'PRIORITÉ N°1',
+      text:'"' + labelsMap[bot] + '" est ton talon d\'Achille (' + sc[bot] + '/100). Un travail ciblé ici peut faire monter ton score global de 15 à 20 points.'
+    },
+    {
+      icon:'⚡',
+      title:'QUICK WIN',
+      text:'"' + labelsMap[bot2] + '" est ta deuxième faiblesse (' + sc[bot2] + '/100). C\'est souvent la plus facile à corriger avec une ou deux phrases bien placées.'
+    },
+    {
+      icon:'📈',
+      title:'PROCHAIN PAS',
+      text:'Travaille ces 2 phases avec le Coach IA Atlas. Lance une session de simulation sur tes objections les plus fréquentes.'
+    }
+  ];
+}
+
+/* ─── RESET ─── */
+function refaire(){
+  document.getElementById('resultsSection').classList.remove('active');
+  document.getElementById('loadingSection').classList.remove('active');
+  document.getElementById('inputSection').style.display = 'block';
+  // Reset loading steps
+  document.querySelectorAll('.loading-step').forEach(function(el){ el.classList.remove('done'); });
+  window.scrollTo({ top: 0, behavior:'smooth' });
+}
+</script>
+
+<script src="atlas-config.js"></script>
+<script src="assets/js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Formations — Atlas Académie</title>
+  <meta name="description" content="Toutes les formations Atlas Académie : Ultimate Closing Mastery, DISC Premium, Pack Complet."/>
+  <link rel="icon" type="image/png" href="assets/img/logo.png"/>
+  <link rel="stylesheet" href="assets/css/style.css"/>
+  <style>
+    :root {
+      --navy: #0a1628;
+      --gold: #c9a84c;
+      --gold2: #b8922a;
+      --dark: #111827;
+      --card-bg: #0f1f3d;
+    }
+
+    body { background: var(--navy); color: #fff; font-family: 'Segoe UI', sans-serif; margin: 0; }
+
+    .formations-hero {
+      text-align: center;
+      padding: 80px 20px 50px;
+      background: linear-gradient(180deg, #0a1628 0%, #0f1f3d 100%);
+    }
+    .formations-hero h1 {
+      font-family: Georgia, serif;
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      color: #fff;
+      margin-bottom: 16px;
+      letter-spacing: 0.05em;
+    }
+    .formations-hero h1 span { color: var(--gold); }
+    .formations-hero p {
+      color: #94a3b8;
+      font-size: 1.1rem;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .formations-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 28px;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 50px 24px 80px;
+    }
+
+    .formation-card {
+      background: var(--card-bg);
+      border: 1px solid rgba(201,168,76,0.15);
+      border-radius: 16px;
+      overflow: hidden;
+      transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+      display: flex;
+      flex-direction: column;
+    }
+    .formation-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 40px rgba(201,168,76,0.15);
+      border-color: rgba(201,168,76,0.4);
+    }
+
+    .card-header {
+      padding: 28px 24px 20px;
+      position: relative;
+    }
+    .card-icon {
+      font-size: 2.5rem;
+      margin-bottom: 12px;
+      display: block;
+    }
+    .card-badge {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: rgba(201,168,76,0.15);
+      border: 1px solid rgba(201,168,76,0.3);
+      color: var(--gold);
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      padding: 4px 10px;
+      border-radius: 20px;
+      text-transform: uppercase;
+    }
+    .card-title {
+      font-family: Georgia, serif;
+      font-size: 1.3rem;
+      color: #fff;
+      margin: 0 0 6px;
+    }
+    .card-subtitle {
+      color: var(--gold);
+      font-size: 0.85rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+    .card-desc {
+      color: #94a3b8;
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+
+    .card-meta {
+      display: flex;
+      gap: 16px;
+      padding: 16px 24px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .meta-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: #64748b;
+      font-size: 0.8rem;
+    }
+    .meta-item span { color: #94a3b8; font-weight: 600; }
+
+    .card-modules {
+      padding: 16px 24px;
+      flex: 1;
+    }
+    .modules-label {
+      color: #64748b;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+    .module-tag {
+      display: inline-block;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      color: #94a3b8;
+      font-size: 0.75rem;
+      padding: 3px 10px;
+      border-radius: 20px;
+      margin: 3px 3px 3px 0;
+    }
+
+    .card-footer {
+      padding: 20px 24px 24px;
+    }
+    .btn-acceder {
+      display: block;
+      width: 100%;
+      text-align: center;
+      background: linear-gradient(135deg, var(--gold2), var(--gold));
+      color: var(--navy);
+      font-weight: 700;
+      font-size: 0.9rem;
+      letter-spacing: 0.08em;
+      text-decoration: none;
+      padding: 14px 20px;
+      border-radius: 10px;
+      transition: opacity 0.2s, transform 0.1s;
+      text-transform: uppercase;
+    }
+    .btn-acceder:hover { opacity: 0.9; transform: scale(1.01); }
+
+    /* Bundle card special styles */
+    .formation-card.bundle-card {
+      border-color: rgba(201,168,76,0.4);
+      background: linear-gradient(160deg, #0f1f3d 0%, #1a2a1a 100%);
+      position: relative;
+    }
+    .formation-card.bundle-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 16px;
+      padding: 1px;
+      background: linear-gradient(135deg, var(--gold), transparent 60%);
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+    }
+    .bundle-pricing {
+      padding: 16px 24px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+    .bundle-old-price {
+      color: #64748b;
+      font-size: 0.85rem;
+      text-decoration: line-through;
+      display: block;
+    }
+    .bundle-new-price {
+      font-family: Georgia, serif;
+      font-size: 2rem;
+      color: var(--gold);
+      font-weight: 700;
+      display: block;
+      line-height: 1.1;
+    }
+    .bundle-savings {
+      display: inline-block;
+      background: rgba(39,174,96,0.15);
+      border: 1px solid rgba(39,174,96,0.3);
+      color: #2ecc71;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 20px;
+      margin-top: 6px;
+      letter-spacing: 0.05em;
+    }
+    .btn-acceder.btn-bundle {
+      background: linear-gradient(135deg, #b8922a, #c9a84c, #e8c46a);
+      font-size: 1rem;
+      padding: 16px 20px;
+      letter-spacing: 0.1em;
+    }
+
+    .section-stats {
+      display: flex;
+      justify-content: center;
+      gap: 60px;
+      padding: 30px 20px;
+      background: rgba(201,168,76,0.05);
+      border-top: 1px solid rgba(201,168,76,0.1);
+      border-bottom: 1px solid rgba(201,168,76,0.1);
+      margin-bottom: 0;
+    }
+    .stat-item { text-align: center; }
+    .stat-num {
+      font-family: Georgia, serif;
+      font-size: 2rem;
+      color: var(--gold);
+      font-weight: 700;
+      display: block;
+    }
+    .stat-label { color: #64748b; font-size: 0.8rem; letter-spacing: 0.06em; text-transform: uppercase; }
+  </style>
+</head>
+<body class="has-promo-bar">
+
+<!-- BARRE PROMO -->
+<div class="promo-bar">
+  🔥 LANCEMENT — Accès à toutes les formations à tarif réduit &nbsp;|&nbsp; Offre limitée
+  <button class="promo-close" style="background:none;border:none;cursor:pointer;color:var(--navy);font-size:1rem;margin-left:1rem;font-weight:700;" title="Fermer">✕</button>
+</div>
+
+<!-- NAVIGATION -->
+<nav class="navbar">
+  <a href="index.html" class="nav-logo">
+    <img src="assets/img/logo.png" alt="Atlas Académie"/>
+    <div class="nav-logo-text">Atlas<span>Académie</span></div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html">Accueil</a></li>
+    <li><a href="formations.html" style="color:var(--gold);">Formations</a></li>
+    <li><a href="coaches.html">Coachs IA</a></li>
+    <li><a href="dashboard.html">Mon Espace</a></li>
+  </ul>
+  <div class="nav-actions">
+    <a href="auth.html" class="btn-nav">Connexion</a>
+    <a href="checkout.html" class="btn-nav btn-primary">Accès complet</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="formations-hero">
+  <h1>Nos <span>Formations</span></h1>
+  <p>2 formations terrain + 1 pack bundle à prix réduit. Scripts verbatim, profils DISC, méthodes testées. Tout pour closer au plus haut niveau.</p>
+</section>
+
+<!-- STATS -->
+<div class="section-stats">
+  <div class="stat-item">
+    <span class="stat-num">2</span>
+    <span class="stat-label">Formations</span>
+  </div>
+  <div class="stat-item">
+    <span class="stat-num">1</span>
+    <span class="stat-label">Pack Bundle</span>
+  </div>
+  <div class="stat-item">
+    <span class="stat-num">20h+</span>
+    <span class="stat-label">de contenu</span>
+  </div>
+  <div class="stat-item">
+    <span class="stat-num">4</span>
+    <span class="stat-label">Profils DISC</span>
+  </div>
+</div>
+
+<!-- GRILLE FORMATIONS -->
+<div class="formations-grid">
+
+  <!-- ULTIMATE CLOSING MASTERY -->
+  <div class="formation-card">
+    <div class="card-header" style="background: linear-gradient(135deg, rgba(192,57,43,0.15), transparent);">
+      <span class="card-icon">🔥</span>
+      <span class="card-badge">Formation 1</span>
+      <h2 class="card-title">Ultimate Closing Mastery</h2>
+      <p class="card-subtitle">Les 10 Phases Universelles</p>
+      <p class="card-desc">La méthode terrain complète. De la première accroche à la décision finale — chaque phase scriptée, analysée, applicable le lendemain.</p>
+    </div>
+    <div class="card-meta">
+      <div class="meta-item">⏱ <span>9h de contenu</span></div>
+      <div class="meta-item">📚 <span>20 leçons</span></div>
+      <div class="meta-item">🎯 <span>Tous niveaux</span></div>
+    </div>
+    <div class="card-modules">
+      <div class="modules-label">Phases couvertes</div>
+      <span class="module-tag">Attention</span>
+      <span class="module-tag">Légitimité</span>
+      <span class="module-tag">Engagement</span>
+      <span class="module-tag">Cadrage</span>
+      <span class="module-tag">Diagnostic</span>
+      <span class="module-tag">Émotion</span>
+      <span class="module-tag">Tension</span>
+      <span class="module-tag">Projection</span>
+      <span class="module-tag">Objections</span>
+      <span class="module-tag">Décision</span>
+    </div>
+    <div class="bundle-pricing" style="border-top:1px solid rgba(255,255,255,0.06);padding:16px 24px;">
+      <span style="font-family:Georgia,serif;font-size:1.8rem;color:var(--gold);font-weight:700;display:block;line-height:1.1;">990€</span>
+      <span style="color:#64748b;font-size:.82rem;margin-top:4px;display:block;">🤖 Coach IA inclus 2 mois · Accès à vie</span>
+    </div>
+    <div class="card-footer">
+      <a href="checkout.html?formation=ultimate-closing" class="btn-acceder">🔥 Accéder à la formation →</a>
+    </div>
+  </div>
+
+  <!-- DISC PREMIUM -->
+  <div class="formation-card">
+    <div class="card-header" style="background: linear-gradient(135deg, rgba(52,152,219,0.15), transparent);">
+      <span class="card-icon">🧠</span>
+      <span class="card-badge">Formation 2</span>
+      <h2 class="card-title">DISC Premium</h2>
+      <p class="card-subtitle">Analyse & Influence Comportementale</p>
+      <p class="card-desc">Lire un prospect en moins de 60 secondes. Adapter ton discours à son profil DISC. Influencer sans manipuler — la psychologie du closer d'élite.</p>
+    </div>
+    <div class="card-meta">
+      <div class="meta-item">⏱ <span>11h de contenu</span></div>
+      <div class="meta-item">📚 <span>16 leçons</span></div>
+      <div class="meta-item">🎯 <span>Avancé</span></div>
+    </div>
+    <div class="card-modules">
+      <div class="modules-label">Profils & modules</div>
+      <span class="module-tag">Dominant (D)</span>
+      <span class="module-tag">Influent (I)</span>
+      <span class="module-tag">Stable (S)</span>
+      <span class="module-tag">Consciencieux (C)</span>
+      <span class="module-tag">Adaptation live</span>
+      <span class="module-tag">Scripts par profil</span>
+    </div>
+    <div class="bundle-pricing" style="border-top:1px solid rgba(255,255,255,0.06);padding:16px 24px;">
+      <span style="font-family:Georgia,serif;font-size:1.8rem;color:var(--gold);font-weight:700;display:block;line-height:1.1;">990€</span>
+      <span style="color:#64748b;font-size:.82rem;margin-top:4px;display:block;">🤖 Coach IA inclus 2 mois · Accès à vie</span>
+    </div>
+    <div class="card-footer">
+      <a href="checkout.html?formation=disc-premium" class="btn-acceder">🧠 Accéder à la formation →</a>
+    </div>
+  </div>
+
+  <!-- PACK COMPLET — BUNDLE -->
+  <div class="formation-card bundle-card">
+    <div class="card-header" style="background: linear-gradient(135deg, rgba(201,168,76,0.12), transparent);">
+      <span class="card-icon">⚡</span>
+      <span class="card-badge" style="background:rgba(201,168,76,0.25);border-color:rgba(201,168,76,0.6);">Meilleure offre</span>
+      <h2 

@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Atlas Académie — Formations en Vente, Closing & Psychologie</title>
+  <meta name="description" content="Atlas Académie : formations d'élite en vente, closing et psychologie comportementale. Méthode R.A.D.A.R.™, Analyse & Influence, Simulation IA."/>
+  <link rel="icon" type="image/png" href="assets/img/logo.png"/>
+  <link rel="stylesheet" href="assets/css/style.css"/>
+</head>
+<body class="has-promo-bar">
+
+<!-- BARRE PROMO -->
+<div class="promo-bar">
+  🔥 LANCEMENT — Accès à toutes les formations à tarif réduit &nbsp;|&nbsp; Offre limitée
+  <button class="promo-close" style="background:none;border:none;cursor:pointer;color:var(--navy);font-size:1rem;margin-left:1rem;font-weight:700;" title="Fermer">✕</button>
+</div>
+
+<!-- NAVIGATION -->
+<nav class="navbar">
+  <a href="index.html" class="nav-logo">
+    <img src="assets/img/logo.png" alt="Atlas Académie"/>
+    <div class="nav-logo-text">Atlas<span>Académie</span></div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html">Accueil</a></li>
+    <li><a href="formations.html">Formations</a></li>
+    <li><a href="coaches.html">Coachs IA</a></li>
+    <li><a href="dashboard.html">Mon Espace</a></li>
+  </ul>
+  <span id="navAuthBtn">
+    <a href="auth.html" class="nav-cta" id="navLoginBtn">Connexion</a>
+  </span>
+  <button class="hamburger" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu">
+  <a href="index.html">🏠 Accueil</a>
+  <a href="formations.html">📚 Formations</a>
+  <a href="coaches.html">🤖 Coachs IA</a>
+  <a href="dashboard.html">📊 Mon Espace</a>
+  <a href="auth.html" class="nav-cta" id="mobileLoginBtn">Connexion →</a>
+</div>
+
+<script>
+// Met à jour le bouton de nav selon l'état de connexion
+(function () {
+  const user = (() => { try { return JSON.parse(localStorage.getItem('atlas_user') || 'null'); } catch { return null; } })();
+  if (user && user.id) {
+    const btn = document.getElementById('navLoginBtn');
+    if (btn) { btn.textContent = '📊 Dashboard'; btn.href = 'dashboard.html'; }
+    const mob = document.getElementById('mobileLoginBtn');
+    if (mob) { mob.textContent = '📊 Mon Dashboard →'; mob.href = 'dashboard.html'; }
+  }
+})();
+</script>
+
+<!-- ============================
+     HERO
+     ============================ -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="container">
+    <div class="hero-content">
+      <div class="hero-logo-big">
+        <img src="assets/img/logo.png" alt="Atlas Académie Logo"/>
+      </div>
+      <div class="hero-badge">🏛️ Atlas Académie — Formations d'Élite</div>
+      <h1>
+        Tu perds des ventes.<br/>
+        Pas par manque d'effort.<br/>
+        <em>Par manque de méthode.</em>
+      </h1>
+      <p class="hero-sub">
+        Atlas Académie transforme les vendeurs ordinaires en closers d'élite.<br/>
+        Psychologie, influence, profiling, simulation IA — tout ce qu'on ne t'a jamais appris.
+      </p>
+      <div class="hero-actions">
+        <a href="profil-vendeur.html" class="btn btn-primary btn-lg btn-hero-main">
+          🎯 Découvrir mon profil Closer — Gratuit →
+        </a>
+        <a href="coaches.html" class="btn btn-outline btn-lg">
+          Essayer les Coachs IA →
+        </a>
+      </div>
+      <div class="hero-trust">
+        <div class="hero-trust-item"><span class="check">✦</span> Accès immédiat</div>
+        <div class="hero-trust-item"><span class="check">✦</span> 100% en ligne</div>
+        <div class="hero-trust-item"><span class="check">✦</span> Garanti 30 jours</div>
+        <div class="hero-trust-item"><span class="check">✦</span> Accès à vie</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================
+     STATS
+     ============================ -->
+<section class="section section-navy">
+  <div class="container">
+    <div class="stats-grid fade-in">
+      <div class="stat-item">
+        <span class="stat-number" data-count="500" data-suffix="+">500+</span>
+        <span class="stat-label">Membres formés</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-number" data-count="3">3</span>
+        <span class="stat-label">Formations disponibles</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-number" data-count="30">30</span>
+        <span class="stat-label">Jours de garantie</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-number">4.9<span style="font-size:1.5rem">/5</span></span>
+        <span class="stat-label">Note membres</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================
+     QUIZ PROFIL CLOSER — GRATUIT
+     ============================ -->
+<section style="background:linear-gradient(135deg,#080c18 0%,#0d1a2e 50%,#080c18 100%);padding:5rem 0;position:relative;overflow:hidden;">
+  <!-- Fond décoratif -->
+  <div style="position:absolute;inset:0;background:radial-gradient(ellipse 60% 80% at 50% 50%,rgba(201,168,76,0.07),transparent);pointer-events:none;"></div>
+  <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,0.4),transparent);"></div>
+  <div style="position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,0.2),transparent);"></div>
+
+  <div class="container" style="position:relative;z-index:1;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;max-width:1100px;margin:0 auto;">
+
+      <!-- TEXTE GAUCHE -->
+      <div class="fade-in">
+        <div style="display:inline-flex;align-items:center;gap:8px;background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.3);color:var(--gold);font-family:var(--font-title);font-size:.65rem;letter-spacing:.25em;text-transform:uppercase;padding:.35rem 1rem;border-radius:50px;margin-bottom:1.5rem;">
+          ✦ 100% Offert — Accès immédiat
+        </div>
+        <h2 style="font-family:var(--font-title);font-size:clamp(1.6rem,3.5vw,2.5rem);color:var(--white);line-height:1.15;margin-bottom:1.25rem;">
+          Découvre ton<br/><em style="color:var(--gold);font-style:italic;">profil de vendeur naturel</em>
+        </h2>
+        <p style="color:var(--gray);font-size:1rem;line-height:1.85;margin-bottom:1.75rem;">
+          15 questions calibrées sur les 5 dimensions psychologiques du comportement commercial. En 3 minutes, tu sais comment tu vends — tes forces, tes angles morts, et exactement ce qu'il faut travailler pour passer au niveau supérieur.
+        </p>
+        <div style="display:flex;flex-direction:column;gap:.75rem;margin-bottom:2rem;">
+          <div style="display:flex;align-items:center;gap:.75rem;font-size:.9rem;color:var(--off-white);">
+            <span style="color:var(--gold);font-size:1rem;">✦</span> 6 profils possibles : Closer, Empathique, Analyste, Réactif, Stratège, Équilibré
+          </div>
+          <div style="display:flex;align-items:center;gap:.75rem;font-size:.9rem;color:var(--off-white);">
+            <span style="color:var(--gold);font-size:1rem;">✦</span> Résultats détaillés avec description complète de ta personnalité
+          </div>
+          <div style="display:flex;align-items:center;gap:.75rem;font-size:.9rem;color:var(--off-white);">
+            <span style="color:var(--gold);font-size:1rem;">✦</span> Aucune inscription requise — résultats immédiats
+          </div>
+        </div>
+        <a href="profil-vendeur.html" style="display:inline-flex;align-items:center;gap:.6rem;background:linear-gradient(135deg,#b8922a,#c9a84c,#e8c46a);color:#080c18;font-family:var(--font-title);font-size:.85rem;font-weight:800;letter-spacing:.15em;text-transform:uppercase;padding:16px 36px;border-radius:8px;text-decoration:none;transition:all .2s;box-shadow:0 8px 32px rgba(201,168,76,0.25);">
+          🎯 Faire le test maintenant →
+        </a>
+        <p style="color:var(--gray);font-size:.75rem;margin-top:.85rem;">Gratuit · 3 minutes · Aucune carte bancaire</p>
+      </div>
+
+      <!-- CARTE DROITE — aperçu des profils -->
+      <div class="fade-in fade-in-delay-1" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <div style="background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.25);border-radius:12px;padding:1.25rem;text-align:center;">
+          <div style="font-size:1.8rem;margin-bottom:.4rem;">🔴</div>
+          <div style="font-family:var(--font-title);font-size:.8rem;color:#f87171;letter-spacing:.05em;">Le Closer</div>
+          <div style="font-size:.7rem;color:var(--gray);margin-top:.3rem;">Dominant · Assertif</div>
+        </div>
+        <div style="background:rgba(74,222,128,0.08);border:1px solid rgba(74,222,128,0.25);border-radius:12px;padding:1.25rem;text-align:center;">
+          <div style="font-size:1.8rem;margin-bottom:.4rem;">🟢</div>
+          <div style="font-family:var(--font-title);font-size:.8rem;color:#4ade80;letter-spacing:.05em;">L'Empathique</div>
+          <div style="font-size:.7rem;color:var(--gray);margin-top:.3rem;">Chaleureux · Conseiller</div>
+        </div>
+        <div style="background:rgba(96,165,250,0.08);border:1px solid rgba(96,165,250,0.25);border-radius:12px;padding:1.25rem;text-align:center;">
+          <div style="font-size:1.8rem;margin-bottom:.4rem;">🔵</div>
+          <div style="font-family:var(--font-title);font-size:.8rem;color:#60a5fa;letter-spacing:.05em;">L'Analyste</div>
+          <div style="font-size:.7rem;color:var(--gray);margin-top:.3rem;">Méthodique · Rigoureux</div>
+        </div>
+        <div style="background:rgba(251,146,60,0.08);border:1px solid rgba(251,146,60,0.25);border-radius:12px;padding:1.25rem;text-align:center;">
+          <div style="font-size:1.8rem;margin-bottom:.4rem;">🟠</div>
+          <div style="font-family:var(--font-title);font-size:.8rem;color:#fb923c;letter-spacing:.05em;">Le Réactif</div>
+          <div style="font-size:.7rem;color:var(--gray);margin-top:.3rem;">Intense · Passionné</div>
+        </div>
+        <div style="background:rgba(192,132,252,0.08);border:1px solid rgba(192,132,252,0.25);border-radius:12px;padding:1.25rem;text-align:center;">
+          <div style="font-size:1.8rem;margin-bottom:.4rem;">🟣</div>
+          <div style="font-family:var(--font-title);font-size:.8rem;color:#c084fc;letter-spacing:.05em;">Le Stratège</div>
+          <div style="font-size:.7rem;color:var(--gray);margin-top:.3rem;">Innovant · Adaptable</div>
+        </div>
+        <div style="background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.25);border-radius:12px;padding:1.25rem;text-align:center;">
+          <div style="font-size:1.8rem;margin-bottom:.4rem;">⚖️</div>
+          <div style="font-family:var(--font-title);font-size:.8rem;color:var(--gold);letter-spacing:.05em;">L'Équilibré</div>
+          <div style="font-size:.7rem;color:var(--gray);margin-top:.3rem;">Polyvalent · Caméléon</div>
+        </div>
+        <div style="grid-column:1/-1;text-align:center;margin-top:.5rem;">
+          <span style="font-size:.78rem;color:var(--gray);font-style:italic;">Lequel es-tu ?</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============================
+     PROBLÈME
+     ============================ -->
+<section class="section section-dark">
+  <div class="container">
+    <div class="section-title fade-in">
+      <div class="eyebrow">Le Constat</div>
+      <h2>Pourquoi la plupart des vendeurs stagnent</h2>
+      <p>Pas par manque de travail. Par manque du bon système.</p>
+    </div>
+    <div class="problem-grid fade-in">
+      <div class="problem-col">
+        <h3><span class="label-bad">✗</span>&nbsp; Sans méthode</h3>
+        <ul class="check-list cross-list">
+          <li>Le prospect "doit y réfléchir" — et ne rappelle jamais</li>
+          <li>Tu baisses ton prix dès la première résistance</li>
+          <li>Tu appliques des scripts qui sonnent faux</li>
+          <li>Tu ne sais pas distinguer un acheteur d'un curieux</li>
+          <li>Tu improvises sous pression et tu perds le deal</li>
+          <li>Chaque objection te déstabilise</li>
+        </ul>
+      </div>
+      <div class="problem-col">
+        <h3><span class="label-good">✦</span>&nbsp; Avec Atlas Académie</h3>
+        <ul class="check-list">
+          <li>Tu décodes chaque prospect en moins de 5 minutes</li>
+          <li>Tu tiens tes prix avec des arguments irréfutables</li>
+          <li>Tu adaptes ton discours en temps réel selon le profil</li>
+          <li>Tu anticipes les objections avant qu'elles arrivent</li>
+          <li>Tu sais exactement quand et comment closer</li>
+          <li>Chaque entretien est maîtrisé de A à Z</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================
+     SOLUTION
+     ============================ -->
+<section class="section section-navy">
+  <div class="container">
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:4rem; align-items:center;">
+      <div class="fade-in">
+        <div class="eyebrow">La Solution</div>
+        <h2>Atlas Académie — L'écosystème de formation que les pros auraient voulu avoir dès le départ</h2>
+        <p style="color:var(--gray); margin-bottom:1.5rem; line-height:1.8;">
+          On a fusionné la psychologie comportementale, les techniques d'influence d'élite
+          et la simulation par IA — pour créer un parcours unique en son genre.
+        </p>
+        <p style="color:var(--gray); margin-bottom:2rem; line-height:1.8;">
+          Pas des théories. Des outils concrets que tu appliques dès le lendemain.
+        </p>
+        <ul class="check-list">
+          <li>Des méthodes structurées, reproductibles, prouvées</li>
+          <li>Des simulations réelles, pas des exercices théoriques</li>
+          <li>Une progression par niveaux, du fondamental à l'élite</li>
+          <li>Un accès immédiat, 100% en ligne, à ton rythme</li>
+        </ul>
+      </div>
+      <div class="fade-in fade-in-delay-2">
+        <div style="background:var(--navy-mid); border:1px solid rgba(201,168,76,0.2); border-radius:12px; padding:2.5rem; position:relative; overflow:hidden;">
+          <div style="position:absolute;top:-20px;right:-20px;width:120px;height:120px;background:radial-gradient(circle,rgba(201,168,76,0.15),transparent);border-radius:50%;"></div>
+          <div style="font-family:var(--font-title);font-size:0.7rem;letter-spacing:0.2em;color:var(--gold);text-transform:uppercase;margin-bottom:1.5rem;">Ce que tu développes</div>
+          <div style="display:flex;flex-direction:column;gap:1.2rem;">
+            <div style="display:flex;align-items:center;gap:1rem;">
+              <span style="font-size:1.5rem;">🧠</span>
+              <div>
+                <div style="font-family:var(--font-sub);font-weight:700;color:var(--white);font-size:0.95rem;">Lecture comportementale</div>
+                <div style="font-size:0.8rem;color:var(--gray);">Décoder n'importe quel profil en temps réel</div>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:1rem;">
+              <span style="font-size:1.5rem;">🎯</span>
+              <div>
+                <div style="font-family:var(--font-sub);font-weight:700;color:var(--white);font-size:0.95rem;">Maîtrise du closing</div>
+                <div style="font-size:0.8rem;color:var(--gray);">Conclure sans forcer, sans supplier</div>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:1rem;">
+              <span style="font-size:1.5rem;">⚡</span>
+              <div>
+                <div style="font-family:var(--font-sub);font-weight:700;color:var(--white);font-size:0.95rem;">Influence & persuasion</div>
+                <div style="font-size:0.8rem;color:var(--gray);">Convaincre avec intégrité et précision</div>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:1rem;">
+              <span style="font-size:1.5rem;">🤖</span>
+              <div>
+                <div style="font-family:var(--font-sub);font-weight:700;color:var(--white);font-size:0.95rem;">Pratique par simulation IA</div>
+                <div style="font-size:0.8rem;color:var(--gray);">S'entraîner sans risquer de vrais deals</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================
+     LES 3 FORMATIONS
+     ============================ -->
+<section class="section section-dark" id="formations">
+  <div class="container">
+    <div class="section-title fade-in">
+      <div class="eyebrow">Nos Formations</div>
+      <h2>Trois formations. <span class="gold">Un seul objectif.</span></h2>
+      <p>Faire de toi un closer redoutable — avec la méthode, la psychologie et la pratique.<br/>
+      <span style="font-size:.85rem;color:rgba(201,168,76,0.8);">🔒 Accès complet après achat · Compte inclus · Coach IA 2 mois offert</span></p>
+    </div>
+    <div class="grid-3 fade-in">
+
+      <!-- FORMATION 1 : Ultimate Closing Mastery -->
+      <div class="formation-card">
+        <div class="formation-card-header">
+          <div class="card-badge">⭐ Best-Seller</div>
+          <h3 style="font-family:var(--font-title);color:var(--gold);font-size:1.3rem;margin-bottom:0.3rem;">DECODE & CLOSE™</h3>
+          <p style="font-size:0.9rem;color:var(--off-white);margin-bottom:1rem;">Méthode R.A.D.A.R.™</p>
+          <div class="formation-tags">
+            <span class="tag">Psychologie</span>
+            <span class="tag">Profiling</span>
+            <span class="tag">Closing</span>
+            <span class="tag">Influence</span>
+          </div>
+        </div>
+        <div class="formation-card-body">
+          <p style="font-size:0.9rem;color:var(--gray);line-height:1.7;margin-bottom:1.5rem;">
+            La méthode signature pour décoder chaque prospect en moins de 5 minutes et closer sans forcer.
+            5 étapes. 7 modules. Résultats immédiats.
+          </p>
+          <ul class="check-list" style="flex:1;">
+            <li>7 modules vidéo complets</li>
+            <li>Méthode R.A.D.A.R.™ détaillée</li>
+            <li>Fiches profiling téléchargeables</li>
+            <li>3 simulations commentées</li>
+          </ul>
+        </div>
+        <div class="formation-card-footer">
+          <div class="formation-price">
+            <span class="price-amount">990€</span>
+          </div>
+          <p style="font-size:0.78rem;color:var(--gray);margin-bottom:1rem;">🤖 Coach IA inclus 2 mois · Accès à vie</p>
+          <a href="checkout.html?formation=ultimate-closing" class="btn btn-primary btn-block">Accéder à la formation →</a>
+        </div>
+      </div>
+
+      <!-- FORMATION 2 : DISC Premium -->
+      <div class="formation-card" style="border-color:rgba(201,168,76,0.35);">
+        <div class="formation-card-header" style="background:linear-gradient(135deg,#1A2C55,#243d78);">
+          <div class="card-badge" style="background:linear-gradient(90deg,var(--gold-dark),var(--gold));">🧠 Avancé</div>
+          <h3 style="font-family:var(--font-title);color:var(--gold);font-size:1.3rem;margin-bottom:0.3rem;">DISC PREMIUM</h3>
+          <p style="font-size:0.9rem;color:var(--off-white);margin-bottom:1rem;">Analyse & Influence Comportementale</p>
+          <div class="formation-tags">
+            <span class="tag">Dominant</span>
+            <span class="tag">Influent</span>
+            <span class="tag">Stable</span>
+            <span class="tag">Consciencieux</span>
+          </div>
+        </div>
+        <div class="formation-card-body">
+          <p style="font-size:0.9rem;color:var(--gray);line-height:1.7;margin-bottom:1.5rem;">
+            Lire un prospect en 60 secondes. Adapter ton script à son profil DISC.
+            Influencer sans manipuler — la psychologie du closer d'élite.
+          </p>
+          <ul class="check-list" style="flex:1;">
+            <li>4 profils DISC détaillés</li>
+            <li>Scripts par profil</li>
+            <li>Adaptation live en vente</li>
+            <li>Gestion des profils difficiles</li>
+          </ul>
+        </div>
+        <div class="formation-card-footer">
+          <div class="formation-price">
+            <span class="price-amount">990€</span>
+          </div>
+          <p style="font-size:0.78rem;color:var(--gray);margin-bottom:1rem;">🤖 Coach IA inclus 2 mois · Accès à vie</p>
+          <a href="checkout.html?formation=disc-premium" class="btn btn-primary btn-block">Accéder à la formation →</a>
+        </div>
+      </div>
+
+      <!-- FORMATION 3 : Pack Bundle -->
+      <div class="formation-card" style="border-color:rgba(201,168,76,0.5);background:linear-gradient(160deg,#0f1f3d,#141f14);">
+        <div class="formation-card-header" style="background:linear-gradient(135deg,rgba(201,168,76,0.15),transparent);">
+          <div class="card-badge" style="background:linear-gradient(90deg,#b8922a,#c9a84c);">⚡ Meilleure offre</div>
+          <h3 style="font-family:var(--font-title);color:var(--gold);font-size:1.3rem;margin-bottom:0.3rem;">PACK COMPLET ATLAS</h3>
+          <p style="font-size:0.9rem;color:var(--off-white);margin-bottom:1rem;">Les 2 formations réunies · –25%</p>
+          <div class="formation-tags">
+            <span class="tag">Ultimate Closing</span>
+            <span class="tag">DISC Premium</span>
+            <span class="tag">Coach IA</span>
+            <span class="tag">Accès à vie</span>
+          </div>
+        </div>
+        <div class="formation-card-body">
+          <p style="font-size:0.9rem;color:var(--gray);line-height:1.7;margin-bottom:1.5rem;">
+            Ultimate Closing Mastery + DISC Premium en un seul accès.
+            Tu sais closer ET tu comprends qui tu as en face de toi.
+          </p>
+          <ul class="check-list" style="flex:1;">
+            <li>20h+ de contenu total</li>
+            <li>36 leçons complètes</li>
+            <li>Coach IA inclus (4 experts)</li>
+            <li>Économise 490€ vs à l'unité</li>
+          </ul>
+        </div>
+        <div class="formation-card-footer">
+          <div class="formation-price">
+            <span class="price-amount">1490€</span>
+            <span class="price-old">1980€</span>
+          </div>
+          <p style="font-size:0.78rem;color:var(--gray);margin-bottom:1rem;">Tu économises 490€ · 25% de réduction · Coach IA inclus</p>
+          <a href="checkout.html?bundle=complet" class="btn btn-primary btn-block">⚡ Obtenir le Pack Complet →</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============================
+     TÉMOIGNAGES
+     ============================ -->
+<section class="section section-navy">
+  <div class="container">
+    <div class="section-title fade-in">
+      <div class="eyebrow">Témoignages</div>
+      <h2>Ils ont appliqué. <span class="gold">Voici ce qui s'est passé.</span></h2>
+    </div>
+    <div class="grid-3 fade-in">
+      <div class="testimonial">
+        <div class="testimonial-stars">★★★★★</div>
+        <p>"Avant Atlas Académie, je closais 1 deal sur 5. Maintenant je suis à 3 sur 5.
+        La méthode R.A.D.A.R.™ a changé ma façon de voir chaque appel. Meilleur investissement de l'année."</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">K</div>
+          <div class="testimonial-author-info">
+            <strong>Karim M.</strong>
+            <span>Closer Indépendant · Paris</span>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial">
+        <div class="testimonial-stars">★★★★★</div>
+        <p>"Le module sur les micro-expressions m'a ouvert les yeux sur ce que mes clients ne disaient pas.
+        Mon chiffre a augmenté de 40% en 3 mois. C'est concret, applicable dès le premier jour."</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">S</div>
+          <div class="testimonial-author-info">
+            <strong>Sarah T.</strong>
+            <span>Responsable Commerciale · Lyon</span>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial">
+        <div class="testimonial-stars">★★★★★</div>
+        <p>"Grâce aux simulations IA des 10 Étapes, j'ai arrêté d'improviser. Aujourd'hui mes appels
+        se terminent par un oui dans 60% des cas. Atlas Académie, c'est du lourd."</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">J</div>
+          <div class="testimonial-author-info">
+            <strong>Julien R.</strong>
+            <span>Entrepreneur · Bordeaux</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================
+     COACHS IA
+     ============================ -->
+<section class="section section-dark" id="coachs">
+  <div class="container">
+    <div class="section-title fade-in">
+      <div class="eyebrow">Entraînement IA</div>
+      <h2>4 coachs IA. <span class="gold">Disponibles 24h/24.</span></h2>
+      <p style="max-width:600px;margin:0 auto;color:var(--gray);">
+        La connaissance s'acquiert en formation. La compétence se construit à l'entraînement. Nos coachs IA spécialisés sont là pour simuler, corriger et perfectionner — en temps réel.
+      </p>
+    </div>
+    <div class="coaches-grid fade-in" style="max-width:960px;margin:3rem auto 0;">
+      <a href="chat.html?coach=stratege" class="coach-card" data-coach="stratege">
+        <span class="coach-card-icon">&#9876;&#65039;</span>
+        <div class="coach-card-name">LE STRATÈGE</div>
+        <div class="coach-card-subtitle" style="color:var(--coach-stratege);">Tactique · Précis · Froid</div>
+        <p class="coach-card-desc">Objections, closing, négociation prix. Il décortique chaque situation et te donne la réponse exacte à dire.</p>
+        <div class="coach-card-cta">
+          <span class="coach-card-badge" style="color:var(--coach-stratege);background:rgba(42,111,219,0.1);border-color:rgba(42,111,219,0.3);">Closers</span>
+          <span class="coach-card-arrow" style="color:var(--coach-stratege);">&#8594;</span>
+        </div>
+      </a>
+      <a href="chat.html?coach=mentor" class="coach-card" data-coach="mentor">
+        <span class="coach-card-icon">&#127891;</span>
+        <div class="coach-card-name">LE MENTOR</div>
+        <div class="coach-card-subtitle" style="color:var(--coach-mentor);">Pédagogue · Bienveillant</div>
+        <p class="coach-card-desc">Bases solides, méthodes structurées, confiance. Il t'explique le pourquoi derrière chaque technique.</p>
+        <div class="coach-card-cta">
+          <span class="coach-card-badge" style="color:var(--coach-mentor);background:rgba(201,168,76,0.1);border-color:rgba(201,168,76,0.3);">Débutants</span>
+          <span class="coach-card-arrow" style="color:var(--coach-mentor);">&#8594;</span>
+        </div>
+      </a>
+      <a href="chat.html?coach=architecte" class="coach-card" data-coach="architecte" style="border-color:rgba(201,76,76,0.2);">
+        <span class="coach-card-icon">&#127963;&#65039;</span>
+        <div class="coach-card-name">L'ARCHITECTE</div>
+        <div class="coach-card-subtitle" style="color:var(--coach-architecte);">3 Modes · Élite · Haute pression</div>
+        <p class="coach-card-desc">Le plus exigeant. S'adapte automatiquement : Mentor, Stratège ou Pression selon ta demande.</p>
+        <div class="coach-card-cta">
+          <span class="coach-card-badge" style="color:var(--coach-architecte);background:rgba(201,76,76,0.1);border-color:rgba(201,76,76,0.3);">&#9889; Élite</span>
+          <span class="coach-card-arrow" style="color:var(--coach-architecte);">&#8594;</span>
+        </div>
+      </a>
+      <a href="chat.html?coach=profileur" class="coach-card" data-coach="profileur">
+        <span class="coach-card-icon">&#129504;</span>
+        <div class="coach-card-name">LE PROFILEUR DISC</div>
+        <div class="coach-card-subtitle" style="color:var(--coach-profileur);">Psychologie · Comportemental</div>
+        <p class="coach-card-desc">Identifie le profil DISC de chaque prospect et t'indique exactement comment adapter ton discours.</p>
+        <div class="coach-card-cta">
+          <span class="coach-card-badge" style="color:var(--coach-profileur);background:rgba(124,77,202,0.1);border-color:rgba(124,77,202,0.3);">Avancé</span>
+          <span class="coach-card-arrow" style="color:var(--coach-profileur);">&#8594;</span>
+        </div>
+      </a>
+    </div>
+    <div class="fade-in" style="text-align:center;margin-top:2rem;">
+      <a href="coaches.html" class="btn btn-outline">&#129302; Voir tous les coachs et choisir le mien &#8594;</a>
+      <p style="margin-top:.75rem;font-size:.8rem;color:var(--gray);">3 messages gratuits · Sans inscription</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ CTA FINAL ============================ -->
+<section class="cta-section">
+  <div class="container" style="position:relative;z-index:1;">
+    <div class="eyebrow" style="display:block;text-align:center;margin-bottom:1.5rem;">Passe à l'action</div>
+    <h2>Tu as deux options.</h2>
+    <div class="divider">&#10022;</div>
+    <div class="cta-options" style="max-width:800px;margin:2rem auto;">
+      <div class="cta-option bad">
+        <h3>Option 1 — Continuer comme avant</h3>
+        <p>Tu continues à improviser. Tu perds des deals que tu aurais pu closer. Tu espères que ça s'améliore tout seul.</p>
+      </div>
+      <div class="cta-option good">
+        <h3>Option 2 — Atlas Académie</h3>
+        <p>Tu appliques une méthode qui fonctionne. Tu deviens le vendeur que tes prospects n'oublient pas. Tu performes.</p>
+      </div>
+    </div>
+    <p style="color:var(--gray);max-width:500px;margin:0 auto 2.5rem;font-size:1rem;">Les meilleurs ne sont pas nés bons vendeurs. Ils ont appris ce que les autres ne savent pas.</p>
+    <a href="formations.html" class="btn btn-primary btn-lg">&#128640; Voir toutes les formations &#8594;</a>
+    <div class="btn-guarantee" style="margin-top:1.5rem;">
+      <span>&#10022;</span> Paiement sécurisé &nbsp;&nbsp;
+      <span>&#10022;</span> Accès à vie &nbsp;&nbsp;
+      <span>&#10022;</span> Satisfait ou remboursé 30 jours
+    </div>
+  </div>
+</section>
+
+<!-- ============================ FOOTER ============================ -->
+<footer>
+  <div class="container">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <img src="assets/img/logo.png" alt="Atlas Académie"/>
+        <div class="footer-brand-text">Atlas Académie</div>
+        <p>L'écosystème de formation d'élite en vente, closing et psychologie comportementale.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Formations</h4>
+        <ul>
+          <li><a href="ultimate-closing-elearning.html">&#8594; Ultimate Closing Mastery</a></li>
+          <li><a href="disc_premium.html">&#8594; DISC Premium</a></li>
+          <li><a href="checkout.html?bundle=complet">&#8594; Pack Complet (&ndash;25%)</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Navigation</h4>
+        <ul>
+          <li><a href="index.html">&#8594; Accueil</a></li>
+          <li><a href="a-propos.html">&#8594; À Propos</a></li>
+          <li><a href="coaches.html">&#8594; Coachs IA</a></li>
+          <li><a href="analyse-gratuite.html">&#8594; Analyse Gratuite</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Légal</h4>
+        <ul>
+          <li><a href="cgv.html">&#8594; CGV</a></li>
+          <li><a href="mentions-legales.html">&#8594; Mentions légales</a></li>
+          <li><a href="confidentialite.html">&#8594; Confidentialité</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&#169; 2026 Atlas Académie — Tous droits réservés</p>
+      <div class="footer-legal">
+        <a href="cgv.html">CGV</a>
+        <a href="mentions-legales.html">Mentions légales</a>
+        <a href="confidentialite.html">Confidentialité</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="atlas-config.js"></script>
+<script src="assets/js/supabase-client.js"></script>
+<script src="assets/js/main.js"></script>
+</body>
+</html>

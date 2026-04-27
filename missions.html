@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Missions & Opportunités — Atlas Académie</title>
+  <meta name="description" content="Débloque des missions rémunérées selon ton diplôme Atlas Académie. Expert Closer, Closer d'Élite, Ultimate Closer."/>
+  <link rel="icon" type="image/png" href="assets/img/logo.png"/>
+  <link rel="stylesheet" href="assets/css/style.css"/>
+  <style>
+    body { background: var(--navy-dark); }
+
+    /* ── HERO ── */
+    .ms-hero {
+      padding: 110px 0 50px;
+      text-align: center;
+      position: relative;
+    }
+    .ms-hero::before {
+      content:''; position:absolute; top:0; left:0; right:0; bottom:0;
+      background: radial-gradient(ellipse at 50% 0%, rgba(201,168,76,.1) 0%, transparent 65%);
+      pointer-events:none;
+    }
+    .ms-badge {
+      display:inline-block; font-family:var(--font-title);
+      font-size:.7rem; letter-spacing:.2em; color:var(--gold);
+      border:1px solid rgba(201,168,76,.35);
+      padding:.4rem 1rem; border-radius:20px; margin-bottom:1.25rem;
+    }
+    .ms-hero h1 {
+      font-family:var(--font-title);
+      font-size:clamp(1.8rem,4vw,2.8rem);
+      color:var(--white); margin-bottom:.75rem; line-height:1.2;
+    }
+    .ms-hero h1 em { color:var(--gold); font-style:normal; }
+    .ms-hero-sub {
+      font-family:var(--font-sub); font-size:.95rem;
+      color:var(--gray); max-width:540px; margin:0 auto 1.5rem; line-height:1.7;
+    }
+
+    /* Badge statut utilisateur */
+    .ms-user-status {
+      display:inline-flex; align-items:center; gap:.6rem;
+      background:rgba(201,168,76,.08); border:1px solid rgba(201,168,76,.2);
+      border-radius:8px; padding:.6rem 1.25rem;
+      font-family:var(--font-sub); font-size:.85rem; color:var(--off-white);
+    }
+
+    /* ── SECTION LAYOUT ── */
+    .ms-section {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 0 1.5rem 5rem;
+    }
+    .ms-section-header {
+      display:flex; align-items:center; gap:.75rem;
+      margin: 2.5rem 0 1.5rem;
+    }
+    .ms-section-title {
+      font-family:var(--font-title); font-size:1rem;
+      color:var(--gold); letter-spacing:.15em; text-transform:uppercase;
+    }
+    .ms-section-line {
+      flex:1; height:1px; background:rgba(201,168,76,.2);
+    }
+    .ms-section-badge {
+      font-size:.7rem; padding:.25rem .75rem; border-radius:20px;
+      font-family:var(--font-title); letter-spacing:.1em;
+    }
+    .ms-section-badge.locked { background:rgba(255,255,255,.05); color:var(--gray); border:1px solid rgba(255,255,255,.1); }
+    .ms-section-badge.unlocked { background:rgba(34,197,94,.1); color:#4ade80; border:1px solid rgba(34,197,94,.2); }
+    .ms-section-badge.coming { background:rgba(201,168,76,.08); color:var(--gold); border:1px solid rgba(201,168,76,.2); }
+
+    /* ── NIVEAUX DE DIPLÔME ── */
+    .ms-levels {
+      display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; margin-bottom:3rem;
+    }
+    .ms-level-card {
+      border-radius:12px; padding:1.5rem;
+      text-align:center; position:relative; overflow:hidden;
+    }
+    .ms-level-card.expert {
+      background:linear-gradient(135deg,rgba(13,27,62,.9),rgba(26,44,85,.7));
+      border:1px solid rgba(201,168,76,.25);
+    }
+    .ms-level-card.elite {
+      background:linear-gradient(135deg,rgba(7,13,30,.9),rgba(13,27,62,.8));
+      border:1px solid rgba(232,201,106,.35);
+    }
+    .ms-level-card.ultimate {
+      background:linear-gradient(135deg,rgba(0,0,0,.9),rgba(13,27,62,.9));
+      border:1px solid rgba(255,215,0,.4);
+      box-shadow:0 0 30px rgba(255,215,0,.08);
+    }
+    .ms-level-icon { font-size:2rem; margin-bottom:.6rem; }
+    .ms-level-name {
+      font-family:var(--font-title); font-size:.85rem;
+      letter-spacing:.12em; margin-bottom:.3rem;
+    }
+    .ms-level-card.expert  .ms-level-name { color:var(--gold); }
+    .ms-level-card.elite   .ms-level-name { color:#E8C96A; }
+    .ms-level-card.ultimate .ms-level-name { color:#FFD700; }
+    .ms-level-rank { font-size:.75rem; color:var(--gray); margin-bottom:.75rem; }
+    .ms-level-desc { font-size:.78rem; color:var(--off-white); line-height:1.6; }
+
+    /* ── GRILLE MISSIONS ── */
+    .ms-grid {
+      display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+      gap:1.1rem; margin-bottom:2rem;
+    }
+    .ms-card {
+      background:linear-gradient(135deg,rgba(13,27,62,.85),rgba(26,44,85,.6));
+      border-radius:12px; padding:1.4rem;
+      position:relative; overflow:hidden;
+      transition:transform .25s, border-color .25s;
+    }
+    .ms-card:hover { transform:translateY(-3px); }
+
+    /* Accès complet */
+    .ms-card.access-all { border:1px solid rgba(201,168,76,.2); }
+    .ms-card.access-all:hover { border-color:rgba(201,168,76,.4); }
+
+    /* Accès diplômés */
+    .ms-card.access-diplome { border:1px solid rgba(232,201,106,.25); }
+    .ms-card.access-diplome::before {
+      content:''; position:absolute; top:0; right:0;
+      width:60px; height:60px;
+      background:radial-gradient(circle at 100% 0%,rgba(232,201,106,.1),transparent 70%);
+    }
+
+    /* Verrouillé */
+    .ms-card.locked {
+      border:1px solid rgba(255,255,255,.08);
+      opacity:.6; filter:grayscale(.4);
+    }
+    .ms-card.locked::after {
+      content:'🔒'; position:absolute; top:1rem; right:1rem;
+      font-size:1rem;
+    }
+
+    .ms-card-type {
+      font-family:var(--font-title); font-size:.6rem;
+      letter-spacing:.18em; text-transform:uppercase; margin-bottom:.4rem;
+    }
+    .ms-card.access-all .ms-card-type { color:var(--gold); }
+    .ms-card.access-diplome .ms-card-type { color:#E8C96A; }
+    .ms-card.locked .ms-card-type { color:var(--gray); }
+
+    .ms-card-title {
+      font-family:var(--font-sub); font-weight:700;
+      font-size:.95rem; color:var(--white);
+      margin-bottom:.5rem; line-height:1.4;
+    }
+    .ms-card-desc {
+      font-size:.8rem; color:var(--gray);
+      line-height:1.6; margin-bottom:1rem;
+    }
+    .ms-card-tags {
+      display:flex; flex-wrap:wrap; gap:.4rem; margin-bottom:1rem;
+    }
+    .ms-tag {
+      font-size:.68rem; padding:.2rem .6rem; border-radius:20px;
+      background:rgba(255,255,255,.06); color:var(--gray);
+      border:1px solid rgba(255,255,255,.08);
+    }
+    .ms-card-footer {
+      display:flex; align-items:center; justify-content:space-between; gap:.5rem;
+    }
+    .ms-card-remuneration {
+      font-family:var(--font-title); font-size:.85rem; color:var(--gold);
+    }
+    .ms-card-btn {
+      font-family:var(--font-title); font-size:.65rem;
+      letter-spacing:.12em; text-transform:uppercase;
+      padding:.4rem .9rem; border-radius:6px; cursor:pointer;
+      transition:all .2s; text-decoration:none; border:none;
+      white-space:nowrap;
+    }
+    .ms-card-btn.available {
+      background:rgba(201,168,76,.15); color:var(--gold);
+      border:1px solid rgba(201,168,76,.35);
+    }
+    .ms-card-btn.available:hover { background:rgba(201,168,76,.25); }
+    .ms-card-btn.soon {
+      background:rgba(255,255,255,.05); color:var(--gray);
+      border:1px solid rgba(255,255,255,.1); cursor:default;
+    }
+    .ms-card-btn.locked-btn {
+      background:transparent; color:var(--gray);
+      border:1px solid rgba(255,255,255,.08); cursor:not-allowed;
+    }
+
+    /* ── COMMENT ÇA MARCHE ── */
+    .ms-how {
+      background:linear-gradient(135deg,rgba(13,27,62,.8),rgba(26,44,85,.5));
+      border:1px solid rgba(201,168,76,.15); border-radius:14px;
+      padding:2rem; margin-bottom:3rem;
+    }
+    .ms-how-title {
+      font-family:var(--font-title); font-size:1rem; color:var(--gold);
+      letter-spacing:.15em; text-align:center; margin-bottom:1.75rem;
+    }
+    .ms-how-steps {
+      display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+      gap:1.5rem;
+    }
+    .ms-how-step { text-align:center; }
+    .ms-how-num {
+      width:40px; height:40px; border-radius:50%;
+      background:rgba(201,168,76,.15); border:1px solid rgba(201,168,76,.3);
+      display:flex; align-items:center; justify-content:center;
+      font-family:var(--font-title); font-size:.9rem; color:var(--gold);
+      margin:0 auto .75rem;
+    }
+    .ms-how-step h4 {
+      font-family:var(--font-sub); font-weight:700;
+      font-size:.85rem; color:var(--white); margin-bottom:.4rem;
+    }
+    .ms-how-step p { font-size:.78rem; color:var(--gray); line-height:1.6; }
+
+    /* ── CTA DIPLÔME ── */
+    .ms-cta {
+      text-align:center;
+      background:linear-gradient(135deg,rgba(201,168,76,.07),rgba(13,27,62,.5));
+      border:1px solid rgba(201,168,76,.2); border-radius:14px;
+      padding:2.5rem 2rem; margin-bottom:2rem;
+    }
+    .ms-cta h2 {
+      font-family:var(--font-title); font-size:1.4rem;
+      color:var(--gold); margin-bottom:.75rem;
+    }
+    .ms-cta p {
+      font-size:.88rem; color:var(--gray);
+      line-height:1.7; max-width:500px; margin:0 auto 1.5rem;
+    }
+    .ms-cta-btns { display:flex; gap:.75rem; justify-content:center; flex-wrap:wrap; }
+
+    /* Notice "bientôt disponible" */
+    .ms-coming-notice {
+      text-align:center;
+      background:rgba(201,168,76,.06);
+      border:1px dashed rgba(201,168,76,.2);
+      border-radius:10px; padding:1.25rem;
+      font-size:.82rem; color:var(--gray); margin-top:1rem;
+    }
+    .ms-coming-notice strong { color:var(--gold); }
+
+    @media (max-width:640px) {
+      .ms-levels { grid-template-columns:1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <a href="index.html" class="nav-logo">
+    <img src="assets/img/logo.png" alt="Atlas Académie"/>
+    <div class="nav-logo-text">Atlas<span>Académie</span></div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html">Accueil</a></li>
+    <li><a href="decode-close.html">Decode &amp; Close™</a></li>
+    <li><a href="analyse-influence.html">Analyse &amp; Influence</a></li>
+    <li><a href="10-etapes.html">10 Étapes</a></li>
+    <li><a href="coaches.html">Coachs IA</a></li>
+    <li><a href="a-propos.html">À Propos</a></li>
+    <li><a href="mon-profil.html" style="color:var(--gold);">🧠 Mon Profil</a></li>
+    <li><a href="dashboard.html">📊 Dashboard</a></li>
+  </ul>
+  <span id="navAuthBtn">
+    <a href="auth.html" class="nav-cta" id="navLoginBtn">Connexion</a>
+  </span>
+  <button class="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
+<div class="mobile-menu">
+  <a href="index.html">🏠 Accueil</a>
+  <a href="decode-close.html">🎯 Decode &amp; Close™</a>
+  <a href="analyse-influence.html">🧠 Analyse &amp; Influence</a>
+  <a href="10-etapes.html">⚡ 10 Étapes de la Vente</a>
+  <a href="coaches.html">🤖 Coachs IA</a>
+  <a href="a-propos.html">🏛️ À Propos</a>
+  <a href="mon-profil.html" style="color:var(--gold);">🧠 Mon Profil</a>
+  <a href="auth.html" class="nav-cta" id="mobileLoginBtn">Connexion →</a>
+</div>
+<script>(function(){try{var u=JSON.parse(localStorage.getItem('atlas_user')||'null');if(u&&u.id){var b=document.getElementById('navLoginBtn');if(b){b.textContent='📊 Dashboard';b.href='dashboard.html';}}}catch(e){}})();<\/script>
+
+<!-- HERO -->
+<section class="ms-hero">
+  <div class="container">
+    <div class="ms-badge">💼 Missions & Opportunités</div>
+    <h1>Transforme tes compétences<br/>en <em>revenus réels</em></h1>
+    <p class="ms-hero-sub">
+      Les diplômés Atlas Académie accèdent à des missions concrètes avec des entreprises partenaires.
+      Entraîne-toi. Performe. Décroche ton diplôme. Gagne de l'argent.
+    </p>
+    <div class="ms-user-status" id="userStatusBadge">
+      👤 Chargement de ton profil…
+    </div>
+  </div>
+</section>
+
+<div class="ms-section">
+
+  <!-- Comment ça marche -->
+  <div class="ms-how">
+    <div class="ms-how-title">✦ COMMENT ÇA MARCHE</div>
+    <div class="ms-how-steps">
+      <div class="ms-how-step">
+        <div class="ms-how-num">1</div>
+        <h4>Rejoins une formation</h4>
+        <p>Accède aux formations et entraîne-toi avec les coachs IA et le simulateur.</p>
+      </div>
+      <div class="ms-how-step">
+        <div class="ms-how-num">2</div>
+        <h4>Participe aux challenges</h4>
+        <p>2 challenges par semaine. Vends un produit face au coach IA. Accumule des points.</p>
+      </div>
+      <div class="ms-how-step">
+        <div class="ms-how-num">3</div>
+        <h4>Décroche ton diplôme</h4>
+        <p>Fin de mois, les meilleurs obtiennent Expert Closer, Closer d'Élite ou Ultimate Closer.</p>
+      </div>
+      <div class="ms-how-step">
+        <div class="ms-how-num">4</div>
+        <h4>Accède aux missions</h4>
+        <p>Les missions se débloquent selon ton diplôme. Postule et commence à gagner.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Niveaux de diplôme -->
+  <div class="ms-section-header">
+    <div class="ms-section-title">✦ Niveaux d'accès</div>
+    <div class="ms-section-line"></div>
+  </div>
+  <div class="ms-levels">
+    <div class="ms-level-card expert">
+      <div class="ms-level-icon">🥉</div>
+      <div class="ms-level-name">EXPERT CLOSER</div>
+      <div class="ms-level-rank">Top 4 à 10 du mois</div>
+      <div class="ms-level-desc">Accès aux missions d'entraînement et aux petites opportunités de closing pour des PME partenaires.</div>
+    </div>
+    <div class="ms-level-card elite">
+      <div class="ms-level-icon">🥈</div>
+      <div class="ms-level-name">CLOSER D'ÉLITE</div>
+      <div class="ms-level-rank">Top 2 et 3 du mois</div>
+      <div class="ms-level-desc">Accès aux missions premium avec des agences de vente. Contrats récurrents possibles.</div>
+    </div>
+    <div class="ms-level-card ultimate">
+      <div class="ms-level-icon">👑</div>
+      <div class="ms-level-name">ULTIMATE CLOSER</div>
+      <div class="ms-level-rank">Top 1 — Champion du mois</div>
+      <div class="ms-level-desc">Accès prioritaire à toutes les missions. Mis en avant auprès des meilleures agences. Tarifs négociés.</div>
+    </div>
+  </div>
+
+  <!-- ── MISSIONS POUR TOUS ── -->
+  <div class="ms-section-header">
+    <div class="ms-section-title">✦ Missions accessibles à tous</div>
+    <div class="ms-section-line"></div>
+    <span class="ms-section-badge coming">Bientôt</span>
+  </div>
+  <div class="ms-grid">
+    <div class="ms-card access-all">
+      <div class="ms-card-type">🌱 Mission découverte</div>
+      <div class="ms-card-title">Prise de RDV qualifiés — B2C</div>
+      <div class="ms-card-desc">Appels sortants pour qualifier des prospects et obtenir des rendez-vous pour des commerciaux. Mission idéale pour débuter et pratiquer en conditions réelles.</div>
+      <div class="ms-card-tags">
+        <span class="ms-tag">Appels sortants</span>
+        <span class="ms-tag">B2C</span>
+        <span class="ms-tag">Débutant</span>
+      </div>
+      <div class="ms-card-footer">
+        <div class="ms-card-remuneration">3-5€ / RDV qualifié</div>
+        <button class="ms-card-btn soon">Bientôt disponible</button>
+      </div>
+    </div>
+    <div class="ms-card access-all">
+      <div class="ms-card-type">🌱 Mission découverte</div>
+      <div class="ms-card-title">Vente de formations en ligne</div>
+      <div class="ms-card-desc">Closer des prospects intéressés par des formations en développement personnel ou business. Leads chauds fournis, toi tu closes.</div>
+      <div class="ms-card-tags">
+        <span class="ms-tag">Closing</span>
+        <span class="ms-tag">Formation</span>
+        <span class="ms-tag">Leads fournis</span>
+      </div>
+      <div class="ms-card-footer">
+        <div class="ms-card-remuneration">10-15% commission</div>
+        <button class="ms-card-btn soon">Bientôt disponible</button>
+      </div>
+    </div>
+    <div class="ms-card access-all">
+      <div class="ms-card-type">🌱 Mission découverte</div>
+      <div class="ms-card-title">Support commercial e-commerce</div>
+      <div class="ms-card-desc">Traitement des paniers abandonnés et relance clients pour des boutiques en ligne. Travail 100% à distance.</div>
+      <div class="ms-card-tags">
+        <span class="ms-tag">E-commerce</span>
+        <span class="ms-tag">Relance</span>
+        <span class="ms-tag">Remote</span>
+      </div>
+      <div class="ms-card-footer">
+        <div class="ms-card-remuneration">8% sur ventes récupérées</div>
+        <button class="ms-card-btn soon">Bientôt disponible</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── MISSIONS EXPERT CLOSER ── -->
+  <div class="ms-section-header">
+    <div class="ms-section-title">✦ Missions Expert Closer</div>
+    <div class="ms-section-line"></div>
+    <span class="ms-section-badge coming">🥉 Diplôme requis</span>
+  </div>
+  <div class="ms-grid">
+    <div class="ms-card access-diplome locked" id="expertMission1">
+      <div class="ms-card-type">🥉 Expert Closer</div>
+      <div class="ms-card-title">Closing SaaS PME — Logiciels de gestion</div>
+      <div class="ms-card-desc">Closer des prospects PME déjà qualifiés pour des abonnements logiciels B2B. 300-1500€ par contrat. Script et formation produit fournis.</div>
+      <div class="ms-card-tags">
+        <span class="ms-tag">SaaS</span><span class="ms-tag">B2B</span><span class="ms-tag">PME</span>
+      </div>
+      <div class="ms-card-footer">
+        <div class="ms-card-remuneration">15-20% commission</div>
+        <button class="ms-card-btn locked-btn">Diplôme requis</button>
+      </div>
+    </div>
+    <div class="ms-card access-diplome locked" id="expertMission2">
+      <div class="ms-card-type">🥉 Expert Closer</div>
+      <div class="ms-card-title">Vente de coaching business</div>
+      <div class="ms-card-desc">Closer des appels stratégiques pour des coachs business. Panier moyen 2 000-5 000€. Formation à la méthode incluse.</div>
+      <div class="ms-card-tags">
+        <span class="ms-tag">Coaching</span><span class="ms-tag">High ticket</span><span class="ms-tag">Appels</span>
+      </div>
+      <div class="ms-card-footer">
+        <div class="ms-card-remuneration">10% + 200€ fixe/vente</div>
+        <button class="ms-card-btn locked-btn">Diplôme requis</button>
+      </div>
+    </div>
+    <div class="ms-card access-diplome locked" id="expertMission3">
+      <div class="ms-card-type">🥉 Expert Closer</div>
+      <div class="ms-card-title">Commercial terrain — Énergie solaire</div>
+      <div class="ms-card-desc">Vente de panneaux solaires résidentiels sur rendez-vous qualifiés. Secteur en forte croissance. Primes attractives.</div>
+      <div class="ms-card-tags">
+        <span class="ms-tag">Terrain</span><span class="ms-tag">Énergie</span><span class="ms-tag">RDV fournis</span>
+      </div>
+      <div class="ms-card-footer">
+        <div class="ms-card-remuneration">500-1 500€ par vente</div>
+        <button class="ms-card-btn locked-btn">Diplôme requis</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── MISSIONS CLOSER D'ÉLITE ── -->
+  <div class="ms-section-header">
+    <div class="ms-section-title">✦ Missions Closer d'Élite</div>
+    <div class="ms-section-line"></div>
+    <span class="ms-section-badge coming">🥈 Diplôme requis</span>
+  </div>
+  <div class="ms-grid">
+    <div class="ms-card access-diplome locked">
+      <div class="ms-card-type">🥈 Closer d'Élite</div>
+      <div class="ms-card-title">Closing immobilier neuf — VEFA</div>
+      <div class="ms-card-desc">Closer des prospects pour des programmes immobiliers neufs. Panier entre 150k€ et 400k€. Formation promoteur incluse.</div>
+      <div class="ms-card-tags">
+        <span class="ms-tag">Immobilier</span><span class="ms-tag">VEFA</span><span class="ms-tag">Premium</span>
+      </div>
+      <div class="ms-card-footer">
+        <div class="ms-card-remuneration">0,5-1% du prix de vente</div>
+        <button class="ms-card-btn locked-btn">Diplôme requis</button>
+      </div>
+    </div>
+    <div class="ms-card access-diplome locked">
+      <div class="ms-card-type">🥈 Closer d'Élite</div>
+      <div class="ms-card-title">Vente de services B2B — Agences digitales</div>
+      <div class="ms-card-desc">Représenter des agences marketing pour vendre leurs prestations à des TPE/PME. Contrats récurrents 1-5k€/mois.</div>
+      <div class="ms-card-tags">
+        <span class="ms-tag">Agences</span><span class="ms-tag">B2B</span><span class="ms-tag">Récurrent</span>
+      </div>
+      <div class="ms-card-footer">
+        <div class="ms-card-remuneration">20% premier mois + 5% récurrent</div>
+        <button class="ms-card-btn locked-btn">Diplôme requis</button>
+      </div>
+    </div>
+    <div class="ms-card access-diplome locked">
+      <div class="ms-card-type">🥈 Closer d'Élite</div>
+      <div class="ms-card-title">Formation high-ticket — Entrepreneuriat</div>
+      <div class="ms-card-desc">Closer des appels pour des programmes à 10 000-30 000€. Leads ultra-qualifiés. Fort taux de conversion possible.</div>
+      <div class="ms-card-tags">
+        <span class="ms-tag">High ticket</span><span class="ms-tag">Entrepreneuriat</span><span class="ms-tag">Appels entrants</span>
+      </div>
+      <div class="ms-card-footer">
+        <div class="ms-card-remuneration">10% — 1 000 à 3 000€ par vente</div>
+        <button class="ms-card-btn locked-btn">Diplôme requis</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── MISSIONS ULTIMATE CLOSER ── -->
+  <div class="ms-section-header">
+    <div class="ms-section-title">✦ Missions Ultimate Closer</div>
+    <div class="ms-section-line"></div>
+    <span class="ms-section-badge coming">👑 Champion requis</span>
+  </div>
+  <div class="ms-grid">
+    <div class="ms-card access-diplome locked">
+      <div class="ms-card-type">👑 Ultimate Closer</div>
+      <div class="ms-card-title">Compte stratégique — Grand groupe</div>
+      <div class="ms-card-desc">Mission exclusive avec des entreprises du CAC40 pour du closing B2B complexe. Accompagnement dédié Atlas Académie.</div>
+      <div class="ms-card-tags">
+        <span class="ms-tag">Grand compte</span><span class="ms-tag">B2B complexe</span><span class="ms-tag">Exclusif</span>
+      </div>
+      <div class="ms-card-footer">
+        <div class="ms-card-remuneration">Sur devis — 5 000€+/mission</div>
+        <button class="ms-card-btn locked-btn">Champion requis</button>
+      </div>
+    </div>
+    <div class="ms-card access-diplome locked">
+      <div class="ms-card-type">👑 Ultimate Closer</div>
+      <div class="ms-card-title">Partenariat ambassadeur Atlas Académie</div>
+      <div class="ms-card-desc">Tu représentes Atlas Académie auprès de partenaires. Rémunération fixe + commissions. Statut exclusif.</div>
+      <div class="ms-card-tags">
+        <span class="ms-tag">Ambassadeur</span><span class="ms-tag">Exclusif</span><span class="ms-tag">Fixe + variable</span>
+      </div>
+      <div class="ms-card-footer">
+        <div class="ms-card-remuneration">Fixe 1 500€ + 20% commissions</div>
+        <button class="ms-card-btn locked-btn">Champion requis</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notice bientôt -->
+  <div class="ms-coming-notice">
+    🚀 <strong>Plateforme de missions en cours de construction.</strong><br/>
+    Les premières missions partenaires seront disponibles au lancement officiel d'Atlas Académie.<br/>
+    En attendant, entraîne-toi, grimpe dans le classement et prépare-toi à saisir les opportunités dès l'ouverture.
+  </div>
+
+  <!-- CTA -->
+  <div class="ms-cta" style="margin-top:2.5rem;">
+    <h2>Prêt à décrocher ton diplôme ?</h2>
+    <p>Participe aux challenges bi-hebdomadaires, accumule des points et rejoins les meilleurs closers Atlas ce mois-ci.</p>
+    <div class="ms-cta-btns">
+      <a href="challenge-vente.html" class="btn btn-primary">⚔️ Rejoindre le challenge →</a>
+      <a href="leaderboard.html" class="btn btn-outline">🏆 Voir le classement</a>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <div class="container">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <img src="assets/img/logo.png" alt="Atlas Académie"/>
+        <div class="footer-brand-text">Atlas Académie</div>
+        <p>L'écosystème de formation d'élite en vente, closing et psychologie comportementale.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Plateforme</h4>
+        <ul>
+          <li><a href="dashboard.html">→ Mon Dashboard</a></li>
+          <li><a href="challenge-vente.html">→ Challenge Vente</a></li>
+          <li><a href="leaderboard.html">→ Classement</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Diplômes</h4>
+        <ul>
+          <li><a href="certificat.html">→ Mes Diplômes</a></li>
+          <li><a href="missions.html">→ Missions</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Légal</h4>
+        <ul>
+          <li><a href="cgv.html">→ CGV</a></li>
+          <li><a href="mentions-legales.html">→ Mentions légales</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 Atlas Académie — Tous droits réservés</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ── GARDE D'ACCÈS — Redirection si non connecté ── */
+(function() {
+  try {
+    var u = JSON.parse(localStorage.getItem('atlas_user') || 'null');
+    if (!u || !u.id) {
+      localStorage.setItem('atlas_auth_return', window.location.pathname.split('/').pop());
+      window.location.href = 'auth.html';
+    }
+  } catch(e) {
+    window.location.href = 'auth.html';
+  }
+})();
+</script>
+<script src="atlas-config.js"></script>
+<script src="assets/js/gamification.js"></script>
+<script src="assets/js/products.js"></script>
+<script src="assets/js/challenge-vente.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  // Statut utilisateur
+  const monthData = AtlasChallengeVente.getCurrentMonthScore();
+  const rank = AtlasChallengeVente.getDiplomeRank(monthData, 247);
+  const badge = document.getElementById('userStatusBadge');
+
+  if (rank === 'ultimate') {
+    badge.innerHTML = '👑 Tu es <strong style="color:#FFD700;">Ultimate Closer</strong> ce mois-ci — toutes les missions sont débloquées';
+    // Débloquer toutes les missions
+    document.querySelectorAll('.ms-card.locked').forEach(c => {
+      c.classList.remove('locked');
+      c.querySelector('.ms-card-btn').className = 'ms-card-btn soon';
+      c.querySelector('.ms-card-btn').textContent = 'Bientôt disponible';
+      c.querySelector('.ms-card-btn').style.cursor = 'default';
+    });
+  } else if (rank === 'elite') {
+    badge.innerHTML = '🥈 Tu es <strong style="color:#E8C96A;">Closer d\'Élite</strong> ce mois-ci — missions Élite et inférieures débloquées';
+  } else if (rank === 'expert') {
+    badge.innerHTML = '🥉 Tu es <strong style="color:var(--gold);">Expert Closer</strong> ce mois-ci — missions Expert débloquées';
+    document.querySelectorAll('[id^="expertMission"]').forEach(c => {
+      c.classList.remove('locked');
+      c.querySelector('.ms-card-btn').className = 'ms-card-btn soon';
+      c.querySelector('.ms-card-btn').textContent = 'Bientôt disponible';
+    });
+  } else {
+    const pts = monthData.totalPoints;
+    badge.innerHTML = `📊 ${pts} points ce mois · Aucun diplôme actif — <a href="challenge-vente.html" style="color:var(--gold);">rejoindre le challenge →</a>`;
+  }
+});
+</script>
+</body>
+</html>

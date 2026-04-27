@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Leaderboard — Atlas Académie</title>
+  <meta name="description" content="Classement des meilleurs closers Atlas Académie. Top 10 mensuel, XP, niveaux et badges."/>
+  <link rel="icon" type="image/png" href="assets/img/logo.png"/>
+  <link rel="stylesheet" href="assets/css/style.css"/>
+  <style>
+    body { background: var(--navy-dark); }
+
+    /* ── HERO ── */
+    .lb-hero {
+      padding: 120px 0 60px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .lb-hero::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: radial-gradient(ellipse at 50% 0%, rgba(201,168,76,0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .lb-hero-badge {
+      display: inline-block;
+      font-family: var(--font-title);
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      color: var(--gold);
+      border: 1px solid rgba(201,168,76,0.35);
+      padding: 0.4rem 1rem;
+      border-radius: 20px;
+      margin-bottom: 1.5rem;
+    }
+    .lb-hero h1 {
+      font-family: var(--font-title);
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      color: var(--white);
+      margin-bottom: 1rem;
+      line-height: 1.2;
+    }
+    .lb-hero h1 em {
+      color: var(--gold);
+      font-style: normal;
+    }
+    .lb-hero-sub {
+      font-family: var(--font-sub);
+      font-size: 1rem;
+      color: var(--gray);
+      max-width: 520px;
+      margin: 0 auto 2rem;
+      line-height: 1.7;
+    }
+
+    /* ── STATS GLOBALES ── */
+    .lb-stats {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+      margin-bottom: 3rem;
+    }
+    .lb-stat {
+      text-align: center;
+    }
+    .lb-stat-num {
+      font-family: var(--font-title);
+      font-size: 2rem;
+      color: var(--gold);
+      display: block;
+    }
+    .lb-stat-label {
+      font-size: 0.75rem;
+      color: var(--gray);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    /* ── PODIUM TOP 3 ── */
+    .lb-section {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 1.5rem 4rem;
+    }
+    .lb-section-title {
+      font-family: var(--font-title);
+      font-size: 1rem;
+      color: var(--gold);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .lb-section-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: rgba(201,168,76,0.2);
+    }
+
+    .podium {
+      display: grid;
+      grid-template-columns: 1fr 1.1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 3rem;
+      align-items: end;
+    }
+    .podium-card {
+      background: linear-gradient(135deg, rgba(13,27,62,0.9), rgba(26,44,85,0.8));
+      border: 1px solid rgba(201,168,76,0.15);
+      border-radius: 12px;
+      padding: 1.5rem 1rem;
+      text-align: center;
+      position: relative;
+      transition: transform 0.3s;
+    }
+    .podium-card:hover { transform: translateY(-4px); }
+    .podium-card.rank-1 {
+      border-color: rgba(201,168,76,0.5);
+      background: linear-gradient(135deg, rgba(26,44,85,0.95), rgba(13,27,62,0.95));
+      box-shadow: 0 0 40px rgba(201,168,76,0.15);
+    }
+    .podium-card.rank-2 { border-color: rgba(192,192,192,0.3); }
+    .podium-card.rank-3 { border-color: rgba(205,127,50,0.3); }
+
+    .podium-rank {
+      font-family: var(--font-title);
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+    .rank-1 .podium-rank { color: var(--gold); }
+    .rank-2 .podium-rank { color: #C0C0C0; }
+    .rank-3 .podium-rank { color: #CD7F32; }
+
+    .podium-avatar {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      margin: 0 auto 0.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      background: rgba(255,255,255,0.06);
+      border: 2px solid rgba(201,168,76,0.2);
+    }
+    .rank-1 .podium-avatar { border-color: rgba(201,168,76,0.5); }
+
+    .podium-name {
+      font-family: var(--font-sub);
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--white);
+      margin-bottom: 0.25rem;
+    }
+    .podium-level {
+      font-size: 0.72rem;
+      color: var(--gold);
+      letter-spacing: 0.1em;
+      margin-bottom: 0.75rem;
+    }
+    .podium-xp {
+      font-family: var(--font-title);
+      font-size: 1.1rem;
+      color: var(--gold);
+    }
+    .podium-xp-label {
+      font-size: 0.65rem;
+      color: var(--gray);
+      letter-spacing: 0.1em;
+    }
+
+    /* ── CLASSEMENT 4-10 ── */
+    .lb-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0 0.5rem;
+    }
+    .lb-row {
+      background: rgba(13,27,62,0.6);
+      border-radius: 8px;
+      transition: background 0.2s;
+      cursor: default;
+    }
+    .lb-row:hover { background: rgba(26,44,85,0.7); }
+    .lb-row.is-me {
+      background: rgba(201,168,76,0.08);
+      border: 1px solid rgba(201,168,76,0.25);
+    }
+
+    .lb-row td {
+      padding: 0.9rem 1rem;
+      font-family: var(--font-sub);
+      font-size: 0.88rem;
+      color: var(--off-white);
+      vertical-align: middle;
+    }
+    .lb-row td:first-child { border-radius: 8px 0 0 8px; padding-left: 1.25rem; }
+    .lb-row td:last-child  { border-radius: 0 8px 8px 0; }
+
+    .lb-pos {
+      font-family: var(--font-title);
+      font-size: 1rem;
+      color: var(--gray);
+      width: 40px;
+    }
+    .lb-user {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .lb-user-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(201,168,76,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+    .lb-user-name {
+      font-weight: 600;
+      color: var(--white);
+    }
+    .lb-user-level {
+      font-size: 0.7rem;
+      color: var(--gold);
+      letter-spacing: 0.08em;
+    }
+    .lb-xp {
+      font-family: var(--font-title);
+      color: var(--gold);
+      font-size: 0.9rem;
+      text-align: right;
+    }
+    .lb-badge-col {
+      text-align: right;
+    }
+    .lb-badge-mini {
+      display: inline-block;
+      font-size: 1rem;
+      margin-left: 2px;
+    }
+
+    /* Ton rang (encadré en bas) */
+    .lb-my-rank {
+      background: linear-gradient(135deg, rgba(201,168,76,0.08), rgba(13,27,62,0.6));
+      border: 1px solid rgba(201,168,76,0.3);
+      border-radius: 12px;
+      padding: 1.25rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-top: 2rem;
+      flex-wrap: wrap;
+    }
+    .lb-my-rank-left {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .lb-my-rank-pos {
+      font-family: var(--font-title);
+      font-size: 2rem;
+      color: var(--gold);
+      min-width: 50px;
+    }
+    .lb-my-rank-name {
+      font-family: var(--font-sub);
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 0.2rem;
+    }
+    .lb-my-rank-sub {
+      font-size: 0.78rem;
+      color: var(--gray);
+    }
+    .lb-my-rank-xp {
+      font-family: var(--font-title);
+      font-size: 1.4rem;
+      color: var(--gold);
+      text-align: right;
+    }
+    .lb-my-rank-xp-label {
+      font-size: 0.7rem;
+      color: var(--gray);
+      letter-spacing: 0.1em;
+      display: block;
+    }
+
+    /* Filtre période */
+    .lb-filters {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+    .lb-filter-btn {
+      font-family: var(--font-sub);
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 0.45rem 1rem;
+      border-radius: 20px;
+      border: 1px solid rgba(201,168,76,0.25);
+      background: transparent;
+      color: var(--gray);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .lb-filter-btn:hover,
+    .lb-filter-btn.active {
+      background: rgba(201,168,76,0.15);
+      color: var(--gold);
+      border-color: rgba(201,168,76,0.5);
+    }
+
+    /* Message vide */
+    .lb-empty {
+      text-align: center;
+      padding: 3rem;
+      color: var(--gray);
+      font-family: var(--font-sub);
+      font-size: 0.9rem;
+    }
+    .lb-empty-icon { font-size: 2.5rem; margin-bottom: 1rem; display: block; }
+
+    /* CTA rejoindre */
+    .lb-cta {
+      text-align: center;
+      padding: 3rem 1.5rem;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    .lb-cta h2 {
+      font-family: var(--font-title);
+      font-size: 1.6rem;
+      color: var(--gold);
+      margin-bottom: 1rem;
+    }
+    .lb-cta p {
+      color: var(--gray);
+      font-size: 0.9rem;
+      line-height: 1.7;
+      margin-bottom: 1.5rem;
+    }
+
+    @media (max-width: 640px) {
+      .podium { grid-template-columns: 1fr; align-items: start; }
+      .podium-card { padding: 1.2rem 1rem; }
+      .lb-row td:nth-child(3) { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAVIGATION -->
+<nav class="navbar">
+  <a href="index.html" class="nav-logo">
+    <img src="assets/img/logo.png" alt="Atlas Académie"/>
+    <div class="nav-logo-text">Atlas<span>Académie</span></div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html">Accueil</a></li>
+    <li><a href="decode-close.html">Decode &amp; Close™</a></li>
+    <li><a href="analyse-influence.html">Analyse &amp; Influence</a></li>
+    <li><a href="10-etapes.html">10 Étapes</a></li>
+    <li><a href="coaches.html">Coachs IA</a></li>
+    <li><a href="a-propos.html">À Propos</a></li>
+    <li><a href="mon-profil.html" style="color:var(--gold);">🧠 Mon Profil</a></li>
+    <li><a href="dashboard.html">📊 Dashboard</a></li>
+  </ul>
+  <span id="navAuthBtn">
+    <a href="auth.html" class="nav-cta" id="navLoginBtn">Connexion</a>
+  </span>
+  <button class="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
+<div class="mobile-menu">
+  <a href="index.html">🏠 Accueil</a>
+  <a href="decode-close.html">🎯 Decode &amp; Close™</a>
+  <a href="analyse-influence.html">🧠 Analyse &amp; Influence</a>
+  <a href="10-etapes.html">⚡ 10 Étapes de la Vente</a>
+  <a href="coaches.html">🤖 Coachs IA</a>
+  <a href="a-propos.html">🏛️ À Propos</a>
+  <a href="mon-profil.html" style="color:var(--gold);">🧠 Mon Profil</a>
+  <a href="auth.html" class="nav-cta" id="mobileLoginBtn">Connexion →</a>
+</div>
+<script>(function(){try{var u=JSON.parse(localStorage.getItem('atlas_user')||'null');if(u&&u.id){var b=document.getElementById('navLoginBtn');if(b){b.textContent='📊 Dashboard';b.href='dashboard.html';}}}catch(e){}})();<\/script><!-- MOBILE MENU -->
+<div class="mobile-menu">
+  <a href="coaches.html">🤖 Coachs IA</a>
+  <a href="simulateur.html">🎯 Simulateur</a>
+  <a href="challenges.html">⚡ Challenges</a>
+  <a href="leaderboard.html" class="active">🏆 Classement</a>
+  <a href="missions.html">🎖️ Missions</a>
+  <a href="dashboard.html">📊 Dashboard</a>
+  <a href="chat.html" class="nav-cta">Coach IA →</a>
+</div>
+
+<!-- HERO -->
+<section class="lb-hero">
+  <div class="container">
+    <div class="lb-hero-badge">🏆 Classement mensuel</div>
+    <h1>Les meilleurs <em>closers</em><br/>du mois</h1>
+    <p class="lb-hero-sub">
+      Chaque XP gagné, chaque simulation, chaque challenge compte. 
+      Grimpe dans le classement et prouve que tu es un Atlas Élite.
+    </p>
+    <div class="lb-stats">
+      <div class="lb-stat">
+        <span class="lb-stat-num" id="statMembers">—</span>
+        <span class="lb-stat-label">Membres actifs</span>
+      </div>
+      <div class="lb-stat">
+        <span class="lb-stat-num" id="statXpTotal">—</span>
+        <span class="lb-stat-label">XP distribués ce mois</span>
+      </div>
+      <div class="lb-stat">
+        <span class="lb-stat-num" id="statSims">—</span>
+        <span class="lb-stat-label">Simulations jouées</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CLASSEMENT -->
+<div class="lb-section">
+
+  <!-- Filtres -->
+  <div class="lb-filters">
+    <button class="lb-filter-btn active" data-filter="month" onclick="setFilter('month', this)">Ce mois</button>
+    <button class="lb-filter-btn" data-filter="week" onclick="setFilter('week', this)">Cette semaine</button>
+    <button class="lb-filter-btn" data-filter="all" onclick="setFilter('all', this)">Tout temps</button>
+  </div>
+
+  <!-- PODIUM TOP 3 -->
+  <div class="lb-section-title">✦ Podium</div>
+  <div class="podium" id="podium">
+    <!-- Généré par JS -->
+  </div>
+
+  <!-- TABLE 4-10 -->
+  <div class="lb-section-title">✦ Top classement</div>
+  <table class="lb-table">
+    <tbody id="lbTable">
+      <!-- Généré par JS -->
+    </tbody>
+  </table>
+
+  <!-- TON RANG -->
+  <div id="myRankBlock" style="display:none;">
+    <div class="lb-section-title" style="margin-top:2rem;">✦ Ta position</div>
+    <div class="lb-my-rank">
+      <div class="lb-my-rank-left">
+        <div class="lb-my-rank-pos" id="myPos">—</div>
+        <div>
+          <div class="lb-my-rank-name" id="myName">Toi</div>
+          <div class="lb-my-rank-sub" id="myLevel">—</div>
+        </div>
+      </div>
+      <div>
+        <div class="lb-my-rank-xp" id="myXp">0</div>
+        <span class="lb-my-rank-xp-label">XP</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- CTA si pas inscrit -->
+  <div id="lbCta" class="lb-cta" style="display:none;">
+    <h2>Rejoins le classement</h2>
+    <p>Complète le quiz de profil, entraîne-toi avec les coachs IA et grimpe dans le classement des meilleurs closers Atlas.</p>
+    <a href="quiz.html" class="btn btn-primary">Commencer mon profil →</a>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <img src="assets/img/logo.png" alt="Atlas Académie"/>
+        <div class="footer-brand-text">Atlas Académie</div>
+        <p>L'écosystème de formation d'élite en vente, closing et psychologie comportementale.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Formations</h4>
+        <ul>
+          <li><a href="decode-close.html">→ Decode & Close™</a></li>
+          <li><a href="analyse-influence.html">→ Analyse & Influence</a></li>
+          <li><a href="10-etapes.html">→ 10 Étapes de la Vente</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Plateforme</h4>
+        <ul>
+          <li><a href="dashboard.html">→ Mon Dashboard</a></li>
+          <li><a href="leaderboard.html">→ Classement</a></li>
+          <li><a href="challenges.html">→ Challenges</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Légal</h4>
+        <ul>
+          <li><a href="cgv.html">→ CGV</a></li>
+          <li><a href="mentions-legales.html">→ Mentions légales</a></li>
+          <li><a href="confidentialite.html">→ Confidentialité</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 Atlas Académie — Tous droits réservés</p>
+      <div class="footer-legal">
+        <a href="cgv.html">CGV</a>
+        <a href="mentions-legales.html">Mentions légales</a>
+        <a href="confidentialite.html">Confidentialité</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ── GARDE D'ACCÈS — Redirection si non connecté ── */
+(function() {
+  try {
+    var u = JSON.parse(localStorage.getItem('atlas_user') || 'null');
+    if (!u || !u.id) {
+      localStorage.setItem('atlas_auth_return', window.location.pathname.split('/').pop());
+      window.location.href = 'auth.html';
+    }
+  } catch(e) {
+    window.location.href = 'auth.html';
+  }
+})();
+</script>
+<script src="assets/js/main.js"></script>
+<script src="atlas-config.js"></script>
+<script src="assets/js/gamification.js"></script>
+
+<script>
+/* ============================================================
+   LEADERBOARD — Atlas Académie Phase 4
+   Fonctionne en localStorage (sans Supabase)
+   Quand Supabase sera activé : remplacer generateMockData()
+   par un fetch vers une Netlify Function
+   ============================================================ */
+
+const LEVELS = [
+  { name:'Rookie',        min:0 },
+  { name:'Apprenti',      min:100 },
+  { name:'Vendeur',       min:300 },
+  { name:'Closer',        min:700 },
+  { name:'Pro',           min:1500 },
+  { name:'Expert',        min:3000 },
+  { name:'Maître',        min:5000 },
+  { name:'Élite',         min:7500 },
+  { name:'Champion',      min:9000 },
+  { name:'ATLAS ELITE',   min:10000 }
+];
+
+const AVATARS = ['🦁','🐯','🦅','🐉','⚡','🔥','🏹','💎','🎯','👑','🛡️','⚔️'];
+
+function getLevelName(xp) {
+  let lvl = LEVELS[0];
+  for (const l of LEVELS) { if (xp >= l.min) lvl = l; }
+  return lvl.name;
+}
+
+/* ------ Données mockées (réalistes) ------ */
+function generateMockData(filter) {
+  const names = [
+    ['Thomas M.','🦁'], ['Sarah K.','👑'], ['Lucas B.','🔥'],
+    ['Emma R.','💎'], ['Maxime D.','⚡'], ['Léa V.','🎯'],
+    ['Antoine F.','🐯'], ['Clara N.','🦅'], ['Romain P.','🛡️'],
+    ['Julie C.','⚔️']
+  ];
+  // XP de base selon filtre
+  const base = filter === 'week' ? 800 : filter === 'month' ? 4000 : 9000;
+  const spread = filter === 'week' ? 600 : filter === 'month' ? 3500 : 8000;
+
+  return names.map(([name, avatar], i) => ({
+    rank: i + 1,
+    name,
+    avatar,
+    xp: Math.max(50, Math.floor(base - i * (spread / 10) + (Math.random() * 80 - 40))),
+    badges: Math.max(1, 8 - i),
+    level: getLevelName(base - i * (spread / 10))
+  })).sort((a, b) => b.xp - a.xp).map((u, i) => ({ ...u, rank: i + 1 }));
+}
+
+/* ------ Lire le profil local ------ */
+function getMyProfile() {
+  try {
+    const g = JSON.parse(localStorage.getItem('atlas_gamification_v1') || 'null');
+    const p = JSON.parse(localStorage.getItem('atlas_user_profile') || 'null');
+    if (!g) return null;
+    return {
+      name: (p && p.name) ? p.name : 'Toi',
+      xp: g.xp || 0,
+      level: getLevelName(g.xp || 0),
+      badges: (g.badges || []).length
+    };
+  } catch { return null; }
+}
+
+/* ------ Rendu podium ------ */
+function renderPodium(data) {
+  const order = [1, 0, 2]; // 2nd, 1st, 3rd visuellement
+  const medals = ['🥇','🥈','🥉'];
+  const rankClass = ['rank-2','rank-1','rank-3'];
+
+  const html = order.map((i, col) => {
+    const u = data[i];
+    if (!u) return '<div></div>';
+    return `
+      <div class="podium-card ${rankClass[col]} fade-in">
+        <div class="podium-rank">${medals[i]}</div>
+        <div class="podium-avatar">${u.avatar}</div>
+        <div class="podium-name">${u.name}</div>
+        <div class="podium-level">${u.level}</div>
+        <div class="podium-xp">${u.xp.toLocaleString('fr-FR')}</div>
+        <div class="podium-xp-label">XP</div>
+      </div>`;
+  });
+  document.getElementById('podium').innerHTML = html.join('');
+}
+
+/* ------ Rendu tableau 4-10 ------ */
+function renderTable(data, myProfile) {
+  const rows = data.slice(3);
+  if (!rows.length) {
+    document.getElementById('lbTable').innerHTML =
+      `<tr><td colspan="4"><div class="lb-empty"><span class="lb-empty-icon">🏆</span>Le classement se remplit en cours de mois.</div></td></tr>`;
+    return;
+  }
+
+  const myName = myProfile ? myProfile.name : null;
+
+  const html = rows.map(u => {
+    const isMe = myName && u.name === myName;
+    const badgesHtml = '🏅'.repeat(Math.min(u.badges, 5));
+    return `
+      <tr class="lb-row${isMe ? ' is-me' : ''}">
+        <td class="lb-pos">${u.rank}</td>
+        <td>
+          <div class="lb-user">
+            <div class="lb-user-avatar">${u.avatar}</div>
+            <div>
+              <div class="lb-user-name">${u.name}${isMe ? ' <span style="color:var(--gold);font-size:.7rem;">(Toi)</span>' : ''}</div>
+              <div class="lb-user-level">${u.level}</div>
+            </div>
+          </div>
+        </td>
+        <td class="lb-badge-col"><span title="${u.badges} badges">${badgesHtml}</span></td>
+        <td class="lb-xp">${u.xp.toLocaleString('fr-FR')} <span style="font-size:.7rem;color:var(--gray);">XP</span></td>
+      </tr>`;
+  });
+  document.getElementById('lbTable').innerHTML = html.join('');
+}
+
+/* ------ Rendu mon rang ------ */
+function renderMyRank(data, myProfile) {
+  if (!myProfile) {
+    document.getElementById('lbCta').style.display = 'block';
+    return;
+  }
+
+  // Trouver ma position dans les données mock ou calculer
+  let pos = data.findIndex(u => u.name === myProfile.name) + 1;
+  if (pos === 0) {
+    // Insérer dans la liste selon XP
+    pos = data.filter(u => u.xp > myProfile.xp).length + 1;
+  }
+
+  document.getElementById('myRankBlock').style.display = 'block';
+  document.getElementById('myPos').textContent = '#' + pos;
+  document.getElementById('myName').textContent = myProfile.name;
+  document.getElementById('myLevel').textContent = myProfile.level + ' · ' + myProfile.badges + ' badge' + (myProfile.badges > 1 ? 's' : '');
+  document.getElementById('myXp').textContent = myProfile.xp.toLocaleString('fr-FR');
+}
+
+/* ------ Stats header ------ */
+function renderStats(data) {
+  const totalXp = data.reduce((s, u) => s + u.xp, 0);
+  document.getElementById('statMembers').textContent = data.length + '+';
+  document.getElementById('statXpTotal').textContent = totalXp.toLocaleString('fr-FR');
+  document.getElementById('statSims').textContent = Math.floor(totalXp / 20) + '+';
+}
+
+/* ------ Filtre actif ------ */
+let currentFilter = 'month';
+
+function setFilter(filter, btn) {
+  currentFilter = filter;
+  document.querySelectorAll('.lb-filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  render();
+}
+
+function render() {
+  const data = generateMockData(currentFilter);
+  const myProfile = getMyProfile();
+  renderPodium(data);
+  renderTable(data, myProfile);
+  renderMyRank(data, myProfile);
+  renderStats(data);
+}
+
+/* ------ Init ------ */
+document.addEventListener('DOMContentLoaded', () => {
+  render();
+
+  // Mise à jour nav
+  const profile = getMyProfile();
+  if (profile) {
+    document.getElementById('navCta').textContent = 'Mon espace →';
+  }
+});
+</script>
+</body>
+</html>

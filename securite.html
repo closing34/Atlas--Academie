@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sécurité & Accès — Atlas Académie</title>
+  <meta name="description" content="Gère la sécurité de ton compte Atlas Académie. Sessions actives, appareils connectés, protection du contenu."/>
+  <link rel="icon" type="image/png" href="assets/img/logo.png"/>
+  <link rel="stylesheet" href="assets/css/style.css"/>
+  <style>
+    body { background: var(--navy-dark); }
+
+    /* ── HERO ── */
+    .sec-hero {
+      padding: 110px 0 40px;
+      text-align: center;
+      position: relative;
+    }
+    .sec-hero::before {
+      content:''; position:absolute; top:0; left:0; right:0; bottom:0;
+      background: radial-gradient(ellipse at 50% 0%, rgba(201,168,76,.08) 0%, transparent 65%);
+      pointer-events:none;
+    }
+    .sec-badge {
+      display:inline-block; font-family:var(--font-title);
+      font-size:.7rem; letter-spacing:.2em; color:var(--gold);
+      border:1px solid rgba(201,168,76,.35);
+      padding:.4rem 1rem; border-radius:20px; margin-bottom:1.25rem;
+    }
+    .sec-hero h1 {
+      font-family:var(--font-title);
+      font-size:clamp(1.8rem,4vw,2.6rem);
+      color:var(--white); margin-bottom:.75rem;
+    }
+    .sec-hero h1 em { color:var(--gold); font-style:normal; }
+    .sec-hero-sub {
+      font-family:var(--font-sub); font-size:.92rem;
+      color:var(--gray); max-width:500px; margin:0 auto; line-height:1.7;
+    }
+
+    /* ── LAYOUT ── */
+    .sec-section {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 0 1.5rem 5rem;
+    }
+    .sec-block {
+      background: linear-gradient(135deg, rgba(13,27,62,.9), rgba(26,44,85,.7));
+      border: 1px solid rgba(201,168,76,.15);
+      border-radius: 14px;
+      padding: 1.75rem;
+      margin-bottom: 1.25rem;
+    }
+    .sec-block-header {
+      display:flex; align-items:flex-start; gap:1rem; margin-bottom:1.25rem;
+    }
+    .sec-block-icon {
+      width:44px; height:44px; border-radius:10px;
+      background:rgba(201,168,76,.12); border:1px solid rgba(201,168,76,.25);
+      display:flex; align-items:center; justify-content:center;
+      font-size:1.2rem; flex-shrink:0;
+    }
+    .sec-block-title {
+      font-family:var(--font-title); font-size:.95rem;
+      color:var(--white); margin-bottom:.25rem;
+    }
+    .sec-block-desc {
+      font-size:.8rem; color:var(--gray); line-height:1.6;
+    }
+    .sec-status {
+      display:inline-flex; align-items:center; gap:.4rem;
+      font-size:.72rem; padding:.25rem .75rem; border-radius:20px;
+      font-family:var(--font-sub); font-weight:600; letter-spacing:.05em;
+    }
+    .sec-status.active {
+      background:rgba(34,197,94,.1); color:#4ade80;
+      border:1px solid rgba(34,197,94,.2);
+    }
+    .sec-status.active::before {
+      content:''; width:6px; height:6px; border-radius:50%; background:#4ade80; flex-shrink:0;
+    }
+    .sec-status.warning {
+      background:rgba(251,191,36,.1); color:#fbbf24;
+      border:1px solid rgba(251,191,36,.2);
+    }
+    .sec-status.inactive {
+      background:rgba(255,255,255,.05); color:var(--gray);
+      border:1px solid rgba(255,255,255,.1);
+    }
+
+    /* Sessions */
+    .sec-sessions-list {
+      list-style:none; padding:0; margin:1rem 0 0;
+    }
+    .sec-session-item {
+      display:flex; align-items:center; gap:1rem;
+      padding:.8rem 1rem;
+      background:rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.06);
+      border-radius:8px; margin-bottom:.5rem;
+    }
+    .sec-session-item.current {
+      background:rgba(201,168,76,.07);
+      border-color:rgba(201,168,76,.2);
+    }
+    .sec-session-icon { font-size:1.2rem; flex-shrink:0; }
+    .sec-session-info { flex:1; }
+    .sec-session-device {
+      font-family:var(--font-sub); font-weight:600;
+      font-size:.82rem; color:var(--white); margin-bottom:.15rem;
+    }
+    .sec-session-meta { font-size:.72rem; color:var(--gray); }
+    .sec-session-badge {
+      font-size:.65rem; padding:.2rem .6rem; border-radius:20px;
+      background:rgba(201,168,76,.1); color:var(--gold);
+      border:1px solid rgba(201,168,76,.2); white-space:nowrap;
+    }
+
+    /* Watermark démo */
+    .sec-watermark-demo {
+      background:rgba(7,13,30,.8);
+      border:1px solid rgba(201,168,76,.15);
+      border-radius:8px; padding:1.5rem;
+      position:relative; overflow:hidden;
+      min-height:100px; margin:1rem 0;
+      display:flex; align-items:center; justify-content:center;
+    }
+    .sec-watermark-demo-text {
+      font-size:.82rem; color:var(--gray); text-align:center; position:relative; z-index:1;
+    }
+    .sec-wm-bg {
+      position:absolute; top:0; left:0; right:0; bottom:0;
+      opacity:.1; pointer-events:none;
+    }
+
+    /* Infos compte */
+    .sec-info-grid {
+      display:grid; grid-template-columns:1fr 1fr; gap:.75rem; margin-top:1rem;
+    }
+    .sec-info-item {
+      background:rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.06);
+      border-radius:8px; padding:.85rem 1rem;
+    }
+    .sec-info-label {
+      font-size:.68rem; color:var(--gray);
+      letter-spacing:.1em; text-transform:uppercase; margin-bottom:.25rem;
+    }
+    .sec-info-value {
+      font-family:var(--font-sub); font-weight:600;
+      font-size:.85rem; color:var(--white);
+      word-break:break-all;
+    }
+
+    /* CGU / Politique */
+    .sec-policy-grid {
+      display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-top:1.25rem;
+    }
+    .sec-policy-card {
+      background:rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.07);
+      border-radius:10px; padding:1.1rem;
+    }
+    .sec-policy-card h4 {
+      font-family:var(--font-title); font-size:.8rem;
+      color:var(--gold); letter-spacing:.1em; margin-bottom:.6rem;
+    }
+    .sec-policy-card ul {
+      list-style:none; padding:0; margin:0;
+    }
+    .sec-policy-card ul li {
+      font-size:.78rem; color:var(--gray);
+      padding:.3rem 0; border-bottom:1px solid rgba(255,255,255,.05);
+      display:flex; gap:.5rem; line-height:1.5;
+    }
+    .sec-policy-card ul li:last-child { border-bottom:none; }
+    .sec-policy-card ul li::before { content:'→'; color:var(--gold); flex-shrink:0; }
+
+    /* Boutons */
+    .sec-btn {
+      font-family:var(--font-title); font-size:.72rem;
+      letter-spacing:.12em; text-transform:uppercase;
+      padding:.55rem 1.1rem; border-radius:7px;
+      cursor:pointer; transition:all .2s; border:none;
+    }
+    .sec-btn-danger {
+      background:rgba(239,68,68,.1); color:#f87171;
+      border:1px solid rgba(239,68,68,.25);
+    }
+    .sec-btn-danger:hover { background:rgba(239,68,68,.2); }
+    .sec-btn-outline {
+      background:transparent; color:var(--gold);
+      border:1px solid rgba(201,168,76,.3);
+    }
+    .sec-btn-outline:hover { background:rgba(201,168,76,.1); }
+
+    /* Alerte compte partagé */
+    .sec-alert {
+      background:rgba(239,68,68,.08);
+      border:1px solid rgba(239,68,68,.25);
+      border-radius:10px; padding:1rem 1.25rem;
+      margin-bottom:1rem; display:none;
+    }
+    .sec-alert.visible { display:flex; gap:.75rem; align-items:flex-start; }
+    .sec-alert-icon { font-size:1.1rem; flex-shrink:0; margin-top:.1rem; }
+    .sec-alert-text { font-size:.82rem; color:#fca5a5; line-height:1.6; }
+    .sec-alert-text strong { color:#f87171; }
+
+    /* Section title */
+    .sec-section-header {
+      display:flex; align-items:center; gap:.75rem; margin:2rem 0 1rem;
+    }
+    .sec-section-title {
+      font-family:var(--font-title); font-size:.85rem;
+      color:var(--gold); letter-spacing:.15em; text-transform:uppercase;
+      white-space:nowrap;
+    }
+    .sec-section-line { flex:1; height:1px; background:rgba(201,168,76,.15); }
+
+    @media (max-width:600px) {
+      .sec-info-grid, .sec-policy-grid { grid-template-columns:1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <a href="index.html" class="nav-logo">
+    <img src="assets/img/logo.png" alt="Atlas Académie"/>
+    <div class="nav-logo-text">Atlas<span>Académie</span></div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html">Accueil</a></li>
+    <li><a href="decode-close.html">Decode &amp; Close™</a></li>
+    <li><a href="analyse-influence.html">Analyse &amp; Influence</a></li>
+    <li><a href="10-etapes.html">10 Étapes</a></li>
+    <li><a href="coaches.html">Coachs IA</a></li>
+    <li><a href="a-propos.html">À Propos</a></li>
+    <li><a href="mon-profil.html" style="color:var(--gold);">🧠 Mon Profil</a></li>
+    <li><a href="dashboard.html">📊 Dashboard</a></li>
+  </ul>
+  <span id="navAuthBtn">
+    <a href="auth.html" class="nav-cta" id="navLoginBtn">Connexion</a>
+  </span>
+  <button class="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
+<div class="mobile-menu">
+  <a href="index.html">🏠 Accueil</a>
+  <a href="decode-close.html">🎯 Decode &amp; Close™</a>
+  <a href="analyse-influence.html">🧠 Analyse &amp; Influence</a>
+  <a href="10-etapes.html">⚡ 10 Étapes de la Vente</a>
+  <a href="coaches.html">🤖 Coachs IA</a>
+  <a href="a-propos.html">🏛️ À Propos</a>
+  <a href="mon-profil.html" style="color:var(--gold);">🧠 Mon Profil</a>
+  <a href="auth.html" class="nav-cta" id="mobileLoginBtn">Connexion →</a>
+</div>
+<script>(function(){try{var u=JSON.parse(localStorage.getItem('atlas_user')||'null');if(u&&u.id){var b=document.getElementById('navLoginBtn');if(b){b.textContent='📊 Dashboard';b.href='dashboard.html';}}}catch(e){}})();<\/script>
+
+<!-- HERO -->
+<section class="sec-hero">
+  <div class="container">
+    <div class="sec-badge">🔒 Sécurité & Accès</div>
+    <h1>Ton compte.<br/>Tes <em>données</em>. Protégés.</h1>
+    <p class="sec-hero-sub">
+      Atlas Académie protège son contenu et ses membres avec un système de sécurité actif.
+      Consulte ici l'état de ton compte et de tes sessions.
+    </p>
+  </div>
+</section>
+
+<div class="sec-section">
+
+  <!-- Alerte partage détecté -->
+  <div class="sec-alert" id="shareAlert">
+    <div class="sec-alert-icon">⚠️</div>
+    <div class="sec-alert-text">
+      <strong>Comportement suspect détecté sur ton compte.</strong><br/>
+      Des tentatives inhabituelles ont été enregistrées. Si ce n'est pas toi, change ton mot de passe immédiatement ou contacte le support.
+    </div>
+  </div>
+
+  <!-- ── TON COMPTE ── -->
+  <div class="sec-section-header">
+    <div class="sec-section-title">✦ Ton compte</div>
+    <div class="sec-section-line"></div>
+  </div>
+
+  <div class="sec-block">
+    <div class="sec-block-header">
+      <div class="sec-block-icon">👤</div>
+      <div>
+        <div class="sec-block-title">Identité & session courante</div>
+        <div class="sec-block-desc">Informations de ton compte actif sur cet appareil.</div>
+      </div>
+      <div class="sec-status active" id="accountStatus">Connecté</div>
+    </div>
+    <div class="sec-info-grid">
+      <div class="sec-info-item">
+        <div class="sec-info-label">Nom</div>
+        <div class="sec-info-value" id="infoName">—</div>
+      </div>
+      <div class="sec-info-item">
+        <div class="sec-info-label">Plan</div>
+        <div class="sec-info-value" id="infoPlan">—</div>
+      </div>
+      <div class="sec-info-item">
+        <div class="sec-info-label">ID appareil</div>
+        <div class="sec-info-value" id="infoDevice" style="font-size:.72rem;font-family:monospace;">—</div>
+      </div>
+      <div class="sec-info-item">
+        <div class="sec-info-label">Sessions actives</div>
+        <div class="sec-info-value" id="infoSessions">—</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SESSIONS ACTIVES ── -->
+  <div class="sec-section-header">
+    <div class="sec-section-title">✦ Appareils connectés</div>
+    <div class="sec-section-line"></div>
+  </div>
+
+  <div class="sec-block">
+    <div class="sec-block-header">
+      <div class="sec-block-icon">📱</div>
+      <div>
+        <div class="sec-block-title">Sessions en cours</div>
+        <div class="sec-block-desc">
+          Maximum 2 appareils simultanés. Si tu vois un appareil inconnu, déconnecte-le immédiatement.
+        </div>
+      </div>
+    </div>
+    <ul class="sec-sessions-list" id="sessionsList">
+      <li style="color:var(--gray);font-size:.82rem;text-align:center;padding:1rem;">Chargement…</li>
+    </ul>
+    <div style="margin-top:1rem;display:flex;gap:.75rem;flex-wrap:wrap;">
+      <button class="sec-btn sec-btn-danger" onclick="disconnectAll()">
+        Déconnecter tous les appareils
+      </button>
+      <button class="sec-btn sec-btn-outline" onclick="refreshSessions()">
+        ↻ Actualiser
+      </button>
+    </div>
+  </div>
+
+  <!-- ── PROTECTION DU CONTENU ── -->
+  <div class="sec-section-header">
+    <div class="sec-section-title">✦ Protection du contenu</div>
+    <div class="sec-section-line"></div>
+  </div>
+
+  <div class="sec-block">
+    <div class="sec-block-header">
+      <div class="sec-block-icon">🔏</div>
+      <div>
+        <div class="sec-block-title">Watermark dynamique</div>
+        <div class="sec-block-desc">
+          Chaque page de la plateforme affiche ton identité en filigrane invisible.
+          Toute capture ou partage de contenu est tracé et t'identifie.
+        </div>
+      </div>
+      <div class="sec-status active">Actif</div>
+    </div>
+    <div class="sec-watermark-demo">
+      <div class="sec-wm-bg" id="wmDemoBg"></div>
+      <div class="sec-watermark-demo-text">
+        Exemple de filigrane actif sur le contenu.<br/>
+        <span style="font-size:.72rem;color:var(--gold);" id="wmDemoText">Chargement…</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec-block">
+    <div class="sec-block-header">
+      <div class="sec-block-icon">🚫</div>
+      <div>
+        <div class="sec-block-title">Protection anti-copie</div>
+        <div class="sec-block-desc">
+          Le clic droit, le copier-coller et le téléchargement sont désactivés sur les contenus de formation.
+        </div>
+      </div>
+      <div class="sec-status active">Actif</div>
+    </div>
+    <div style="font-size:.8rem;color:var(--gray);line-height:1.7;">
+      Les vidéos, PDF et ressources sont protégés contre le téléchargement direct.
+      Tout accès non autorisé est enregistré et peut entraîner la suspension du compte.
+    </div>
+  </div>
+
+  <div class="sec-block">
+    <div class="sec-block-header">
+      <div class="sec-block-icon">🕵️</div>
+      <div>
+        <div class="sec-block-title">Détection de partage de compte</div>
+        <div class="sec-block-desc">
+          Notre système surveille les comportements inhabituels : connexions multiples, captures d'écran répétées, tentatives de contournement.
+        </div>
+      </div>
+      <div class="sec-status active">Surveillé</div>
+    </div>
+    <div style="font-size:.8rem;color:var(--gray);line-height:1.7;">
+      Score de confiance de ton compte : <strong id="suspectScore" style="color:var(--gold);">—</strong>
+    </div>
+  </div>
+
+  <!-- ── RÈGLES D'UTILISATION ── -->
+  <div class="sec-section-header">
+    <div class="sec-section-title">✦ Règles d'utilisation</div>
+    <div class="sec-section-line"></div>
+  </div>
+
+  <div class="sec-block">
+    <div class="sec-policy-grid">
+      <div class="sec-policy-card">
+        <h4>✅ Ce qui est autorisé</h4>
+        <ul>
+          <li>Utiliser la plateforme sur 2 appareils personnels</li>
+          <li>Prendre des notes personnelles (hors copie directe)</li>
+          <li>Partager son certificat / diplôme personnel</li>
+          <li>Accéder au contenu depuis n'importe où</li>
+          <li>Télécharger les ressources autorisées</li>
+        </ul>
+      </div>
+      <div class="sec-policy-card">
+        <h4>🚫 Ce qui est interdit</h4>
+        <ul>
+          <li>Partager ses identifiants avec d'autres personnes</li>
+          <li>Diffuser ou revendre le contenu de formation</li>
+          <li>Utiliser le compte simultanément sur +2 appareils</li>
+          <li>Tenter de contourner les protections du site</li>
+          <li>Screenshots ou enregistrements des formations</li>
+        </ul>
+      </div>
+    </div>
+    <div style="margin-top:1rem;font-size:.78rem;color:var(--gray);line-height:1.7;background:rgba(239,68,68,.05);border:1px solid rgba(239,68,68,.15);border-radius:8px;padding:.9rem 1rem;">
+      ⚠️ Toute violation de ces règles entraîne la <strong style="color:#f87171;">suspension immédiate du compte</strong> sans remboursement, conformément aux <a href="cgv.html" style="color:var(--gold);">CGV</a>.
+    </div>
+  </div>
+
+  <!-- ── CONTACT SUPPORT ── -->
+  <div class="sec-section-header">
+    <div class="sec-section-title">✦ Besoin d'aide ?</div>
+    <div class="sec-section-line"></div>
+  </div>
+
+  <div class="sec-block" style="text-align:center;">
+    <div style="font-size:1.5rem;margin-bottom:.75rem;">🛡️</div>
+    <div style="font-family:var(--font-title);color:var(--gold);font-size:1rem;margin-bottom:.5rem;">
+      Un problème de sécurité ?
+    </div>
+    <div style="font-size:.85rem;color:var(--gray);line-height:1.7;margin-bottom:1.25rem;max-width:400px;margin-left:auto;margin-right:auto;">
+      Si tu penses que ton compte a été compromis ou utilisé sans ton autorisation, contacte-nous immédiatement.
+    </div>
+    <a href="contact.html" class="btn btn-primary btn-sm">Contacter le support →</a>
+  </div>
+
+</div>
+
+<footer>
+  <div class="container">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <img src="assets/img/logo.png" alt="Atlas Académie"/>
+        <div class="footer-brand-text">Atlas Académie</div>
+        <p>L'écosystème de formation d'élite en vente, closing et psychologie comportementale.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Plateforme</h4>
+        <ul>
+          <li><a href="dashboard.html">→ Mon Dashboard</a></li>
+          <li><a href="leaderboard.html">→ Classement</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Compte</h4>
+        <ul>
+          <li><a href="securite.html">→ Sécurité & Accès</a></li>
+          <li><a href="auth.html">→ Connexion</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Légal</h4>
+        <ul>
+          <li><a href="cgv.html">→ CGV</a></li>
+          <li><a href="mentions-legales.html">→ Mentions légales</a></li>
+          <li><a href="confidentialite.html">→ Confidentialité</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 Atlas Académie — Tous droits réservés</p>
+    </div>
+  </div>
+</footer>
+
+<script src="atlas-config.js"></script>
+<script src="assets/js/supabase-client.js"></script>
+<script src="assets/js/security.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+  // Init sécurité (watermark + détection)
+  AtlasSecurity.init({
+    watermark:    true,
+    sessionLimit: false, // pas de blocage sur la page sécu elle-même
+    shareDetect:  true,
+    contentProt:  true,
+  });
+
+  const report = AtlasSecurity.getSecurityReport();
+
+  // Infos compte
+  document.getElementById('infoName').textContent    = report.identity.name;
+  document.getElementById('infoPlan').textContent    = report.identity.plan.charAt(0).toUpperCase() + report.identity.plan.slice(1);
+  document.getElementById('infoDevice').textContent  = report.deviceId;
+  document.getElementById('infoSessions').textContent = report.activeSessions + ' / 2';
+
+  // Score de confiance
+  const score = report.suspectScore;
+  const scoreEl = document.getElementById('suspectScore');
+  if (score === 0) {
+    scoreEl.textContent = '✓ Excellent — aucune activité suspecte';
+    scoreEl.style.color = '#4ade80';
+  } else if (score < 5) {
+    scoreEl.textContent = `⚠ Moyen — ${score} événement(s) détecté(s)`;
+    scoreEl.style.color = '#fbbf24';
+    document.getElementById('shareAlert').classList.add('visible');
+  } else {
+    scoreEl.textContent = `✗ Suspect — ${score} événements détectés`;
+    scoreEl.style.color = '#f87171';
+    document.getElementById('shareAlert').classList.add('visible');
+  }
+
+  // Sessions
+  renderSessions(report.sessions);
+
+  // Watermark démo
+  const identity = report.identity;
+  const date = new Date().toLocaleDateString('fr-FR', { day:'2-digit', month:'2-digit', year:'numeric' });
+  const wmText = `${identity.name.toUpperCase()}   ·   ${identity.email || report.deviceId}   ·   Atlas Académie · ${date}`;
+  document.getElementById('wmDemoText').textContent = wmText;
+
+  // Nav
+  const u = (() => { try { return JSON.parse(localStorage.getItem('atlas_user')||'null'); } catch {return null;} })();
+  if (u) {
+    const btn = document.getElementById('navCta');
+    btn.textContent = '📊 Dashboard';
+    btn.href = 'dashboard.html';
+  }
+});
+
+function renderSessions(sessions) {
+  const list = document.getElementById('sessionsList');
+  const currentDevice = AtlasSecurity.getDeviceId();
+
+  if (!sessions || sessions.length === 0) {
+    list.innerHTML = '<li style="color:var(--gray);font-size:.82rem;text-align:center;padding:1rem;">Aucune session active.</li>';
+    return;
+  }
+
+  const browsers = ['Chrome', 'Firefox', 'Safari', 'Edge', 'Opera'];
+  const devices  = ['💻 Ordinateur', '📱 Mobile', '📟 Tablette'];
+
+  list.innerHTML = sessions.map((s, i) => {
+    const isCurrent = s.deviceId === currentDevice;
+    const ago = _timeAgo(s.lastSeen);
+    const ua  = s.userAgent || '';
+    const browser = browsers.find(b => ua.includes(b)) || 'Navigateur';
+    const deviceIcon = ua.includes('Mobile') || ua.includes('Android') ? '📱' : '💻';
+
+    return `<li class="sec-session-item${isCurrent?' current':''}">
+      <div class="sec-session-icon">${deviceIcon}</div>
+      <div class="sec-session-info">
+        <div class="sec-session-device">${browser}${isCurrent?' (cet appareil)':''}</div>
+        <div class="sec-session-meta">Dernière activité : ${ago} · ID : ${s.deviceId.substr(0,16)}…</div>
+      </div>
+      ${isCurrent ? '<span class="sec-session-badge">Actif maintenant</span>' : ''}
+    </li>`;
+  }).join('');
+}
+
+function refreshSessions() {
+  AtlasSecurity.registerSession();
+  const report = AtlasSecurity.getSecurityReport();
+  renderSessions(report.sessions);
+  document.getElementById('infoSessions').textContent = report.activeSessions + ' / 2';
+}
+
+function disconnectAll() {
+  if (!confirm('Déconnecter tous les appareils ? Tu devras te reconnecter.')) return;
+  localStorage.removeItem('atlas_security_session_v1');
+  localStorage.removeItem('atlas_user');
+  localStorage.removeItem('atlas_access');
+  localStorage.removeItem('atlas_token');
+  window.location.href = 'auth.html';
+}
+
+function _timeAgo(ts) {
+  const diff = Date.now() - ts;
+  const m = Math.floor(diff / 60000);
+  if (m < 1)  return 'à l\'instant';
+  if (m < 60) return `il y a ${m} min`;
+  const h = Math.floor(m / 60);
+  if (h < 24) return `il y a ${h}h`;
+  return `il y a ${Math.floor(h/24)} jour(s)`;
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Coach IA — Atlas Académie</title>
+  <meta name="description" content="Session de coaching IA avec Atlas Académie."/>
+  <link rel="icon" type="image/png" href="assets/img/logo.png"/>
+  <link rel="stylesheet" href="assets/css/style.css"/>
+  <style>
+    body { overflow: hidden; }
+    .chat-page { height: 100dvh; }
+  </style>
+</head>
+<body>
+
+<!-- LAYOUT PRINCIPAL : chat + panel progression côte à côte -->
+<div style="display:flex;height:100dvh;overflow:hidden;">
+
+  <!-- ── PAGE CHAT ───────────────────────────────────────────── -->
+  <div class="chat-page" id="chatPage" style="flex:1;min-width:0;">
+
+    <!-- HEADER -->
+    <div class="chat-header" id="chatHeader">
+      <a href="coaches.html" class="chat-back" title="Retour aux coachs">←</a>
+      <div class="chat-coach-avatar" id="coachAvatar">?</div>
+      <div class="chat-coach-info">
+        <div class="chat-coach-name" id="coachName">Coach</div>
+        <div class="chat-coach-status">En ligne</div>
+      </div>
+      <div class="chat-mode-badge" id="modeBadge"></div>
+
+      <!-- Badge usage (messages restants / crédits) -->
+      <div id="usageBadge"
+        style="font-size:.65rem;font-family:var(--font-title);letter-spacing:.08em;color:var(--gold);
+               border:1px solid rgba(201,168,76,0.25);padding:.2rem .55rem;border-radius:50px;
+               cursor:help;white-space:nowrap;flex-shrink:0;">
+        …
+      </div>
+
+      <!-- Bouton toggle progression (mobile) -->
+      <button id="progressToggle" title="Voir ma progression"
+        style="background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.25);color:var(--gold);font-size:.7rem;font-family:var(--font-title);letter-spacing:.1em;padding:.3rem .7rem;border-radius:50px;cursor:pointer;display:flex;align-items:center;gap:.35rem;flex-shrink:0;">
+        📊 <span style="display:none;" class="progress-label">Progression</span>
+      </button>
+    </div>
+
+    <!-- MESSAGES -->
+    <div class="chat-messages" id="chatMessages"></div>
+
+    <!-- TYPING INDICATOR -->
+    <div class="typing-indicator" id="typingIndicator" style="padding:0 1.5rem 0.5rem;">
+      <div class="bubble-avatar" id="typingAvatar"
+        style="width:28px;height:28px;font-size:.85rem;background:rgba(255,255,255,0.06);border:1px solid var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;"></div>
+      <div class="typing-dots">
+        <div class="typing-dot"></div>
+        <div class="typing-dot"></div>
+        <div class="typing-dot"></div>
+      </div>
+    </div>
+
+    <!-- QUICK TOPICS -->
+    <div class="chat-quick-topics" id="quickTopics"></div>
+
+    <!-- INPUT -->
+    <div class="chat-input-zone">
+      <div class="chat-input-row">
+        <textarea class="chat-input" id="chatInput" placeholder="Pose ta question..." rows="1" maxlength="1000"></textarea>
+        <button class="chat-send-btn" id="sendBtn" title="Envoyer">➤</button>
+      </div>
+    </div>
+
+  </div><!-- /chat-page -->
+
+  <!-- ── PANEL PROGRESSION (sidebar desktop) ─────────────────── -->
+  <div id="progressPanel" class="progress-sidebar">
+    <div style="padding:1rem;color:var(--gray);font-size:.8rem;text-align:center;">
+      Chargement de la progression…
+    </div>
+  </div>
+
+</div><!-- /layout -->
+
+<!-- OVERLAY PROGRESSION (mobile) -->
+<div class="progress-overlay" id="progressOverlay"
+  onclick="(function(){var p=document.getElementById('progressPanel'),o=document.getElementById('progressOverlay');if(p)p.classList.remove('open');if(o)o.classList.remove('active');})()"></div>
+
+<!-- ════════════════════════════════════════════════════════
+     MODAL UPGRADE — Limite atteinte / Monétisation
+     ════════════════════════════════════════════════════════ -->
+<div class="upgrade-overlay" id="upgradeModal">
+  <div class="upgrade-modal">
+
+    <!-- Close -->
+    <button class="upgrade-close" id="upgradeClose" title="Fermer">×</button>
+
+    <!-- Header -->
+    <div class="upgrade-icon">⚡</div>
+    <h3 class="upgrade-title" id="upgradeTitle">Limite atteinte</h3>
+    <p class="upgrade-message" id="upgradeMessage">Tu as utilisé tes 5 messages gratuits.</p>
+
+    <!-- Plans -->
+    <div class="upgrade-plans">
+
+      <!-- Plan PRO -->
+      <div class="upgrade-plan upgrade-plan-pro">
+        <div class="upgrade-plan-badge">RECOMMANDÉ</div>
+        <div class="upgrade-plan-name">Abonnement PRO</div>
+        <div class="upgrade-plan-price">19,99€<span>/mois</span></div>
+        <ul class="upgrade-plan-features">
+          <li>✅ 300 messages par mois</li>
+          <li>✅ 4 coachs IA spécialisés</li>
+          <li>✅ Mémoire & suivi de progression</li>
+          <li>✅ Accès toutes les formations</li>
+        </ul>
+        <a href="contact.html?plan=pro" class="btn btn-primary upgrade-cta">
+          S'abonner maintenant →
+        </a>
+      </div>
+
+      <!-- Pack Crédits -->
+      <div class="upgrade-plan upgrade-plan-credits">
+        <div class="upgrade-plan-name">Pack Crédits</div>
+        <div class="upgrade-plan-price">5€<span>/100 msgs</span></div>
+        <ul class="upgrade-plan-features">
+          <li>✅ 100 messages à la demande</li>
+          <li>✅ Sans engagement</li>
+          <li>✅ Valable 6 mois</li>
+          <li>💡 Idéal pour tester</li>
+        </ul>
+        <a href="contact.html?plan=credits" class="btn upgrade-cta-secondary">
+          Acheter un pack →
+        </a>
+      </div>
+
+    </div><!-- /upgrade-plans -->
+
+    <!-- Séparateur -->
+    <div class="upgrade-divider">ou entre un code d'accès</div>
+
+    <!-- Code d'accès -->
+    <div class="upgrade-code">
+      <div style="display:flex;gap:.5rem;">
+        <input type="text" class="access-code-input" id="upgradeCodeInput"
+          placeholder="TON CODE ICI" maxlength="30" autocomplete="off"
+          style="flex:1;text-transform:uppercase;"/>
+        <button class="btn btn-primary" id="upgradeCodeBtn"
+          style="padding:.5rem 1rem;font-size:.8rem;">→</button>
+      </div>
+      <div class="access-code-error" id="upgradeCodeError"></div>
+      <p class="access-code-hint" style="margin-top:.5rem;">
+        Code inclus avec toutes les formations Atlas Académie.
+      </p>
+    </div>
+
+  </div>
+</div><!-- /upgradeModal -->
+
+<!-- MODAL ACCÈS (ancien système, conservé pour compatibilité) -->
+<div class="access-modal-overlay" id="accessModal">
+  <div class="access-modal">
+    <div class="access-modal-icon">🔐</div>
+    <h3>Accès illimité requis</h3>
+    <p>Tu as utilisé tes <strong style="color:var(--gold);">5 messages gratuits</strong>.<br/>Entre ton code d'accès pour continuer la session.</p>
+    <input type="text" class="access-code-input" id="accessCodeInput" placeholder="TON CODE ICI" maxlength="30"/>
+    <div class="access-code-error" id="codeError"></div>
+    <button class="btn btn-primary btn-block" id="validateCodeBtn">Valider le code →</button>
+    <p class="access-code-hint">
+      Code inclus avec toutes les formations Atlas Académie.<br/>
+      <a href="contact.html">Pas encore de code ? Commence par le guide gratuit →</a>
+    </p>
+  </div>
+</div>
+
+<!-- SCRIPTS -->
+<script>
+/* ── GARDE D'ACCÈS — Redirection si non connecté ── */
+(function() {
+  try {
+    var u = JSON.parse(localStorage.getItem('atlas_user') || 'null');
+    if (!u || !u.id) {
+      localStorage.setItem('atlas_auth_return', window.location.pathname.split('/').pop());
+      window.location.href = 'auth.html';
+    }
+  } catch(e) {
+    window.location.href = 'auth.html';
+  }
+})();
+</script>
+<script src="atlas-config.js"></script>
+<script src="assets/js/supabase-client.js"></script>
+<script src="assets/js/usage.js"></script>
+<script src="assets/js/memory.js"></script>
+<script src="assets/js/gamification.js"></script>
+<script src="assets/js/challenges.js"></script>
+<script src="assets/js/coaches.js"></script>
+<script src="assets/js/chat.js"></script>
+<script src="assets/js/security.js"></script>
+</body>
+</html>

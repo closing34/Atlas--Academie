@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Challenge Vente — Atlas Académie</title>
+  <meta name="description" content="Challenge bi-hebdomadaire Atlas Académie. Vends un produit face au coach IA et accumule des points pour décrocher ton diplôme."/>
+  <link rel="icon" type="image/png" href="assets/img/logo.png"/>
+  <link rel="stylesheet" href="assets/css/style.css"/>
+  <style>
+    body { background: var(--navy-dark); }
+
+    /* ── HERO ── */
+    .cv-hero {
+      padding: 110px 0 40px;
+      text-align: center;
+      position: relative;
+    }
+    .cv-hero::before {
+      content:'';
+      position:absolute; top:0; left:0; right:0; bottom:0;
+      background: radial-gradient(ellipse at 50% 0%, rgba(201,168,76,0.1) 0%, transparent 65%);
+      pointer-events:none;
+    }
+    .cv-badge {
+      display:inline-block;
+      font-family:var(--font-title);
+      font-size:.7rem; letter-spacing:.2em; color:var(--gold);
+      border:1px solid rgba(201,168,76,.35);
+      padding:.4rem 1rem; border-radius:20px; margin-bottom:1.25rem;
+    }
+    .cv-hero h1 {
+      font-family:var(--font-title);
+      font-size:clamp(1.8rem,4vw,2.8rem);
+      color:var(--white); margin-bottom:.75rem; line-height:1.2;
+    }
+    .cv-hero h1 em { color:var(--gold); font-style:normal; }
+    .cv-hero-sub {
+      font-family:var(--font-sub); font-size:.95rem;
+      color:var(--gray); max-width:520px; margin:0 auto 1.5rem; line-height:1.7;
+    }
+
+    /* Timer changement produit */
+    .cv-timer {
+      display:inline-flex; align-items:center; gap:.5rem;
+      background:rgba(201,168,76,.08); border:1px solid rgba(201,168,76,.2);
+      border-radius:8px; padding:.5rem 1.1rem;
+      font-family:var(--font-sub); font-size:.82rem; color:var(--gold);
+    }
+    .cv-timer strong { font-family:var(--font-title); font-size:.95rem; color:var(--white); }
+
+    /* ── LAYOUT PRINCIPAL ── */
+    .cv-main {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 0 1.5rem 5rem;
+      display: grid;
+      grid-template-columns: 340px 1fr;
+      gap: 1.5rem;
+      align-items: start;
+    }
+
+    /* ── COLONNE GAUCHE : infos produit ── */
+    .cv-product-card {
+      background: linear-gradient(135deg, rgba(13,27,62,.95), rgba(26,44,85,.8));
+      border: 1px solid rgba(201,168,76,.25);
+      border-radius: 14px;
+      padding: 1.5rem;
+      position: sticky;
+      top: 90px;
+    }
+    .cv-product-slot {
+      display:flex; align-items:center; gap:.5rem;
+      font-family:var(--font-title); font-size:.65rem;
+      letter-spacing:.2em; color:var(--gold);
+      margin-bottom:1.1rem;
+    }
+    .cv-slot-dot {
+      width:8px; height:8px; border-radius:50%;
+      background:var(--gold); flex-shrink:0;
+      box-shadow:0 0 8px rgba(201,168,76,.6);
+    }
+    .cv-product-cat {
+      font-size:.7rem; color:var(--gray);
+      letter-spacing:.1em; text-transform:uppercase; margin-bottom:.4rem;
+    }
+    .cv-product-name {
+      font-family:var(--font-title); font-size:1.1rem;
+      color:var(--white); margin-bottom:.3rem; line-height:1.3;
+    }
+    .cv-product-price {
+      font-family:var(--font-title); font-size:1.5rem;
+      color:var(--gold); margin-bottom:1.1rem;
+    }
+    .cv-difficulty {
+      display:flex; align-items:center; gap:.4rem;
+      margin-bottom:1.1rem;
+    }
+    .cv-diff-label { font-size:.72rem; color:var(--gray); }
+    .cv-diff-stars span {
+      font-size:.9rem;
+      opacity:.25;
+    }
+    .cv-diff-stars span.active { opacity:1; }
+
+    .cv-divider {
+      height:1px; background:rgba(201,168,76,.15); margin:1rem 0;
+    }
+
+    .cv-product-section-title {
+      font-family:var(--font-title); font-size:.65rem;
+      letter-spacing:.15em; color:var(--gold);
+      text-transform:uppercase; margin-bottom:.6rem;
+    }
+    .cv-product-context {
+      font-size:.82rem; color:var(--gray);
+      line-height:1.6; margin-bottom:1rem;
+    }
+    .cv-objections {
+      list-style:none; padding:0; margin:0 0 1rem;
+    }
+    .cv-objections li {
+      font-size:.8rem; color:var(--off-white);
+      padding:.35rem 0; border-bottom:1px solid rgba(255,255,255,.05);
+      display:flex; align-items:flex-start; gap:.5rem; line-height:1.5;
+    }
+    .cv-objections li::before {
+      content:'⚠';
+      font-size:.75rem; color:rgba(201,168,76,.6); flex-shrink:0; margin-top:.05rem;
+    }
+    .cv-tip {
+      background:rgba(201,168,76,.07);
+      border:1px solid rgba(201,168,76,.2);
+      border-radius:8px; padding:.75rem;
+      font-size:.78rem; color:var(--gold); line-height:1.6;
+    }
+    .cv-tip-label {
+      font-family:var(--font-title); font-size:.6rem;
+      letter-spacing:.15em; display:block; margin-bottom:.3rem;
+    }
+
+    /* Score mensuel mini */
+    .cv-month-mini {
+      margin-top:1.25rem;
+      background:rgba(255,255,255,.04);
+      border-radius:8px; padding:.9rem;
+      text-align:center;
+    }
+    .cv-month-pts {
+      font-family:var(--font-title); font-size:1.6rem; color:var(--gold);
+    }
+    .cv-month-label { font-size:.7rem; color:var(--gray); letter-spacing:.1em; }
+    .cv-month-rank {
+      margin-top:.5rem; font-size:.75rem;
+      padding:.25rem .75rem; border-radius:20px; display:inline-block;
+    }
+    .cv-month-rank.expert   { background:rgba(201,168,76,.1); color:var(--gold); border:1px solid rgba(201,168,76,.25); }
+    .cv-month-rank.elite    { background:rgba(232,201,106,.1); color:#E8C96A; border:1px solid rgba(232,201,106,.3); }
+    .cv-month-rank.ultimate { background:rgba(255,215,0,.1); color:#FFD700; border:1px solid rgba(255,215,0,.3); }
+
+    /* ── COLONNE DROITE : interface chat ── */
+    .cv-chat-area {
+      background: rgba(7,13,30,.8);
+      border: 1px solid rgba(201,168,76,.15);
+      border-radius: 14px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      min-height: 600px;
+    }
+
+    .cv-chat-header {
+      background: rgba(13,27,62,.9);
+      border-bottom: 1px solid rgba(201,168,76,.15);
+      padding: .9rem 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .cv-chat-header-left {
+      display:flex; align-items:center; gap:.75rem;
+    }
+    .cv-prospect-avatar {
+      width:40px; height:40px; border-radius:50%;
+      background: rgba(201,168,76,.15);
+      border:1px solid rgba(201,168,76,.3);
+      display:flex; align-items:center; justify-content:center;
+      font-size:1.1rem;
+    }
+    .cv-prospect-name {
+      font-family:var(--font-sub); font-weight:700;
+      font-size:.9rem; color:var(--white);
+    }
+    .cv-prospect-status {
+      font-size:.7rem; color:#4ade80;
+      display:flex; align-items:center; gap:.3rem;
+    }
+    .cv-prospect-status::before {
+      content:''; width:6px; height:6px; border-radius:50%;
+      background:#4ade80; flex-shrink:0;
+    }
+    .cv-session-status {
+      font-size:.75rem; padding:.3rem .8rem; border-radius:20px;
+    }
+    .cv-session-status.active {
+      background:rgba(34,197,94,.1); color:#4ade80;
+      border:1px solid rgba(34,197,94,.2);
+    }
+    .cv-session-status.done {
+      background:rgba(201,168,76,.1); color:var(--gold);
+      border:1px solid rgba(201,168,76,.2);
+    }
+
+    /* Messages */
+    .cv-messages {
+      flex:1; padding:1.25rem;
+      overflow-y:auto; display:flex;
+      flex-direction:column; gap:.75rem;
+      min-height:400px;
+    }
+    .cv-msg {
+      max-width:80%; display:flex; flex-direction:column; gap:.2rem;
+    }
+    .cv-msg.prospect { align-self:flex-start; }
+    .cv-msg.user     { align-self:flex-end; }
+    .cv-msg-bubble {
+      padding:.7rem 1rem;
+      border-radius:12px;
+      font-size:.88rem; line-height:1.6;
+    }
+    .cv-msg.prospect .cv-msg-bubble {
+      background:rgba(26,44,85,.8);
+      border:1px solid rgba(201,168,76,.15);
+      color:var(--off-white);
+      border-radius:4px 12px 12px 12px;
+    }
+    .cv-msg.user .cv-msg-bubble {
+      background:rgba(201,168,76,.15);
+      border:1px solid rgba(201,168,76,.25);
+      color:var(--white);
+      border-radius:12px 4px 12px 12px;
+    }
+    .cv-msg-time {
+      font-size:.65rem; color:var(--gray); padding:0 .25rem;
+    }
+    .cv-msg.user .cv-msg-time { text-align:right; }
+
+    /* Typing indicator */
+    .cv-typing {
+      display:none; align-items:center; gap:.4rem;
+      padding:.5rem .75rem;
+    }
+    .cv-typing.active { display:flex; }
+    .cv-typing span {
+      width:7px; height:7px; border-radius:50%;
+      background:var(--gray);
+      animation: cv-bounce .8s infinite;
+    }
+    .cv-typing span:nth-child(2) { animation-delay:.15s; }
+    .cv-typing span:nth-child(3) { animation-delay:.3s; }
+    @keyframes cv-bounce {
+      0%,80%,100% { transform:translateY(0); opacity:.4; }
+      40% { transform:translateY(-6px); opacity:1; }
+    }
+
+    /* Input zone */
+    .cv-input-zone {
+      border-top:1px solid rgba(201,168,76,.12);
+      padding:1rem 1.25rem;
+    }
+    .cv-input-row {
+      display:flex; gap:.75rem; align-items:flex-end;
+    }
+    .cv-input {
+      flex:1; background:rgba(255,255,255,.05);
+      border:1px solid rgba(201,168,76,.2);
+      border-radius:10px; color:var(--white);
+      font-family:var(--font-body); font-size:.9rem;
+      padding:.7rem 1rem; outline:none; resize:none;
+      line-height:1.5; transition:border-color .2s;
+      min-height:44px; max-height:120px;
+    }
+    .cv-input:focus { border-color:rgba(201,168,76,.5); }
+    .cv-input::placeholder { color:var(--gray); }
+    .cv-send-btn {
+      background:linear-gradient(135deg,var(--gold),var(--gold-light));
+      color:var(--navy-dark);
+      border:none; border-radius:10px;
+      width:44px; height:44px;
+      display:flex; align-items:center; justify-content:center;
+      font-size:1.1rem; cursor:pointer;
+      transition:opacity .2s, transform .1s;
+      flex-shrink:0;
+    }
+    .cv-send-btn:hover:not(:disabled) { opacity:.9; transform:translateY(-1px); }
+    .cv-send-btn:disabled { opacity:.4; cursor:not-allowed; }
+
+    .cv-hint {
+      font-size:.72rem; color:var(--gray);
+      margin-top:.5rem; text-align:center;
+    }
+
+    /* ── RÉSULTATS SCORING ── */
+    .cv-results {
+      display:none;
+      background:linear-gradient(135deg,rgba(13,27,62,.95),rgba(26,44,85,.8));
+      border:1px solid rgba(201,168,76,.3); border-radius:14px;
+      padding:2rem; margin-top:1.5rem;
+      grid-column: 1 / -1;
+    }
+    .cv-results.visible { display:block; }
+    .cv-results-title {
+      font-family:var(--font-title); font-size:1.3rem;
+      color:var(--gold); text-align:center; margin-bottom:1.5rem;
+    }
+    .cv-score-total {
+      text-align:center; margin-bottom:2rem;
+    }
+    .cv-score-num {
+      font-family:var(--font-title); font-size:4rem; color:var(--gold);
+      line-height:1;
+    }
+    .cv-score-max { font-size:1.5rem; color:var(--gray); }
+    .cv-score-label {
+      font-size:.8rem; color:var(--gray); letter-spacing:.1em;
+      margin-top:.25rem;
+    }
+    .cv-score-vente {
+      display:inline-block; margin-top:.5rem;
+      padding:.3rem 1rem; border-radius:20px;
+      font-family:var(--font-title); font-size:.75rem; letter-spacing:.1em;
+    }
+    .cv-score-vente.won { background:rgba(34,197,94,.15); color:#4ade80; border:1px solid rgba(34,197,94,.3); }
+    .cv-score-vente.lost { background:rgba(239,68,68,.1); color:#f87171; border:1px solid rgba(239,68,68,.2); }
+
+    .cv-scores-grid {
+      display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+      gap:1rem; margin-bottom:1.5rem;
+    }
+    .cv-score-item {
+      background:rgba(255,255,255,.04); border-radius:10px; padding:1rem;
+      text-align:center;
+    }
+    .cv-score-item-num {
+      font-family:var(--font-title); font-size:1.4rem; color:var(--gold);
+    }
+    .cv-score-item-max { font-size:.8rem; color:var(--gray); }
+    .cv-score-item-label {
+      font-size:.72rem; color:var(--gray);
+      letter-spacing:.08em; margin-top:.25rem; text-transform:uppercase;
+    }
+    .cv-score-bar {
+      height:4px; background:rgba(255,255,255,.08);
+      border-radius:2px; margin-top:.5rem; overflow:hidden;
+    }
+    .cv-score-bar-fill {
+      height:100%; border-radius:2px;
+      background:linear-gradient(90deg,var(--gold-dark),var(--gold));
+      transition:width .8s ease;
+    }
+
+    .cv-feedback-grid {
+      display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1.5rem;
+    }
+    .cv-feedback-box {
+      background:rgba(255,255,255,.03); border-radius:10px; padding:1rem;
+    }
+    .cv-feedback-box-title {
+      font-family:var(--font-title); font-size:.7rem;
+      letter-spacing:.15em; margin-bottom:.75rem;
+    }
+    .cv-feedback-box.good .cv-feedback-box-title { color:#4ade80; }
+    .cv-feedback-box.improve .cv-feedback-box-title { color:#fbbf24; }
+    .cv-feedback-box ul {
+      list-style:none; padding:0; margin:0;
+    }
+    .cv-feedback-box ul li {
+      font-size:.82rem; color:var(--off-white);
+      padding:.3rem 0; border-bottom:1px solid rgba(255,255,255,.05);
+      display:flex; gap:.5rem; line-height:1.5;
+    }
+    .cv-feedback-box.good  ul li::before { content:'✓'; color:#4ade80; flex-shrink:0; }
+    .cv-feedback-box.improve ul li::before { content:'→'; color:#fbbf24; flex-shrink:0; }
+
+    .cv-conseil {
+      background:rgba(201,168,76,.08); border:1px solid rgba(201,168,76,.2);
+      border-radius:10px; padding:1.1rem 1.25rem; margin-bottom:1.5rem;
+    }
+    .cv-conseil-title {
+      font-family:var(--font-title); font-size:.65rem;
+      letter-spacing:.15em; color:var(--gold); margin-bottom:.4rem;
+    }
+    .cv-conseil p { font-size:.88rem; color:var(--off-white); line-height:1.7; }
+
+    .cv-results-actions {
+      display:flex; gap:.75rem; justify-content:center; flex-wrap:wrap;
+    }
+
+    /* État "déjà joué" */
+    .cv-played-msg {
+      background:rgba(34,197,94,.08); border:1px solid rgba(34,197,94,.2);
+      border-radius:10px; padding:1rem 1.25rem;
+      font-size:.85rem; color:#4ade80; text-align:center; margin:.75rem 0;
+      display:none;
+    }
+    .cv-played-msg.visible { display:block; }
+
+    @media (max-width: 768px) {
+      .cv-main { grid-template-columns:1fr; }
+      .cv-product-card { position:static; }
+      .cv-feedback-grid { grid-template-columns:1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <a href="index.html" class="nav-logo">
+    <img src="assets/img/logo.png" alt="Atlas Académie"/>
+    <div class="nav-logo-text">Atlas<span>Académie</span></div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html">Accueil</a></li>
+    <li><a href="decode-close.html">Decode &amp; Close™</a></li>
+    <li><a href="analyse-influence.html">Analyse &amp; Influence</a></li>
+    <li><a href="10-etapes.html">10 Étapes</a></li>
+    <li><a href="coaches.html">Coachs IA</a></li>
+    <li><a href="a-propos.html">À Propos</a></li>
+    <li><a href="mon-profil.html" style="color:var(--gold);">🧠 Mon Profil</a></li>
+    <li><a href="dashboard.html">📊 Dashboard</a></li>
+  </ul>
+  <span id="navAuthBtn">
+    <a href="auth.html" class="nav-cta" id="navLoginBtn">Connexion</a>
+  </span>
+  <button class="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
+<div class="mobile-menu">
+  <a href="index.html">🏠 Accueil</a>
+  <a href="decode-close.html">🎯 Decode &amp; Close™</a>
+  <a href="analyse-influence.html">🧠 Analyse &amp; Influence</a>
+  <a href="10-etapes.html">⚡ 10 Étapes de la Vente</a>
+  <a href="coaches.html">🤖 Coachs IA</a>
+  <a href="a-propos.html">🏛️ À Propos</a>
+  <a href="mon-profil.html" style="color:var(--gold);">🧠 Mon Profil</a>
+  <a href="auth.html" class="nav-cta" id="mobileLoginBtn">Connexion →</a>
+</div>
+<script>(function(){try{var u=JSON.parse(localStorage.getItem('atlas_user')||'null');if(u&&u.id){var b=document.getElementById('navLoginBtn');if(b){b.textContent='📊 Dashboard';b.href='dashboard.html';}}}catch(e){}})();<\/script>
+
+<!-- HERO -->
+<section class="cv-hero">
+  <div class="container">
+    <div class="cv-badge">⚔️ Challenge bi-hebdomadaire</div>
+    <h1>Vends ce produit.<br/>Décroche ton <em>diplôme</em>.</h1>
+    <p class="cv-hero-sub">
+      Deux fois par semaine, un produit identique pour tous. 
+      Performe face au coach IA, accumule des points et grimpe au classement mensuel.
+    </p>
+    <div class="cv-timer">
+      🔄 Nouveau produit dans <strong id="productTimer">…</strong>
+    </div>
+  </div>
+</section>
+
+<!-- MAIN -->
+<div class="cv-main">
+
+  <!-- ── COLONNE GAUCHE : Produit ── -->
+  <div class="cv-product-card" id="productCard">
+    <div class="cv-product-slot">
+      <div class="cv-slot-dot"></div>
+      <span id="slotLabel">Produit du moment</span>
+    </div>
+    <div class="cv-product-cat" id="productCat">—</div>
+    <div class="cv-product-name" id="productName">Chargement…</div>
+    <div class="cv-product-price" id="productPrice">—</div>
+    <div class="cv-difficulty">
+      <span class="cv-diff-label">Difficulté :</span>
+      <div class="cv-diff-stars" id="diffStars">
+        <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+      </div>
+    </div>
+    <div class="cv-divider"></div>
+    <div class="cv-product-section-title">🎯 Contexte prospect</div>
+    <div class="cv-product-context" id="productContext">—</div>
+    <div class="cv-product-section-title">⚠️ Objections attendues</div>
+    <ul class="cv-objections" id="productObjections"></ul>
+    <div class="cv-product-section-title">💡 Conseil stratégique</div>
+    <div class="cv-tip">
+      <span class="cv-tip-label">TIP DU COACH</span>
+      <span id="productTip">—</span>
+    </div>
+
+    <!-- Score mensuel -->
+    <div class="cv-month-mini">
+      <div class="cv-month-pts" id="monthPts">0</div>
+      <div class="cv-month-label">POINTS CE MOIS</div>
+      <div id="monthRank"></div>
+    </div>
+  </div>
+
+  <!-- ── COLONNE DROITE : Chat ── -->
+  <div>
+    <div class="cv-played-msg" id="playedMsg">
+      ✓ Tu as déjà joué ce challenge. Ton score est enregistré. Reviens lundi ou jeudi pour le prochain produit !
+    </div>
+
+    <div class="cv-chat-area" id="chatArea">
+      <div class="cv-chat-header">
+        <div class="cv-chat-header-left">
+          <div class="cv-prospect-avatar" id="prospectAvatar">👤</div>
+          <div>
+            <div class="cv-prospect-name" id="prospectName">Prospect en attente…</div>
+            <div class="cv-prospect-status">En ligne</div>
+          </div>
+        </div>
+        <div class="cv-session-status active" id="sessionStatus">Session en cours</div>
+      </div>
+
+      <div class="cv-messages" id="messages">
+        <div style="text-align:center;color:var(--gray);font-size:.85rem;margin:auto;">
+          <div style="font-size:2rem;margin-bottom:.5rem;">⚔️</div>
+          Démarre la simulation pour rencontrer ton prospect.
+        </div>
+      </div>
+
+      <div class="cv-typing" id="typingIndicator">
+        <span></span><span></span><span></span>
+      </div>
+
+      <div class="cv-input-zone">
+        <div class="cv-input-row">
+          <textarea
+            class="cv-input" id="userInput"
+            placeholder="Écris ton message au prospect…"
+            rows="1"
+            onkeydown="handleKeyDown(event)"
+          ></textarea>
+          <button class="cv-send-btn" id="sendBtn" onclick="sendMessage()" disabled>↑</button>
+        </div>
+        <div class="cv-hint">Appuie sur Entrée pour envoyer · Shift+Entrée pour un saut de ligne</div>
+      </div>
+    </div>
+
+    <!-- Bouton démarrer -->
+    <div style="text-align:center;margin-top:1rem;" id="startBtnWrap">
+      <button class="btn btn-primary" onclick="startChallenge()" id="startBtn">
+        ⚔️ Démarrer le challenge
+      </button>
+      <p style="font-size:.78rem;color:var(--gray);margin-top:.6rem;">
+        Le prospect sera joué par notre coach IA. Convaincs-le en moins de 15 échanges.
+      </p>
+    </div>
+
+    <!-- Bouton terminer -->
+    <div style="text-align:center;margin-top:.75rem;display:none;" id="endBtnWrap">
+      <button class="btn btn-outline btn-sm" onclick="endChallenge()">
+        ✓ Terminer et obtenir mon score
+      </button>
+    </div>
+  </div>
+
+  <!-- ── RÉSULTATS (pleine largeur) ── -->
+  <div class="cv-results" id="resultsPanel">
+    <div class="cv-results-title">📊 Résultats de ta session</div>
+
+    <div class="cv-score-total">
+      <div>
+        <span class="cv-score-num" id="totalScore">—</span>
+        <span class="cv-score-max">/100</span>
+      </div>
+      <div class="cv-score-label">SCORE GLOBAL</div>
+      <div id="venteResult"></div>
+    </div>
+
+    <div class="cv-scores-grid" id="scoresGrid"></div>
+
+    <div class="cv-conseil" id="conseilBox" style="display:none;">
+      <div class="cv-conseil-title">💡 CONSEIL CLÉ DU COACH</div>
+      <p id="conseilText"></p>
+    </div>
+
+    <div class="cv-feedback-grid">
+      <div class="cv-feedback-box good">
+        <div class="cv-feedback-box-title">✦ POINTS FORTS</div>
+        <ul id="pointsForts"></ul>
+      </div>
+      <div class="cv-feedback-box improve">
+        <div class="cv-feedback-box-title">✦ AXES D'AMÉLIORATION</div>
+        <ul id="axesAmelioration"></ul>
+      </div>
+    </div>
+
+    <div class="cv-conseil" id="feedbackCoach" style="display:none;">
+      <div class="cv-conseil-title">🎯 FEEDBACK DU COACH</div>
+      <p id="feedbackText"></p>
+    </div>
+
+    <div class="cv-results-actions">
+      <a href="leaderboard.html" class="btn btn-outline btn-sm">🏆 Voir le classement</a>
+      <a href="missions.html" class="btn btn-outline btn-sm">💼 Voir mes missions</a>
+      <button class="btn btn-primary btn-sm" onclick="resetForReplay()">🔄 Rejouer (sans score)</button>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <div class="container">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <img src="assets/img/logo.png" alt="Atlas Académie"/>
+        <div class="footer-brand-text">Atlas Académie</div>
+        <p>L'écosystème de formation d'élite en vente, closing et psychologie comportementale.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Plateforme</h4>
+        <ul>
+          <li><a href="dashboard.html">→ Mon Dashboard</a></li>
+          <li><a href="challenge-vente.html">→ Challenge Vente</a></li>
+          <li><a href="leaderboard.html">→ Classement</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Diplômes & Missions</h4>
+        <ul>
+          <li><a href="certificat.html">→ Mes Diplômes</a></li>
+          <li><a href="missions.html">→ Missions</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Légal</h4>
+        <ul>
+          <li><a href="cgv.html">→ CGV</a></li>
+          <li><a href="mentions-legales.html">→ Mentions légales</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 Atlas Académie — Tous droits réservés</p>
+    </div>
+  </div>
+</footer>
+
+<script src="atlas-config.js"></script>
+<script src="assets/js/supabase-client.js"></script>
+<script src="assets/js/gamification.js"></script>
+<script src="assets/js/products.js"></script>
+<script src="assets/js/challenge-vente.js"></script>
+
+<script>
+/* ════════════════════════════════════════════════════════
+   CHALLENGE VENTE — Interface principale
+════════════════════════════════════════════════════════ */
+
+let currentChallenge = null;
+let conversation     = [];
+let sessionStarted   = false;
+let sessionEnded     = false;
+let isScoring        = false;
+
+/* ── Infos utilisateur ── */
+function getUserName() {
+  try {
+    const p = JSON.parse(localStorage.getItem('atlas_user_profile') || '{}');
+    return p.name || 'Closer';
+  } catch { return 'Closer'; }
+}
+
+function getTotalParticipants() {
+  // Sera remplacé par un appel Supabase quand activé
+  return parseInt(localStorage.getItem('atlas_total_participants') || '0') || 247;
+}
+
+/* ── Chargement du produit ── */
+function loadProduct() {
+  currentChallenge = AtlasChallengeVente.getCurrentChallenge();
+  if (!currentChallenge) return;
+
+  const p = currentChallenge.product;
+  const slot = currentChallenge.slot;
+
+  // Labels
+  document.getElementById('slotLabel').textContent =
+    slot === 'A' ? 'Produit du lundi' : 'Produit du jeudi';
+  document.getElementById('productCat').textContent   = p.categorie;
+  document.getElementById('productName').textContent  = p.nom;
+  document.getElementById('productPrice').textContent = p.prix;
+  document.getElementById('productContext').textContent = p.contexte;
+  document.getElementById('productTip').textContent   = p.tip;
+
+  // Difficulté
+  const stars = document.querySelectorAll('.cv-diff-stars span');
+  stars.forEach((s, i) => s.classList.toggle('active', i < p.difficulte));
+
+  // Objections
+  const ul = document.getElementById('productObjections');
+  ul.innerHTML = p.objections.map(o => `<li>${o}</li>`).join('');
+
+  // Nom prospect (extrait du contexte)
+  const nameMatch = p.contexte.match(/^([A-Z][a-zéèàêîûâùïä]+(?:\s[A-Z][a-zéèàêîûâùïä]+)?)/);
+  const prospectName = nameMatch ? nameMatch[1] : 'Le prospect';
+  document.getElementById('prospectName').textContent = prospectName;
+
+  // Score mensuel
+  const monthData = AtlasChallengeVente.getCurrentMonthScore();
+  document.getElementById('monthPts').textContent = monthData.totalPoints;
+  const rank = AtlasChallengeVente.getDiplomeRank(monthData, getTotalParticipants());
+  const rankEl = document.getElementById('monthRank');
+  if (rank) {
+    const labels = { expert:'🥉 Expert Closer', elite:"🥈 Closer d'Élite", ultimate:'👑 Ultimate Closer' };
+    rankEl.innerHTML = `<span class="cv-month-rank ${rank}">${labels[rank]}</span>`;
+  }
+
+  // Déjà joué ?
+  if (AtlasChallengeVente.isCurrentChallengePlayedToday()) {
+    document.getElementById('playedMsg').classList.add('visible');
+  }
+}
+
+/* ── Timer ── */
+function updateProductTimer() {
+  const next = AtlasChallengeVente.getNextChangeDate();
+  const diff = next - new Date();
+  if (diff <= 0) { document.getElementById('productTimer').textContent = 'Bientôt !'; return; }
+  const h = Math.floor(diff/3600000);
+  const m = Math.floor((diff%3600000)/60000);
+  document.getElementById('productTimer').textContent = `${h}h ${m}min`;
+}
+
+/* ── Démarrer le challenge ── */
+async function startChallenge() {
+  if (sessionStarted) return;
+  sessionStarted = true;
+  document.getElementById('startBtnWrap').style.display = 'none';
+  document.getElementById('endBtnWrap').style.display = 'block';
+  document.getElementById('sendBtn').disabled = false;
+  document.getElementById('messages').innerHTML = '';
+  conversation = [];
+
+  const prompt = AtlasChallengeVente.generateChallengePrompt(
+    currentChallenge.product,
+    getUserName()
+  );
+
+  showTyping(true);
+  const reply = await callCoachAPI(prompt, []);
+  showTyping(false);
+
+  if (reply) {
+    addMessage('prospect', reply);
+    conversation.push({ role:'assistant', content:reply });
+  }
+}
+
+/* ── Envoyer un message ── */
+async function sendMessage() {
+  const input = document.getElementById('userInput');
+  const text  = input.value.trim();
+  if (!text || isScoring) return;
+
+  input.value = '';
+  input.style.height = 'auto';
+  addMessage('user', text);
+  conversation.push({ role:'user', content:text });
+
+  // Auto-end après 15 échanges
+  const userCount = conversation.filter(m => m.role==='user').length;
+  if (userCount >= 15) {
+    addMessage('prospect', '(15 échanges atteints — la simulation se termine ici)');
+    await endChallenge();
+    return;
+  }
+
+  document.getElementById('sendBtn').disabled = true;
+  showTyping(true);
+
+  const systemPrompt = AtlasChallengeVente.generateChallengePrompt(
+    currentChallenge.product,
+    getUserName()
+  );
+  const reply = await callCoachAPI(systemPrompt, conversation);
+  showTyping(false);
+  document.getElementById('sendBtn').disabled = false;
+
+  if (reply) {
+    addMessage('prospect', reply);
+    conversation.push({ role:'assistant', content:reply });
+  }
+}
+
+/* ── Appel API Claude ── */
+async function callCoachAPI(systemPrompt, messages) {
+  try {
+    const response = await fetch('/.netlify/functions/coach', {
+      method: 'POST',
+      headers: { 'Content-Type':'application/json' },
+      body: JSON.stringify({
+        systemPrompt,
+        messages: messages.slice(-20), // limiter le contexte
+        coachId: 'challenge_prospect',
+        userId: getUserName()
+      })
+    });
+    if (!response.ok) throw new Error('API error');
+    const data = await response.json();
+    return data.content || data.message || null;
+  } catch {
+    return '*(Connexion au coach indisponible — mode démo actif)*';
+  }
+}
+
+/* ── Terminer et scorer ── */
+async function endChallenge() {
+  if (sessionEnded || isScoring) return;
+  sessionEnded = true;
+  isScoring    = true;
+  document.getElementById('endBtnWrap').style.display   = 'none';
+  document.getElementById('sendBtn').disabled = true;
+  document.getElementById('sessionStatus').className    = 'cv-session-status done';
+  document.getElementById('sessionStatus').textContent  = 'Session terminée';
+
+  const convText = conversation.map(m =>
+    `${m.role === 'user' ? getUserName() : 'Prospect'}: ${m.content}`
+  ).join('\n\n');
+
+  const scoringPrompt = AtlasChallengeVente.generateScoringPrompt(convText, currentChallenge.product);
+
+  showTyping(true);
+  let result = null;
+  try {
+    const response = await fetch('/.netlify/functions/coach', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        systemPrompt: 'Tu es un expert en évaluation de performance commerciale. Réponds UNIQUEMENT en JSON strict.',
+        messages: [{ role:'user', content: scoringPrompt }],
+        coachId: 'scorer',
+        userId: getUserName()
+      })
+    });
+    const data = await response.json();
+    const raw  = (data.content || data.message || '').trim();
+    result     = JSON.parse(raw.replace(/```json|```/g,'').trim());
+  } catch {
+    // Score de démo si API indisponible
+    result = {
+      scores:{ accroche:9, objections:18, argumentation:15, closing:12, fluidite:7 },
+      total:61, vente_conclue: Math.random() > 0.4,
+      points_forts:['Bonne accroche initiale','Arguments pertinents sur le prix'],
+      axes_amelioration:['Traitement des objections à renforcer','Closing trop hésitant'],
+      conseil_cle:'Pose une question de confirmation avant de demander la décision finale.',
+      feedback_coach:'Tu as montré de bonnes bases. Travaille sur le rythme de la conversation et n\'hésite pas à reformuler les objections avant d\'y répondre.'
+    };
+  }
+  showTyping(false);
+  isScoring = false;
+
+  if (result) {
+    displayResults(result);
+    // Sauvegarder le score
+    if (!AtlasChallengeVente.isCurrentChallengePlayedToday()) {
+      AtlasChallengeVente.saveSessionScore(
+        currentChallenge.weekKey,
+        currentChallenge.slot,
+        result.total,
+        currentChallenge.product.id
+      );
+      // XP bonus via gamification
+      if (window.AtlasGamification) {
+        AtlasGamification.addXP(Math.floor(result.total / 5), 'challenge_vente');
+      }
+    }
+  }
+}
+
+/* ── Afficher les résultats ── */
+function displayResults(r) {
+  document.getElementById('resultsPanel').classList.add('visible');
+  document.getElementById('totalScore').textContent = r.total;
+
+  const venteEl = document.getElementById('venteResult');
+  venteEl.innerHTML = `<span class="cv-score-vente ${r.vente_conclue?'won':'lost'}">${r.vente_conclue?'✓ VENTE CONCLUE':'✗ VENTE NON CONCLUE'}</span>`;
+
+  const scoreItems = [
+    { label:'Accroche',       key:'accroche',      max:15 },
+    { label:'Objections',     key:'objections',    max:30 },
+    { label:'Argumentation',  key:'argumentation', max:25 },
+    { label:'Closing',        key:'closing',       max:20 },
+    { label:'Fluidité',       key:'fluidite',      max:10 },
+  ];
+  document.getElementById('scoresGrid').innerHTML = scoreItems.map(item => {
+    const val = r.scores[item.key] || 0;
+    const pct = Math.round((val/item.max)*100);
+    return `
+      <div class="cv-score-item">
+        <div><span class="cv-score-item-num">${val}</span><span class="cv-score-item-max">/${item.max}</span></div>
+        <div class="cv-score-item-label">${item.label}</div>
+        <div class="cv-score-bar"><div class="cv-score-bar-fill" style="width:${pct}%"></div></div>
+      </div>`;
+  }).join('');
+
+  if (r.conseil_cle) {
+    document.getElementById('conseilText').textContent = r.conseil_cle;
+    document.getElementById('conseilBox').style.display = 'block';
+  }
+
+  const pfEl = document.getElementById('pointsForts');
+  pfEl.innerHTML = (r.points_forts||[]).map(p=>`<li>${p}</li>`).join('');
+
+  const axEl = document.getElementById('axesAmelioration');
+  axEl.innerHTML = (r.axes_amelioration||[]).map(a=>`<li>${a}</li>`).join('');
+
+  if (r.feedback_coach) {
+    document.getElementById('feedbackText').textContent = r.feedback_coach;
+    document.getElementById('feedbackCoach').style.display = 'block';
+  }
+
+  document.getElementById('resultsPanel').scrollIntoView({ behavior:'smooth', block:'start' });
+}
+
+/* ── Helpers UI ── */
+function addMessage(role, text) {
+  const msgs = document.getElementById('messages');
+  const time = new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
+  const div  = document.createElement('div');
+  div.className = `cv-msg ${role}`;
+  div.innerHTML = `
+    <div class="cv-msg-bubble">${text.replace(/\n/g,'<br>')}</div>
+    <div class="cv-msg-time">${time}</div>`;
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function showTyping(show) {
+  document.getElementById('typingIndicator').classList.toggle('active', show);
+  const msgs = document.getElementById('messages');
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function handleKeyDown(e) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    sendMessage();
+  }
+  // Auto-resize textarea
+  setTimeout(() => {
+    e.target.style.height = 'auto';
+    e.target.style.height = Math.min(e.target.scrollHeight, 120) + 'px';
+  }, 0);
+}
+
+function resetForReplay() {
+  document.getElementById('resultsPanel').classList.remove('visible');
+  document.getElementById('messages').innerHTML = '<div style="text-align:center;color:var(--gray);font-size:.85rem;margin:auto;"><div style="font-size:2rem;margin-bottom:.5rem;">⚔️</div>Démarre la simulation pour rencontrer ton prospect.</div>';
+  document.getElementById('startBtnWrap').style.display = 'block';
+  document.getElementById('endBtnWrap').style.display   = 'none';
+  document.getElementById('sendBtn').disabled = true;
+  document.getElementById('sessionStatus').className   = 'cv-session-status active';
+  document.getElementById('sessionStatus').textContent = 'Session en cours';
+  sessionStarted = false;
+  sessionEnded   = false;
+  isScoring      = false;
+  conversation   = [];
+}
+
+/* ── Init ── */
+document.addEventListener('DOMContentLoaded', () => {
+  loadProduct();
+  updateProductTimer();
+  setInterval(updateProductTimer, 60000);
+});
+</script>
+</body>
+</html>

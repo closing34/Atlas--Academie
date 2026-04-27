@@ -1,0 +1,6 @@
+{
+  "name": "atlas-academie-functions",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Les dépendances sont dans le package.json racine du projet"
+}

@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mon Dashboard — Atlas Académie</title>
+  <link rel="icon" type="image/png" href="assets/img/logo.png"/>
+  <link rel="stylesheet" href="assets/css/style.css"/>
+  <style>
+    /* ── Dashboard Styles ── */
+    .dashboard-page { padding-top: 80px; min-height: 100vh; background: var(--navy-dark); }
+
+    /* Hero profil */
+    .db-hero {
+      background: linear-gradient(135deg, var(--navy-dark) 0%, var(--navy) 60%, var(--navy-mid) 100%);
+      border-bottom: 1px solid rgba(201,168,76,0.2);
+      padding: 3rem 0 2.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .db-hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 70% 50%, rgba(201,168,76,0.07) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .db-profile {
+      display: flex; align-items: center; gap: 2rem;
+      flex-wrap: wrap;
+    }
+    .db-avatar {
+      width: 90px; height: 90px; border-radius: 50%;
+      background: var(--navy-mid);
+      border: 3px solid var(--gold);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2.5rem;
+      box-shadow: 0 0 30px rgba(201,168,76,0.3);
+      flex-shrink: 0;
+    }
+    .db-info { flex: 1; }
+    .db-name { font-family: var(--font-title); font-size: 1.8rem; color: var(--white); margin-bottom: 0.25rem; }
+    .db-level-badge {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      background: rgba(201,168,76,0.15); border: 1px solid rgba(201,168,76,0.4);
+      color: var(--gold); font-family: var(--font-title); font-size: 0.7rem;
+      letter-spacing: 0.15em; text-transform: uppercase;
+      padding: 0.35rem 1rem; border-radius: 50px; margin-bottom: 0.75rem;
+    }
+    .db-xp-bar-wrap { display: flex; align-items: center; gap: 1rem; margin-top: 0.5rem; }
+    .db-xp-bar {
+      flex: 1; max-width: 300px; height: 8px;
+      background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden;
+    }
+    .db-xp-fill {
+      height: 100%; background: linear-gradient(90deg, var(--gold-dark), var(--gold));
+      border-radius: 4px; transition: width 1s ease;
+    }
+    .db-xp-text { font-size: 0.8rem; color: var(--gray); white-space: nowrap; }
+
+    /* Quick stats */
+    .db-quick-stats {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 1rem; margin-top: 2rem;
+    }
+    .db-stat-card {
+      background: rgba(255,255,255,0.04); border: 1px solid rgba(201,168,76,0.15);
+      border-radius: 10px; padding: 1.2rem 1rem; text-align: center;
+    }
+    .db-stat-num { font-family: var(--font-title); font-size: 1.8rem; color: var(--gold); }
+    .db-stat-label { font-size: 0.75rem; color: var(--gray); margin-top: 0.25rem; letter-spacing: 0.05em; }
+
+    /* Main grid */
+    .db-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem; padding: 2rem 0;
+    }
+    @media(max-width: 768px) { .db-grid { grid-template-columns: 1fr; } }
+
+    .db-card {
+      background: rgba(255,255,255,0.03); border: 1px solid rgba(201,168,76,0.15);
+      border-radius: 12px; padding: 1.75rem;
+    }
+    .db-card-title {
+      font-family: var(--font-title); font-size: 0.75rem;
+      letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 1.5rem;
+      display: flex; align-items: center; gap: 0.5rem;
+    }
+
+    /* Compétences */
+    .skill-row { margin-bottom: 1rem; }
+    .skill-header { display: flex; justify-content: space-between; margin-bottom: 0.4rem; }
+    .skill-name { font-size: 0.85rem; color: var(--off-white); }
+    .skill-score { font-size: 0.85rem; color: var(--gold); font-weight: 700; }
+    .skill-bar { height: 6px; background: rgba(255,255,255,0.08); border-radius: 3px; overflow: hidden; }
+    .skill-fill {
+      height: 100%; border-radius: 3px;
+      background: linear-gradient(90deg, var(--gold-dark), var(--gold));
+      transition: width 1.2s ease;
+    }
+    .skill-fill.low  { background: linear-gradient(90deg, #ef4444, #f87171); }
+    .skill-fill.mid  { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
+    .skill-fill.high { background: linear-gradient(90deg, var(--gold-dark), var(--gold)); }
+
+    /* Badges */
+    .badges-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 0.75rem;
+    }
+    .badge-item {
+      display: flex; flex-direction: column; align-items: center; gap: 0.4rem;
+      padding: 0.75rem 0.5rem; border-radius: 10px; text-align: center;
+      border: 1px solid rgba(201,168,76,0.2); background: rgba(201,168,76,0.05);
+      transition: var(--transition); cursor: default;
+      position: relative;
+    }
+    .badge-item:hover { border-color: var(--gold); background: rgba(201,168,76,0.1); transform: translateY(-2px); }
+    .badge-item.locked { opacity: 0.3; filter: grayscale(1); }
+    .badge-icon { font-size: 1.6rem; }
+    .badge-name { font-size: 0.6rem; color: var(--gray); letter-spacing: 0.05em; text-align: center; line-height: 1.3; }
+    .badge-item:not(.locked) .badge-name { color: var(--gold-light); }
+
+    /* Plan actuel */
+    .plan-card {
+      display: flex; align-items: center; justify-content: space-between;
+      background: rgba(201,168,76,0.08); border: 1px solid rgba(201,168,76,0.25);
+      border-radius: 10px; padding: 1.2rem 1.5rem; margin-bottom: 1.25rem;
+    }
+    .plan-name { font-family: var(--font-title); font-size: 1.1rem; color: var(--gold); }
+    .plan-detail { font-size: 0.8rem; color: var(--gray); margin-top: 0.2rem; }
+    .plan-upgrade {
+      background: var(--gold); color: var(--navy-dark);
+      font-family: var(--font-title); font-size: 0.7rem; letter-spacing: 0.1em;
+      padding: 0.5rem 1rem; border-radius: 50px; text-decoration: none;
+      transition: var(--transition);
+    }
+    .plan-upgrade:hover { background: var(--gold-light); transform: translateY(-1px); }
+
+    /* Usage bar */
+    .usage-bar-wrap { margin-top: 1rem; }
+    .usage-header { display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 0.5rem; }
+    .usage-bar { height: 10px; background: rgba(255,255,255,0.08); border-radius: 5px; overflow: hidden; }
+    .usage-fill {
+      height: 100%; border-radius: 5px;
+      background: linear-gradient(90deg, var(--gold-dark), var(--gold));
+      transition: width 1s ease;
+    }
+    .usage-fill.danger { background: linear-gradient(90deg, #ef4444, #f87171); }
+
+    /* Coachs utilisés */
+    .coach-row {
+      display: flex; align-items: center; gap: 1rem; padding: 0.75rem 0;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .coach-row:last-child { border-bottom: none; }
+    .coach-icon { font-size: 1.5rem; width: 40px; text-align: center; flex-shrink: 0; }
+    .coach-info { flex: 1; }
+    .coach-nm { font-size: 0.9rem; color: var(--off-white); }
+    .coach-msgs { font-size: 0.75rem; color: var(--gray); }
+    .coach-bar-mini { width: 80px; height: 4px; background: rgba(255,255,255,0.08); border-radius: 2px; overflow: hidden; }
+    .coach-bar-fill { height: 100%; border-radius: 2px; background: var(--gold); }
+
+    /* Streak */
+    .streak-display {
+      text-align: center; padding: 1rem;
+      background: rgba(201,168,76,0.06); border-radius: 10px;
+    }
+    .streak-num { font-family: var(--font-title); font-size: 3rem; color: var(--gold); }
+    .streak-label { font-size: 0.8rem; color: var(--gray); margin-top: 0.25rem; }
+
+    /* Tooltip badge */
+    .badge-item[data-tooltip]:hover::after {
+      content: attr(data-tooltip);
+      position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%);
+      background: var(--navy-mid); border: 1px solid rgba(201,168,76,0.3);
+      color: var(--off-white); font-size: 0.7rem; padding: 0.4rem 0.6rem;
+      border-radius: 6px; white-space: nowrap; z-index: 100; pointer-events: none;
+    }
+
+    .db-full { grid-column: 1 / -1; }
+    .empty-state { text-align: center; padding: 2rem; color: var(--gray); font-size: 0.9rem; }
+  </style>
+</head>
+<body class="has-promo-bar">
+
+<!-- BARRE PROMO -->
+<div class="promo-bar">
+  🔥 LANCEMENT — Accès à toutes les formations à tarif réduit &nbsp;|&nbsp; Offre limitée
+  <button class="promo-close" style="background:none;border:none;cursor:pointer;color:var(--navy);font-size:1rem;margin-left:1rem;font-weight:700;" title="Fermer">✕</button>
+</div>
+
+<!-- NAVIGATION -->
+<nav class="navbar">
+  <a href="index.html" class="nav-logo">
+    <img src="assets/img/logo.png" alt="Atlas Académie"/>
+    <div class="nav-logo-text">Atlas<span>Académie</span></div>
+  </a>
+    <ul class="nav-links">
+    <li><a href="formations.html">Formations</a></li>
+    <li><a href="coaches.html">Coachs IA</a></li>
+    <li><a href="simulateur.html">Simulateur</a></li>
+    <li><a href="challenges.html">⚡ Challenges</a></li>
+    <li><a href="leaderboard.html">🏆 Classement</a></li>
+    <li><a href="mon-profil.html" style="color:var(--gold);">🧠 Mon Profil</a></li>
+    <li><a href="dashboard.html" class="active">Dashboard</a></li>
+  </ul>
+  <a href="chat.html" class="nav-cta">Coach IA →</a>
+  <button class="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
+
+<div class="dashboard-page">
+
+  <!-- ── HERO PROFIL ── -->
+  <section class="db-hero">
+    <div class="container">
+      <div class="db-profile">
+        <div class="db-avatar" id="dbAvatar">👤</div>
+        <div class="db-info">
+          <div class="db-level-badge" id="dbLevelBadge">⭐ Rookie · Niveau 1</div>
+          <div class="db-name" id="dbName">Mon Profil</div>
+          <div class="db-xp-bar-wrap">
+            <div class="db-xp-bar">
+              <div class="db-xp-fill" id="dbXpFill" style="width:0%"></div>
+            </div>
+            <span class="db-xp-text" id="dbXpText">0 XP</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Stats -->
+      <div class="db-quick-stats">
+        <div class="db-stat-card">
+          <div class="db-stat-num" id="statMsgs">0</div>
+          <div class="db-stat-label">Messages IA</div>
+        </div>
+        <div class="db-stat-card">
+          <div class="db-stat-num" id="statScore">—</div>
+          <div class="db-stat-label">Score Global</div>
+        </div>
+        <div class="db-stat-card">
+          <div class="db-stat-num" id="statBadges">0</div>
+          <div class="db-stat-label">Badges</div>
+        </div>
+        <div class="db-stat-card">
+          <div class="db-stat-num" id="statStreak">0</div>
+          <div class="db-stat-label">Jours consécutifs 🔥</div>
+        </div>
+        <div class="db-stat-card">
+          <div class="db-stat-num" id="statLevel">1</div>
+          <div class="db-stat-label">Niveau actuel</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CONTENU PRINCIPAL ── -->
+  <section class="section" style="padding-top: 2rem;">
+    <div class="container">
+      <div class="db-grid">
+
+        <!-- Compétences -->
+        <div class="db-card">
+          <div class="db-card-title">🎯 Compétences</div>
+          <div id="skillsContainer">
+            <div class="empty-state">Commence à utiliser les coachs pour voir ta progression.</div>
+          </div>
+        </div>
+
+        <!-- Mon Plan + Usage -->
+        <div class="db-card">
+          <div class="db-card-title">💳 Mon Plan</div>
+          <div id="planContainer"></div>
+          <div class="usage-bar-wrap" id="usageBarWrap"></div>
+        </div>
+
+        <!-- ── ANALYSE COMPORTEMENTALE ── -->
+        <div class="db-card db-full" style="background:linear-gradient(135deg,rgba(201,168,76,0.07) 0%,rgba(10,22,40,0.95) 100%);border-color:rgba(201,168,76,0.35);position:relative;overflow:hidden;">
+          <div style="position:absolute;top:-30px;right:-30px;font-size:8rem;opacity:0.05;pointer-events:none;">🧠</div>
+          <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
+            <div>
+              <div class="db-card-title" style="margin-bottom:0.5rem;">🧠 Ton Profil de Vendeur</div>
+              <p style="font-size:0.88rem;color:var(--gray);max-width:480px;line-height:1.6;margin:0;">
+                Découvre ton profil comportemental en 15 questions. L'IA analyse ta façon de vendre et te révèle tes forces cachées — <span style="color:var(--gold);">gratuit, en 3 min</span>.
+              </p>
+            </div>
+            <a href="analyse-gratuite.html" style="
+              display:inline-flex;align-items:center;gap:0.6rem;
+              background:linear-gradient(135deg,var(--gold),var(--gold-light));
+              color:var(--navy-dark);font-family:var(--font-title);font-size:0.75rem;
+              font-weight:700;letter-spacing:0.15em;padding:0.9rem 2rem;
+              border-radius:50px;text-decoration:none;white-space:nowrap;
+              box-shadow:0 4px 20px rgba(201,168,76,0.35);transition:all .2s;
+            " onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 30px rgba(201,168,76,0.5)'" onmouseout="this.style.transform='';this.style.boxShadow='0 4px 20px rgba(201,168,76,0.35)'">
+              FAIRE L'ANALYSE →
+            </a>
+          </div>
+          <div id="dbBilanSaved" style="display:none;margin-top:1.25rem;padding-top:1.25rem;border-top:1px solid rgba(201,168,76,0.15);">
+            <div style="font-size:0.75rem;color:var(--gray);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.5rem;">Ton dernier profil</div>
+            <div id="dbBilanContent" style="font-size:0.9rem;color:var(--gold);font-family:var(--font-title);letter-spacing:0.05em;"></div>
+          </div>
+        </div>
+
+        <!-- Badges -->
+        <div class="db-card db-full">
+          <div class="db-card-title">🏅 Badges</div>
+          <div class="badges-grid" id="badgesGrid"></div>
+        </div>
+
+        <!-- Coachs utilisés -->
+        <div class="db-card">
+          <div class="db-card-title">🤖 Coachs utilisés</div>
+          <div id="coachesContainer">
+            <div class="empty-state">Aucune session pour l'instant.</div>
+          </div>
+        </div>
+
+        <!-- Streak & objectif -->
+        <div class="db-card">
+          <div class="db-card-title">⚡ Activité</div>
+          <div class="streak-display">
+            <div class="streak-num" id="streakNum">0</div>
+            <div class="streak-label">Jours consécutifs 🔥</div>
+          </div>
+          <div style="margin-top:1.5rem;">
+            <div class="db-card-title" style="margin-bottom:0.75rem;">🎯 Prochain niveau</div>
+            <div id="nextLevelInfo" style="font-size:0.85rem; color:var(--gray);"></div>
+          </div>
+        </div>
+
+        <!-- ── MES FORMATIONS ── -->
+        <div class="db-card db-full" style="border-color:rgba(201,168,76,0.3);">
+          <div class="db-card-title" style="justify-content:space-between;">
+            <span>🎓 Mes Formations</span>
+            <a href="formations.html" style="font-size:0.75rem;color:var(--gold);text-decoration:none;font-family:var(--font-body);letter-spacing:0;text-transform:none;font-weight:600;">Voir tout →</a>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;margin-top:4px;">
+
+            <a href="formation-player.html?id=ultimate-closing" style="text-decoration:none;">
+              <div style="background:rgba(192,57,43,0.1);border:1px solid rgba(192,57,43,0.25);border-radius:12px;padding:16px;transition:all .2s;" onmouseover="this.style.borderColor='rgba(201,168,76,0.5)';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='rgba(192,57,43,0.25)';this.style.transform=''">
+                <div style="font-size:1.6rem;margin-bottom:8px;">🔥</div>
+                <div style="font-family:Georgia,serif;font-size:0.95rem;color:#fff;margin-bottom:4px;">Ultimate Closing Mastery</div>
+                <div style="font-size:0.75rem;color:#94a3b8;margin-bottom:10px;">10 phases · 20 leçons · 9h</div>
+                <div style="font-size:0.7rem;color:var(--gold);font-weight:700;letter-spacing:0.08em;">▶ CONTINUER</div>
+              </div>
+            </a>
+
+            <a href="formation-player.html?id=modules-terrain" style="text-decoration:none;">
+              <div style="background:rgba(39,174,96,0.08);border:1px solid rgba(39,174,96,0.2);border-radius:12px;padding:16px;transition:all .2s;" onmouseover="this.style.borderColor='rgba(201,168,76,0.5)';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='rgba(39,174,96,0.2)';this.style.transform=''">
+                <div style="font-size:1.6rem;margin-bottom:8px;">⚡</div>
+                <div style="font-family:Georgia,serif;font-size:0.95rem;color:#fff;margin-bottom:4px;">Modules Terrain</div>
+                <div style="font-size:0.75rem;color:#94a3b8;margin-bottom:10px;">5 contextes · 10 leçons · 4h</div>
+                <div style="font-size:0.7rem;color:var(--gold);font-weight:700;letter-spacing:0.08em;">▶ CONTINUER</div>
+              </div>
+            </a>
+
+            <a href="formation-player.html?id=lecture-comportementale" style="text-decoration:none;">
+              <div style="background:rgba(52,152,219,0.08);border:1px solid rgba(52,152,219,0.2);border-radius:12px;padding:16px;transition:all .2s;" onmouseover="this.style.borderColor='rgba(201,168,76,0.5)';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='rgba(52,152,219,0.2)';this.style.transform=''">
+                <div style="font-size:1.6rem;margin-bottom:8px;">🧠</div>
+                <div style="font-family:Georgia,serif;font-size:0.95rem;color:#fff;margin-bottom:4px;">Lecture Comportementale</div>
+                <div style="font-size:0.75rem;color:#94a3b8;margin-bottom:10px;">4 profils · 8 leçons · 3h</div>
+                <div style="font-size:0.7rem;color:var(--gold);font-weight:700;letter-spacing:0.08em;">▶ CONTINUER</div>
+              </div>
+            </a>
+
+            <a href="formation-player.html?id=detection-contraintes" style="text-decoration:none;">
+              <div style="background:rgba(155,89,182,0.08);border:1px solid rgba(155,89,182,0.2);border-radius:12px;padding:16px;transition:all .2s;" onmouseover="this.style.borderColor='rgba(201,168,76,0.5)';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='rgba(155,89,182,0.2)';this.style.transform=''">
+                <div style="font-size:1.6rem;margin-bottom:8px;">🎯</div>
+                <div style="font-family:Georgia,serif;font-size:0.95rem;color:#fff;margin-bottom:4px;">Détection des Contraintes</div>
+                <div style="font-size:0.75rem;color:#94a3b8;margin-bottom:10px;">4 contraintes · 3 leçons · 1h30</div>
+                <div style="font-size:0.7rem;color:var(--gold);font-weight:700;letter-spacing:0.08em;">▶ CONTINUER</div>
+              </div>
+            </a>
+
+          </div>
+        </div>
+
+        <!-- ── CHALLENGES HEBDOMADAIRES ── -->
+        <div class="db-card db-full">
+          <div class="db-card-title" style="justify-content:space-between;">
+            <span>⚡ Challenges de la semaine</span>
+            <span id="challengeWeekLabel" style="font-size:0.7rem;color:var(--gray);font-family:var(--font-body);letter-spacing:0;text-transform:none;font-weight:400;"></span>
+          </div>
+          <div id="challengesSummaryBar" style="display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;flex-wrap:wrap;">
+            <div style="flex:1;height:8px;background:rgba(255,255,255,0.08);border-radius:4px;overflow:hidden;min-width:120px;">
+              <div id="challengesProgressBar" style="height:100%;background:linear-gradient(90deg,var(--gold-dark),var(--gold));border-radius:4px;width:0%;transition:width 1s ease;"></div>
+            </div>
+            <span id="challengesProgressText" style="font-size:0.8rem;color:var(--gray);white-space:nowrap;">0 / 5 complétés</span>
+            <span id="challengesXpLeft" style="font-size:0.78rem;color:var(--gold);white-space:nowrap;"></span>
+          </div>
+          <div id="challengesGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem;"></div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- Footer simplifié -->
+<footer style="text-align:center; padding:2rem; border-top:1px solid rgba(201,168,76,0.1); color:var(--gray); font-size:0.8rem;">
+  <a href="index.html" style="color:var(--gold);">Atlas Académie</a> · Tous droits réservés
+</footer>
+
+<script>
+/* ── GARDE D'ACCÈS — Redirection si non connecté ── */
+(function() {
+  try {
+    var u = JSON.parse(localStorage.getItem('atlas_user') || 'null');
+    if (!u || !u.id) {
+      localStorage.setItem('atlas_auth_return', 'dashboard.html');
+      window.location.href = 'auth.html';
+    }
+  } catch(e) {
+    window.location.href = 'auth.html';
+  }
+})();
+</script>
+<script src="atlas-config.js"></script>
+<script src="assets/js/supabase-client.js"></script>
+<script src="assets/js/main.js"></script>
+<script src="assets/js/usage.js"></script>
+<script src="assets/js/memory.js"></script>
+<script src="assets/js/gamification.js"></script>
+<script src="assets/js/challenges.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  // Afficher le dernier bilan comportemental
+  (function() {
+    try {
+      var bilan = JSON.parse(localStorage.getItem('atlas_bilan') || 'null');
+      if (bilan && bilan.profile) {
+        var el = document.getElementById('dbBilanSaved');
+        var content = document.getElementById('dbBilanContent');
+        if (el && content) {
+          content.textContent = bilan.emoji + ' ' + bilan.profile + ' — ' + (bilan.date || '');
+          el.style.display = 'block';
+          // Changer le bouton
+          var btn = el.previousElementSibling && el.previousElementSibling.querySelector('a');
+          if (btn) btn.textContent = 'REFAIRE L\'ANALYSE →';
+        }
+      }
+    } catch(e) {}
+  })();
+
+  const SKILL_LABELS = {
+    closing:    { label: 'Closing',         icon: '🔐' },
+    discovery:  { label: 'Découverte',       icon: '🔍' },
+    objections: { label: 'Objections',       icon: '🛡️'  },
+    mindset:    { label: 'Mindset',          icon: '🧠' },
+    persuasion: { label: 'Persuasion',       icon: '💡' },
+    disc:       { label: 'Profiling DISC',   icon: '🎭' },
+    confidence: { label: 'Confiance',        icon: '💪' },
+  };
+
+  const COACH_INFO = {
+    stratege:   { name: 'Le Stratège',           icon: '🧊' },
+    mentor:     { name: 'Le Mentor',              icon: '📚' },
+    architecte: { name: "L'Architecte du Pouvoir",icon: '⚡' },
+    profileur:  { name: 'Le Profileur DISC',      icon: '🎭' },
+  };
+
+  function init() {
+    const gam   = AtlasGamification.getSummary();
+    const usage = window.AtlasUsage ? window.AtlasUsage.getUsageSummary() : null;
+    const mem   = window.AtlasMemory ? window.AtlasMemory.getContext() : null;
+
+    renderProfile(gam, mem);
+    renderStats(gam, usage, mem);
+    renderSkills(mem);
+    renderPlan(usage);
+    renderBadges(gam);
+    renderCoaches(mem);
+    renderActivity(gam);
+  }
+
+  function renderProfile(gam, mem) {
+    const lvl  = gam.level;
+
+    // Priorité : prénom du quiz > email Supabase > défaut
+    const authUser = window.AtlasAuth ? window.AtlasAuth.getUser() : null;
+    const name = mem?.user?.name
+              || (authUser ? authUser.email.split('@')[0] : null)
+              || 'Closer';
+
+    // Afficher email + bouton déconnexion si connecté via Supabase
+    if (authUser && authUser.mode === 'supabase') {
+      const emailEl = document.createElement('div');
+      emailEl.style.cssText = 'font-size:.75rem;color:var(--gray);margin-top:.25rem;display:flex;align-items:center;gap:.75rem;';
+      emailEl.innerHTML = `<span>📧 ${authUser.email}</span>
+        <button onclick="window.AtlasAuth && window.AtlasAuth.logout()"
+          style="background:rgba(239,68,68,.12);color:#f87171;border:1px solid rgba(239,68,68,.25);
+          border-radius:4px;font-size:.7rem;padding:.15rem .5rem;cursor:pointer;">
+          Se déconnecter
+        </button>`;
+      const infoEl = document.getElementById('dbName').parentElement;
+      if (!document.getElementById('dbEmailRow')) {
+        emailEl.id = 'dbEmailRow';
+        infoEl.appendChild(emailEl);
+      }
+    }
+
+    document.getElementById('dbAvatar').textContent   = lvl.icon;
+    document.getElementById('dbAvatar').style.borderColor = lvl.color;
+    document.getElementById('dbName').textContent     = name;
+    document.getElementById('dbLevelBadge').textContent = `${lvl.icon} ${lvl.name} · Niveau ${lvl.level}`;
+    document.getElementById('dbLevelBadge').style.color       = lvl.color;
+    document.getElementById('dbLevelBadge').style.borderColor = lvl.color + '66';
+    document.getElementById('dbLevelBadge').style.background  = lvl.color + '22';
+
+    // XP bar
+    setTimeout(() => {
+      document.getElementById('dbXpFill').style.width = lvl.progress + '%';
+    }, 300);
+    const xpNext = lvl.next ? `${gam.xp} / ${lvl.next.xp} XP` : `${gam.xp} XP · MAX`;
+    document.getElementById('dbXpText').textContent = xpNext;
+  }
+
+  function renderStats(gam, usage, mem) {
+    const msgs   = usage?.messagesUsed || 0;
+    const scores = mem?.scores || {};
+    const avg    = Object.values(scores).length
+      ? (Object.values(scores).reduce((a, b) => a + b, 0) / Object.values(scores).length).toFixed(1)
+      : '—';
+
+    document.getElementById('statMsgs').textContent   = msgs;
+    document.getElementById('statScore').textContent  = avg !== '—' ? avg + '/10' : '—';
+    document.getElementById('statBadges').textContent = gam.badges.length;
+    document.getElementById('statStreak').textContent = gam.streakDays;
+    document.getElementById('statLevel').textContent  = gam.level.level;
+  }
+
+  function renderSkills(mem) {
+    const scores = mem?.scores || {};
+    const keys   = Object.keys(SKILL_LABELS);
+    if (!keys.some(k => scores[k])) return;
+
+    const html = keys.map(k => {
+      const val   = scores[k] || 5;
+      const pct   = (val / 10) * 100;
+      const cls   = val >= 8 ? 'high' : val >= 6 ? 'mid' : 'low';
+      const info  = SKILL_LABELS[k];
+      return `
+        <div class="skill-row">
+          <div class="skill-header">
+            <span class="skill-name">${info.icon} ${info.label}</span>
+            <span class="skill-score">${val}/10</span>
+          </div>
+          <div class="skill-bar">
+            <div class="skill-fill ${cls}" style="width:0%" data-pct="${pct}"></div>
+          </div>
+        </div>`;
+    }).join('');
+
+    document.getElementById('skillsContainer').innerHTML = html;
+    setTimeout(() => {
+      document.querySelectorAll('.skill-fill[data-pct]').forEach(el => {
+        el.style.width = el.dataset.pct + '%';
+      });
+    }, 400);
+  }
+
+  function renderPlan(usage) {
+    if (!usage) return;
+    const PLAN_ICONS = { free: '🔓', pro: '💰', unlimited: '♾️', credits: '💣', test: '🧪' };
+    const icon   = PLAN_ICONS[usage.plan] || '🔓';
+    const isUnlimited = usage.plan === 'unlimited' || usage.messagesLimit === -1;
+
+    let detail = '';
+    if (usage.plan === 'credits') detail = `${usage.creditsRemaining} crédits restants`;
+    else if (isUnlimited)        detail = 'Messages illimités';
+    else                         detail = `${usage.messagesUsed} / ${usage.messagesLimit} messages ce mois`;
+
+    const showUpgrade = usage.plan === 'free' || usage.plan === 'test';
+
+    document.getElementById('planContainer').innerHTML = `
+      <div class="plan-card">
+        <div>
+          <div class="plan-name">${icon} ${usage.planLabel}</div>
+          <div class="plan-detail">${detail}</div>
+        </div>
+        ${showUpgrade ? `<a href="checkout.html" class="plan-upgrade">Upgrader →</a>` : ''}
+      </div>`;
+
+    if (!isUnlimited && usage.plan !== 'credits') {
+      const pct  = Math.min(100, usage.percentUsed);
+      const cls  = pct >= 80 ? 'danger' : '';
+      document.getElementById('usageBarWrap').innerHTML = `
+        <div class="usage-header">
+          <span style="color:var(--gray);font-size:0.8rem;">Utilisation mensuelle</span>
+          <span style="color:var(--gold);font-size:0.8rem;">${usage.messagesUsed} / ${usage.messagesLimit}</span>
+        </div>
+        <div class="usage-bar">
+          <div class="usage-fill ${cls}" style="width:${pct}%"></div>
+        </div>`;
+    }
+  }
+
+  function renderBadges(gam) {
+    const earned = new Set(gam.badges.map(b => b.id));
+    const allDef = gam.allBadges;
+
+    const html = Object.entries(allDef).map(([id, b]) => {
+      const isEarned = earned.has(id);
+      return `
+        <div class="badge-item ${isEarned ? '' : 'locked'}" data-tooltip="${b.desc}">
+          <span class="badge-icon">${b.icon}</span>
+          <span class="badge-name">${b.name}</span>
+        </div>`;
+    }).join('');
+
+    document.getElementById('badgesGrid').innerHTML = html;
+  }
+
+  function renderCoaches(mem) {
+    if (!mem?.coaches) return;
+    const coaches = Object.entries(mem.coaches).filter(([, c]) => c.total > 0);
+    if (!coaches.length) return;
+
+    const maxMsgs = Math.max(...coaches.map(([, c]) => c.total));
+    const html = coaches.map(([id, c]) => {
+      const info = COACH_INFO[id] || { name: id, icon: '🤖' };
+      const pct  = maxMsgs > 0 ? (c.total / maxMsgs) * 100 : 0;
+      return `
+        <div class="coach-row">
+          <div class="coach-icon">${info.icon}</div>
+          <div class="coach-info">
+            <div class="coach-nm">${info.name}</div>
+            <div class="coach-msgs">${c.total} message${c.total > 1 ? 's' : ''}</div>
+          </div>
+          <div class="coach-bar-mini">
+            <div class="coach-bar-fill" style="width:${pct}%"></div>
+          </div>
+        </div>`;
+    }).join('');
+
+    document.getElementById('coachesContainer').innerHTML = html;
+  }
+
+  function renderActivity(gam) {
+    document.getElementById('streakNum').textContent = gam.streakDays;
+    const lvl  = gam.level;
+    const next = lvl.next;
+    if (next) {
+      const xpLeft = next.xp - gam.xp;
+      document.getElementById('nextLevelInfo').innerHTML = `
+        <span style="color:var(--off-white);">Prochain : <strong style="color:${next.color}">${next.icon} ${next.name}</strong></span><br/>
+        <span>${xpLeft} XP restants · ${lvl.progress}% accompli</span>`;
+    } else {
+      document.getElementById('nextLevelInfo').innerHTML =
+        `<span style="color:var(--gold);">🌟 Niveau maximum atteint — ATLAS ELITE</span>`;
+    }
+  }
+
+  function renderChallenges() {
+    if (!window.AtlasChallenges) return;
+    const summary = AtlasChallenges.getSummary();
+    const { challenges, done, total, xpAvail, daysLeft } = summary;
+
+    // Barre de progression globale
+    const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+    setTimeout(() => {
+      document.getElementById('challengesProgressBar').style.width = pct + '%';
+    }, 400);
+    document.getElementById('challengesProgressText').textContent = `${done} / ${total} complétés`;
+    document.getElementById('challengesXpLeft').textContent       = xpAvail > 0 ? `+${xpAvail} XP disponibles` : '🏆 Semaine parfaite !';
+    document.getElementById('challengeWeekLabel').textContent     = `Reset dans ${daysLeft} jour${daysLeft > 1 ? 's' : ''}`;
+
+    const DIFF_STYLE = {
+      easy:   { label: 'Facile',  color: '#22c55e', bg: 'rgba(34,197,94,0.1)',   border: 'rgba(34,197,94,0.25)'   },
+      medium: { label: 'Moyen',   color: '#f59e0b', bg: 'rgba(245,158,11,0.1)',  border: 'rgba(245,158,11,0.25)'  },
+      hard:   { label: 'Difficile',color: '#ef4444', bg: 'rgba(239,68,68,0.1)',   border: 'rgba(239,68,68,0.25)'   },
+    };
+
+    const html = challenges.map(ch => {
+      const diff  = DIFF_STYLE[ch.difficulty] || DIFF_STYLE.medium;
+      const done  = ch.completed;
+      const pct   = ch.pct || 0;
+      return `
+        <div style="
+          background:${done ? 'rgba(34,197,94,0.06)' : 'rgba(255,255,255,0.03)'};
+          border:1px solid ${done ? 'rgba(34,197,94,0.3)' : 'rgba(201,168,76,0.12)'};
+          border-radius:12px;padding:1.25rem;position:relative;overflow:hidden;
+          transition:all 0.3s ease;
+        ">
+          ${done ? '<div style="position:absolute;top:10px;right:12px;font-size:1.1rem;">✅</div>' : ''}
+          <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.85rem;">
+            <div style="font-size:1.6rem;flex-shrink:0;">${ch.icon}</div>
+            <div style="flex:1;">
+              <div style="font-family:var(--font-title);font-size:0.85rem;color:${done ? '#4ade80' : 'var(--white)'};margin-bottom:0.2rem;">${ch.title}</div>
+              <div style="font-size:0.75rem;color:var(--gray);line-height:1.4;">${ch.desc}</div>
+            </div>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;">
+            <span style="font-size:0.72rem;background:${diff.bg};border:1px solid ${diff.border};color:${diff.color};padding:0.15rem 0.6rem;border-radius:50px;">${diff.label}</span>
+            <span style="font-size:0.78rem;color:var(--gold);font-weight:700;">+${ch.xp} XP</span>
+          </div>
+          <div style="height:5px;background:rgba(255,255,255,0.08);border-radius:3px;overflow:hidden;">
+            <div style="height:100%;width:${pct}%;background:${done ? 'linear-gradient(90deg,#16a34a,#4ade80)' : 'linear-gradient(90deg,var(--gold-dark),var(--gold))'};border-radius:3px;transition:width 1s ease;"></div>
+          </div>
+          <div style="font-size:0.72rem;color:var(--gray);margin-top:0.4rem;text-align:right;">
+            ${done ? 'Complété !' : `${ch.progress} / ${ch.target}`}
+          </div>
+        </div>`;
+    }).join('');
+
+    document.getElementById('challengesGrid').innerHTML = html;
+  }
+
+  document.addEventListener('DOMContentLoaded', () => { init(); renderChallenges(); });
+})();
+</script>
+<script src="assets/js/security.js"></script>
+</body>
+</html>

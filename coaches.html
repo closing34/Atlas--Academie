@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Coachs IA — Atlas Académie</title>
+  <meta name="description" content="Entraîne-toi avec nos 4 coachs IA spécialisés : Le Stratège, Le Mentor, L'Architecte du Pouvoir et Le Profileur DISC."/>
+  <link rel="icon" type="image/png" href="assets/img/logo.png"/>
+  <link rel="stylesheet" href="assets/css/style.css"/>
+</head>
+<body>
+
+<nav class="navbar">
+  <a href="index.html" class="nav-logo"><img src="assets/img/logo.png" alt="Atlas Académie"/><div class="nav-logo-text">Atlas<span>Académie</span></div></a>
+  <ul class="nav-links">
+    <li><a href="index.html">Accueil</a></li>
+    <li><a href="formations.html">Formations</a></li>
+    <li><a href="coaches.html" style="color:var(--gold);">Coachs IA</a></li>
+    <li><a href="dashboard.html">Mon Espace</a></li>
+  </ul>
+  <a href="auth.html" class="nav-cta" id="navLoginBtn">Connexion</a>
+  <button class="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
+<div class="mobile-menu">
+  <a href="index.html">🏠 Accueil</a>
+  <a href="formations.html">📚 Formations</a>
+  <a href="coaches.html">🤖 Coachs IA</a>
+  <a href="dashboard.html">📊 Mon Espace</a>
+  <a href="auth.html" class="nav-cta" id="mobileLoginBtn">Connexion →</a>
+</div>
+<script>
+(function () {
+  const user = (() => { try { return JSON.parse(localStorage.getItem('atlas_user') || 'null'); } catch { return null; } })();
+  if (user && user.id) {
+    const btn = document.getElementById('navLoginBtn');
+    if (btn) { btn.textContent = '📊 Dashboard'; btn.href = 'dashboard.html'; }
+    const mob = document.getElementById('mobileLoginBtn');
+    if (mob) { mob.textContent = '📊 Mon Dashboard →'; mob.href = 'dashboard.html'; }
+  }
+})();
+</script>
+
+<!-- HERO -->
+<section class="coaches-hero">
+  <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 60%,rgba(201,168,76,0.07),transparent 60%);pointer-events:none;"></div>
+  <div class="container" style="position:relative;z-index:1;">
+    <div class="fade-in" style="max-width:700px;margin:0 auto;">
+      <div style="display:inline-flex;align-items:center;gap:.5rem;background:rgba(201,168,76,.12);border:1px solid rgba(201,168,76,.3);color:var(--gold);font-family:var(--font-title);font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;padding:.4rem 1rem;border-radius:50px;margin-bottom:2rem;">
+        🤖 Entraînement IA — 4 experts à ta disposition
+      </div>
+      <h1>Choisis ton coach.<br/><span style="color:var(--gold);">Lance ta session.</span></h1>
+      <p style="font-family:var(--font-sub);font-size:1.1rem;color:var(--off-white);margin-top:1.5rem;line-height:1.7;opacity:.9;">
+        Chaque coach a sa personnalité, sa méthode, son style. Travaille les objections, prépare tes closes, développe ta psychologie de vente — en simulation ou en coaching direct.
+      </p>
+      <div style="display:flex;gap:1.5rem;justify-content:center;margin-top:2rem;flex-wrap:wrap;">
+        <div class="hero-trust-item"><span class="check">✦</span> Accès 5 messages gratuits</div>
+        <div class="hero-trust-item"><span class="check">✦</span> Réponses personnalisées</div>
+        <div class="hero-trust-item"><span class="check">✦</span> Mode simulation inclus</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BANNIÈRE QUIZ (affichée uniquement si pas de profil) -->
+<div id="quizBanner" style="display:none; background:linear-gradient(135deg,rgba(201,168,76,0.12),rgba(201,168,76,0.06)); border-bottom:1px solid rgba(201,168,76,0.25); padding:1rem 1.5rem;">
+  <div class="container" style="display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">
+    <div style="display:flex;align-items:center;gap:0.75rem;">
+      <span style="font-size:1.4rem;">🎯</span>
+      <div>
+        <div style="font-family:var(--font-title);font-size:0.8rem;color:var(--gold);letter-spacing:0.1em;">NOUVEAU PAR ICI ?</div>
+        <div style="font-size:0.85rem;color:var(--off-white);">Fais le quiz de 2 min pour que ton coach s'adapte à ton profil exact.</div>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:0.75rem;flex-shrink:0;">
+      <a href="quiz.html" style="background:var(--gold);color:var(--navy-dark);font-family:var(--font-title);font-size:0.75rem;letter-spacing:0.1em;padding:0.55rem 1.25rem;border-radius:50px;text-decoration:none;transition:var(--transition);">
+        Créer mon profil →
+      </a>
+      <button onclick="document.getElementById('quizBanner').style.display='none'" style="background:none;border:none;color:var(--gray);font-size:1.2rem;cursor:pointer;padding:0.25rem;">✕</button>
+    </div>
+  </div>
+</div>
+<script>
+  // Afficher la bannière uniquement si pas de profil
+  if (!localStorage.getItem('atlas_user_profile')) {
+    document.getElementById('quizBanner').style.display = 'block';
+  }
+</script>
+
+<!-- GRILLE COACHES -->
+<section class="section section-dark">
+  <div class="container">
+
+    <div class="coaches-grid fade-in">
+
+      <!-- STRATÈGE -->
+      <a href="chat.html?coach=stratege" class="coach-card" data-coach="stratege">
+        <div class="coach-card-exclusive">Tactique</div>
+        <span class="coach-card-icon">⚔️</span>
+        <div class="coach-card-name">LE STRATÈGE</div>
+        <div class="coach-card-subtitle" style="color:var(--coach-stratege);">Analyste · Tactique · Précis</div>
+        <p class="coach-card-desc">
+          Le Stratège décortique chaque situation de vente avec une froideur chirurgicale. Il analyse les failles, construit les arguments, te donne des réponses aux objections les plus dures. Pas d'émotions — que de la stratégie.
+        </p>
+        <div class="coach-card-tags">
+          <span class="coach-tag">Objections béton</span>
+          <span class="coach-tag">Tactiques de closing</span>
+          <span class="coach-tag">Analyse prospect</span>
+          <span class="coach-tag">Négociation prix</span>
+        </div>
+        <div class="coach-card-cta">
+          <span class="coach-card-badge" style="color:var(--coach-stratege);background:rgba(42,111,219,0.1);border-color:rgba(42,111,219,0.3);">Idéal closers</span>
+          <span class="coach-card-arrow" style="color:var(--coach-stratege);">→</span>
+        </div>
+      </a>
+
+      <!-- MENTOR -->
+      <a href="chat.html?coach=mentor" class="coach-card" data-coach="mentor">
+        <div class="coach-card-exclusive">Pédagogie</div>
+        <span class="coach-card-icon">🎓</span>
+        <div class="coach-card-name">LE MENTOR</div>
+        <div class="coach-card-subtitle" style="color:var(--coach-mentor);">Pédagogue · Bienveillant · Structurant</div>
+        <p class="coach-card-desc">
+          Le Mentor t'accompagne pas à pas. Il explique le "pourquoi" derrière chaque technique, te donne des exercices pratiques et t'aide à bâtir des bases solides. Parfait si tu débutes ou veux consolider ta méthode.
+        </p>
+        <div class="coach-card-tags">
+          <span class="coach-tag">Apprentissage progressif</span>
+          <span class="coach-tag">Méthodes fondamentales</span>
+          <span class="coach-tag">Feedback constructif</span>
+          <span class="coach-tag">Confiance en soi</span>
+        </div>
+        <div class="coach-card-cta">
+          <span class="coach-card-badge" style="color:var(--coach-mentor);background:rgba(201,168,76,0.1);border-color:rgba(201,168,76,0.3);">Idéal débutants</span>
+          <span class="coach-card-arrow" style="color:var(--coach-mentor);">→</span>
+        </div>
+      </a>
+
+      <!-- ARCHITECTE DU POUVOIR -->
+      <a href="chat.html?coach=architecte" class="coach-card" data-coach="architecte" style="border-color:rgba(201,76,76,0.2);">
+        <div class="coach-card-exclusive" style="background:rgba(201,76,76,0.12);color:#C94C4C;border-color:rgba(201,76,76,0.3);">⚡ Élite</div>
+        <span class="coach-card-icon">🏛️</span>
+        <div class="coach-card-name">L'ARCHITECTE DU POUVOIR</div>
+        <div class="coach-card-subtitle" style="color:var(--coach-architecte);">3 modes · Élite · Haute pression</div>
+        <p class="coach-card-desc">
+          Le coach le plus exigeant. Il s'adapte à la situation : mode Mentor pour construire, mode Stratège pour analyser, mode Pression pour simuler les prospects les plus durs. Réservé aux vendeurs qui veulent le niveau supérieur.
+        </p>
+        <div class="coach-card-tags">
+          <span class="coach-tag">Mode Mentor</span>
+          <span class="coach-tag">Mode Stratège</span>
+          <span class="coach-tag">Mode Pression 🔥</span>
+          <span class="coach-tag">Auto-adaptatif</span>
+        </div>
+        <div class="coach-card-cta">
+          <span class="coach-card-badge" style="color:var(--coach-architecte);background:rgba(201,76,76,0.1);border-color:rgba(201,76,76,0.3);">Niveau élite</span>
+          <span class="coach-card-arrow" style="color:var(--coach-architecte);">→</span>
+        </div>
+      </a>
+
+      <!-- PROFILEUR DISC -->
+      <a href="chat.html?coach=profileur" class="coach-card" data-coach="profileur">
+        <div class="coach-card-exclusive" style="background:rgba(124,77,202,0.1);color:#7C4DCA;border-color:rgba(124,77,202,0.3);">DISC</div>
+        <span class="coach-card-icon">🧠</span>
+        <div class="coach-card-name">LE PROFILEUR DISC</div>
+        <div class="coach-card-subtitle" style="color:var(--coach-profileur);">Psychologie · Comportemental · Précision</div>
+        <p class="coach-card-desc">
+          Maître de la psychologie comportementale DISC. Il t'apprend à identifier le profil de chaque prospect (Dominant, Influent, Stable, Consciencieux) et à adapter ton discours en temps réel. La vente devient prédictive.
+        </p>
+        <div class="coach-card-tags">
+          <span class="coach-tag">Profil D — Dominant</span>
+          <span class="coach-tag">Profil I — Influent</span>
+          <span class="coach-tag">Profil S — Stable</span>
+          <span class="coach-tag">Profil C — Consciencieux</span>
+        </div>
+        <div class="coach-card-cta">
+          <span class="coach-card-badge" style="color:var(--coach-profileur);background:rgba(124,77,202,0.1);border-color:rgba(124,77,202,0.3);">Psychologie avancée</span>
+          <span class="coach-card-arrow" style="color:var(--coach-profileur);">→</span>
+        </div>
+      </a>
+
+    </div>
+
+    <!-- INFO ACCÈS -->
+    <div class="fade-in" style="margin-top:3rem;text-align:center;padding:2rem;background:rgba(201,168,76,0.04);border:1px solid rgba(201,168,76,0.1);border-radius:12px;">
+      <p style="color:var(--gray);font-size:.9rem;line-height:1.7;max-width:600px;margin:0 auto;">
+        <strong style="color:var(--gold);">✦ 3 messages gratuits</strong> avec chaque coach, sans inscription.<br/>
+        Pour un accès illimité, entre ton code d'accès lors de la session ou <a href="contact.html" style="color:var(--gold);border-bottom:1px solid rgba(201,168,76,0.3);">rejoins une formation</a>.
+      </p>
+    </div>
+
+  </div>
+</section>
+
+<!-- COMMENT ÇA MARCHE -->
+<section class="section section-navy">
+  <div class="container">
+    <div class="section-title fade-in">
+      <div class="eyebrow">Mode d'emploi</div>
+      <h2>Simple. Direct. <span class="gold">Immédiat.</span></h2>
+    </div>
+    <div class="grid-3 fade-in">
+      <div class="card" style="text-align:center;">
+        <div class="card-icon">👆</div>
+        <h3>1. Choisis ton coach</h3>
+        <p style="color:var(--gray);font-size:.9rem;line-height:1.7;">Sélectionne le profil qui correspond à ce que tu veux travailler aujourd'hui. Chaque coach a son style et ses spécialités.</p>
+      </div>
+      <div class="card" style="text-align:center;">
+        <div class="card-icon">💬</div>
+        <h3>2. Lance la session</h3>
+        <p style="color:var(--gray);font-size:.9rem;line-height:1.7;">Pose ta question, décris ta situation ou utilise un sujet rapide. Le coach répond instantanément avec une approche adaptée à son style.</p>
+      </div>
+      <div class="card" style="text-align:center;">
+        <div class="card-icon">🚀</div>
+        <h3>3. Applique dès demain</h3>
+        <p style="color:var(--gray);font-size:.9rem;line-height:1.7;">Chaque réponse est concrète et actionnable. Pas de théorie vide. Des techniques et des formulations que tu peux utiliser dès ton prochain appel.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA FORMATIONS -->
+<section class="cta-section">
+  <div class="container" style="position:relative;z-index:1;text-align:center;">
+    <h2>Les coachs IA complètent les formations.</h2>
+    <p style="max-width:560px;margin:0 auto 2rem;">Pour aller plus loin que les simulations — structure ta méthode, travaille ta psychologie, maîtrise chaque étape de la vente.</p>
+    <a href="index.html#formations" class="btn btn-primary btn-lg">🚀 Voir les formations →</a>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="footer-top">
+      <div class="footer-brand"><img src="assets/img/logo.png" alt="Atlas Académie"/><div class="footer-brand-text">Atlas Académie</div><p>L'écosystème de formation d'élite en vente, closing et psychologie comportementale.</p></div>
+      <div class="footer-col"><h4>Formations</h4><ul><li><a href="decode-close.html">→ Decode & Close™</a></li><li><a href="analyse-influence.html">→ Analyse & Influence</a></li><li><a href="10-etapes.html">→ 10 Étapes de la Vente</a></li></ul></div>
+      <div class="footer-col"><h4>Navigation</h4><ul><li><a href="index.html">→ Accueil</a></li><li><a href="coaches.html">→ Coachs IA</a></li><li><a href="contact.html">→ Guide Gratuit</a></li></ul></div>
+      <div class="footer-col"><h4>Légal</h4><ul><li><a href="cgv.html">→ CGV</a></li><li><a href="mentions-legales.html">→ Mentions légales</a></li><li><a href="confidentialite.html">→ Confidentialité</a></li></ul></div>
+    </div>
+    <div class="footer-bottom"><p>© 2026 Atlas Académie — Tous droits réservés</p><div class="footer-legal"><a href="cgv.html">CGV</a><a href="mentions-legales.html">Mentions légales</a><a href="confidentialite.html">Confidentialité</a></div></div>
+  </div>
+</footer>
+<script src="atlas-config.js"></script>
+<script src="assets/js/supabase-client.js"></script>
+<script src="assets/js/main.js"></script>
+</body>
+</html>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                     

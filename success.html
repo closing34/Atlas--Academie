@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Accès activé — Atlas Académie</title>
+  <link rel="icon" type="image/png" href="assets/img/logo.png"/>
+  <link rel="stylesheet" href="assets/css/style.css"/>
+  <style>
+    .success-page {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1.5rem;
+      background: var(--navy-dark);
+      position: relative;
+      overflow: hidden;
+    }
+    .success-page::before {
+      content: '';
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse at 30% 20%, rgba(201,168,76,0.08) 0%, transparent 50%),
+        radial-gradient(ellipse at 70% 80%, rgba(201,168,76,0.05) 0%, transparent 50%);
+      pointer-events: none;
+    }
+
+    .success-card {
+      background: var(--navy-mid);
+      border: 1px solid rgba(201,168,76,0.3);
+      border-radius: 20px;
+      padding: 3rem 2.5rem;
+      max-width: 560px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 60px rgba(201,168,76,0.08);
+      position: relative;
+      animation: cardIn 0.6s ease;
+    }
+    @keyframes cardIn {
+      from { transform: translateY(30px); opacity: 0; }
+      to   { transform: none;            opacity: 1; }
+    }
+
+    .success-icon {
+      width: 90px; height: 90px;
+      border-radius: 50%;
+      background: rgba(201,168,76,0.1);
+      border: 3px solid var(--gold);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2.5rem;
+      margin: 0 auto 1.75rem;
+      box-shadow: 0 0 40px rgba(201,168,76,0.25);
+      animation: pulse 2s ease infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 40px rgba(201,168,76,0.25); }
+      50%       { box-shadow: 0 0 60px rgba(201,168,76,0.45); }
+    }
+
+    .success-tag {
+      display: inline-flex; align-items: center; gap: .4rem;
+      background: rgba(34,197,94,0.12);
+      border: 1px solid rgba(34,197,94,0.35);
+      color: #4ade80;
+      font-family: var(--font-title);
+      font-size: .65rem; letter-spacing: .2em; text-transform: uppercase;
+      padding: .3rem .9rem; border-radius: 50px;
+      margin-bottom: 1.5rem;
+    }
+
+    .success-title {
+      font-family: var(--font-title);
+      font-size: 1.9rem;
+      color: var(--white);
+      margin-bottom: .75rem;
+      line-height: 1.2;
+    }
+    .success-title span { color: var(--gold); }
+
+    .success-sub {
+      color: var(--gray);
+      font-size: .9rem;
+      line-height: 1.6;
+      margin-bottom: 2rem;
+    }
+
+    /* Étapes d'activation */
+    .steps {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(201,168,76,0.15);
+      border-radius: 14px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      text-align: left;
+    }
+    .steps-title {
+      font-family: var(--font-title);
+      font-size: .7rem;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 1.25rem;
+    }
+    .step {
+      display: flex; align-items: flex-start; gap: .9rem;
+      margin-bottom: 1rem;
+    }
+    .step:last-child { margin-bottom: 0; }
+    .step-num {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: rgba(201,168,76,0.15);
+      border: 1px solid rgba(201,168,76,0.35);
+      color: var(--gold);
+      font-family: var(--font-title);
+      font-size: .75rem;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; margin-top: .1rem;
+    }
+    .step-text {
+      font-size: .86rem;
+      color: var(--off-white);
+      line-height: 1.5;
+    }
+    .step-text strong { color: var(--gold); }
+
+    /* Code d'accès affiché */
+    .code-block {
+      background: rgba(201,168,76,0.07);
+      border: 1px dashed rgba(201,168,76,0.4);
+      border-radius: 10px;
+      padding: .85rem 1.25rem;
+      font-family: monospace;
+      font-size: 1.1rem;
+      color: var(--gold);
+      letter-spacing: .15em;
+      margin: .75rem 0 .5rem;
+      position: relative;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .code-block:hover { background: rgba(201,168,76,0.12); }
+    .code-copy-hint {
+      font-size: .7rem;
+      color: var(--gray);
+      margin-bottom: .5rem;
+    }
+    .copied-badge {
+      display: none;
+      position: absolute; top: -10px; right: 12px;
+      background: #22c55e; color: white;
+      font-size: .65rem; padding: .15rem .5rem;
+      border-radius: 50px; font-family: var(--font-title);
+    }
+    .code-block.copied .copied-badge { display: block; }
+
+    /* Boutons */
+    .success-actions {
+      display: flex; gap: 1rem; flex-direction: column;
+    }
+    .btn-main {
+      display: block; width: 100%;
+      background: var(--gold);
+      color: var(--navy-dark);
+      font-family: var(--font-title);
+      font-size: .9rem; letter-spacing: .1em;
+      padding: 1rem 1.5rem; border-radius: 50px;
+      border: none; cursor: pointer;
+      transition: var(--transition);
+      text-align: center;
+    }
+    .btn-main:hover { background: var(--gold-light); transform: translateY(-2px); box-shadow: var(--shadow-gold); }
+
+    .btn-secondary {
+      display: block; width: 100%;
+      background: transparent;
+      color: var(--gray);
+      font-size: .85rem;
+      padding: .65rem 1.5rem; border-radius: 50px;
+      border: 1px solid rgba(255,255,255,0.1);
+      cursor: pointer; transition: var(--transition);
+      text-align: center;
+    }
+    .btn-secondary:hover { color: var(--white); border-color: rgba(255,255,255,0.3); }
+
+    /* XP Banner */
+    .xp-banner {
+      margin-top: 1.75rem;
+      padding: .85rem 1.25rem;
+      background: rgba(201,168,76,0.08);
+      border: 1px solid rgba(201,168,76,0.2);
+      border-radius: 10px;
+      font-family: var(--font-title);
+      font-size: .8rem;
+      color: var(--gold);
+      animation: xpPop 0.5s ease 1.2s both;
+    }
+    @keyframes xpPop {
+      from { transform: scale(0.9); opacity: 0; }
+      to   { transform: none;       opacity: 1; }
+    }
+
+    .plan-badge {
+      display: inline-flex; align-items: center; gap: .4rem;
+      background: rgba(201,168,76,0.12);
+      border: 1px solid rgba(201,168,76,0.3);
+      color: var(--gold);
+      font-family: var(--font-title);
+      font-size: .65rem; letter-spacing: .15em; text-transform: uppercase;
+      padding: .25rem .85rem; border-radius: 50px;
+      margin-bottom: 1rem;
+    }
+
+    @media (max-width: 480px) {
+      .success-card { padding: 2rem 1.5rem; }
+      .success-title { font-size: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Logo simplifié (pas de navbar pleine sur cette page) -->
+<div style="position:fixed;top:0;left:0;right:0;z-index:100;padding:1.25rem 2rem;display:flex;align-items:center;gap:.75rem;background:rgba(7,13,30,0.85);backdrop-filter:blur(12px);border-bottom:1px solid rgba(201,168,76,0.1);">
+  <a href="index.html" style="display:flex;align-items:center;gap:.6rem;text-decoration:none;">
+    <img src="assets/img/logo.png" alt="Atlas Académie" style="height:32px;width:auto;"/>
+    <span style="font-family:var(--font-title);font-size:.9rem;color:var(--white);">Atlas<span style="color:var(--gold);">Académie</span></span>
+  </a>
+</div>
+
+<div class="success-page">
+  <div class="success-card">
+
+    <div class="success-icon" id="successIcon">🎉</div>
+
+    <div class="success-tag">✅ Paiement confirmé</div>
+    <div class="plan-badge" id="planBadge">💰 Plan PRO</div>
+
+    <h1 class="success-title">Bienvenue dans <span>l'élite</span>,<br/><span id="userName">Closer</span> !</h1>
+    <p class="success-sub">
+      Ton accès est actif. Tu peux maintenant t'entraîner avec les 4 coachs IA spécialisés et progresser chaque jour.
+    </p>
+
+    <!-- Étapes d'activation -->
+    <div class="steps">
+      <div class="steps-title">⚡ Active ton accès maintenant</div>
+
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-text">
+          Vérifie ton email — tu as reçu ton <strong>code d'accès personnel</strong>.
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-text">
+          Clique sur <strong>« Accéder au Coach »</strong> ci-dessous puis entre ton code dans la fenêtre qui s'affiche.
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-text">
+          C'est tout. Tu accèdes immédiatement aux <strong>4 coachs IA</strong> et au simulateur de vente.
+        </div>
+      </div>
+    </div>
+
+    <!-- Si code en URL (?code=XXX) on l'affiche directement -->
+    <div id="codeSection" style="display:none; margin-bottom:1.5rem;">
+      <p class="code-copy-hint">Ton code d'accès (clique pour copier) :</p>
+      <div class="code-block" id="codeBlock" onclick="copyCode()">
+        <span id="codeValue">—</span>
+        <span class="copied-badge">Copié !</span>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="success-actions">
+      <a href="chat.html" class="btn-main">
+        🤖 Accéder aux Coachs IA →
+      </a>
+      <a href="simulateur.html" class="btn-secondary">
+        🎯 Essayer le Simulateur de vente
+      </a>
+      <a href="dashboard.html" class="btn-secondary">
+        📊 Voir mon Dashboard
+      </a>
+    </div>
+
+    <!-- XP bonus -->
+    <div class="xp-banner" id="xpBanner">
+      ⚡ +50 XP de bienvenue crédités sur ton compte
+    </div>
+
+  </div>
+</div>
+
+<script src="atlas-config.js"></script>
+<script src="assets/js/supabase-client.js"></script>
+<script src="assets/js/usage.js"></script>
+<script src="assets/js/memory.js"></script>
+<script src="assets/js/gamification.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  // ── Lecture des paramètres URL ───────────────────────────────
+  const params = new URLSearchParams(window.location.search);
+  const plan   = params.get('plan')  || localStorage.getItem('atlas_checkout_plan') || 'pro';
+  const name   = params.get('name')  || localStorage.getItem('atlas_checkout_name') || 'Closer';
+  const code   = params.get('code')  || null;
+
+  // ── Personnalisation selon le plan ────────────────────────────
+  const PLAN_LABELS = {
+    pro:         { label: '💰 Plan PRO',         icon: '👑', xp: 50  },
+    unlimited:   { label: '♾️ Plan Illimité',     icon: '⚡', xp: 100 },
+    credits_100: { label: '💣 Pack 100 Crédits',  icon: '🎯', xp: 25  },
+    credits_250: { label: '💣 Pack 250 Crédits',  icon: '🎯', xp: 35  },
+    credits_500: { label: '💣 Pack 500 Crédits',  icon: '🎯', xp: 50  },
+  };
+
+  const cfg = PLAN_LABELS[plan] || PLAN_LABELS.pro;
+
+  // Appliquer
+  document.getElementById('userName').textContent   = name;
+  document.getElementById('planBadge').textContent  = cfg.label;
+  document.getElementById('successIcon').textContent = cfg.icon;
+
+  // Afficher le code si présent
+  if (code) {
+    document.getElementById('codeSection').style.display = 'block';
+    document.getElementById('codeValue').textContent = code;
+  }
+
+  // XP de bienvenue
+  const xpAmount = cfg.xp;
+  document.getElementById('xpBanner').textContent = `⚡ +${xpAmount} XP de bienvenue crédités sur ton compte`;
+
+  if (window.AtlasGamification) {
+    AtlasGamification.addXP(xpAmount, 'bonus', { silent: true });
+  }
+
+  // Nettoyage localStorage
+  localStorage.removeItem('atlas_checkout_name');
+  localStorage.removeItem('atlas_checkout_email');
+  localStorage.removeItem('atlas_checkout_plan');
+
+  // ── Copie du code ─────────────────────────────────────────────
+  window.copyCode = function () {
+    const val = document.getElementById('codeValue').textContent;
+    if (!val || val === '—') return;
+    navigator.clipboard.writeText(val).then(() => {
+      const block = document.getElementById('codeBlock');
+      block.classList.add('copied');
+      setTimeout(() => block.classList.remove('copied'), 2000);
+    }).catch(() => {
+      // Fallback
+      const el = document.createElement('textarea');
+      el.value = val;
+      document.body.appendChild(el);
+      el.select();
+      document.execCommand('copy');
+      document.body.removeChild(el);
+    });
+  };
+
+  // ── Confetti léger ────────────────────────────────────────────
+  function spawnParticle() {
+    const el    = document.createElement('div');
+    const colors = ['#c9a84c', '#e8c96a', '#ffffff', '#a855f7', '#3b82f6'];
+    const color  = colors[Math.floor(Math.random() * colors.length)];
+    const size   = 4 + Math.random() * 6;
+    const left   = Math.random() * 100;
+    const delay  = Math.random() * 2;
+    const dur    = 2.5 + Math.random() * 2;
+
+    el.style.cssText = `
+      position: fixed;
+      top: -10px;
+      left: ${left}vw;
+      width: ${size}px;
+      height: ${size}px;
+      background: ${color};
+      border-radius: ${Math.random() > 0.5 ? '50%' : '2px'};
+      pointer-events: none;
+      z-index: 9999;
+      animation: confettiFall ${dur}s ease ${delay}s forwards;
+    `;
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), (dur + delay + 0.5) * 1000);
+  }
+
+  if (!document.getElementById('confetti-style')) {
+    const s = document.createElement('style');
+    s.id = 'confetti-style';
+    s.textContent = `@keyframes confettiFall {
+      0%   { transform: translateY(0) rotate(0deg);   opacity: 1; }
+      100% { transform: translateY(105vh) rotate(720deg); opacity: 0; }
+    }`;
+    document.head.appendChild(s);
+  }
+
+  // Lancer 60 particules
+  for (let i = 0; i < 60; i++) setTimeout(spawnParticle, i * 40);
+
+})();
+</script>
+</body>
+</html>

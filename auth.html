@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Connexion — Atlas Académie</title>
+  <link rel="icon" type="image/png" href="assets/img/logo.png"/>
+  <link rel="stylesheet" href="assets/css/style.css"/>
+  <style>
+    body {
+      display: flex; align-items: center; justify-content: center;
+      min-height: 100dvh; background: var(--navy-dark); padding: 1rem;
+    }
+    .auth-card {
+      background: linear-gradient(135deg, rgba(13,27,62,0.97), rgba(26,44,85,0.93));
+      border: 1px solid rgba(201,168,76,0.2); border-radius: 18px;
+      padding: 2.5rem 2rem 2rem; width: 100%; max-width: 420px;
+      box-shadow: 0 24px 70px rgba(0,0,0,0.55);
+    }
+    .auth-logo { text-align:center; margin-bottom:1.75rem; }
+    .auth-logo-main { font-family:var(--font-title); font-size:1.5rem; color:var(--gold); letter-spacing:.18em; }
+    .auth-logo-sub  { font-size:.68rem; color:var(--gray); letter-spacing:.22em; text-transform:uppercase; }
+
+    /* TABS */
+    .auth-tabs {
+      display:flex; background:rgba(255,255,255,0.04);
+      border-radius:10px; padding:4px; gap:2px; margin-bottom:1.75rem;
+    }
+    .auth-tab {
+      flex:1; padding:.55rem .3rem; border-radius:7px; border:none;
+      background:transparent; color:var(--gray); font-family:var(--font-title);
+      font-size:.62rem; letter-spacing:.08em; cursor:pointer; transition:all .2s; white-space:nowrap;
+    }
+    .auth-tab.active { background:linear-gradient(135deg,var(--gold),var(--gold-light)); color:var(--navy-dark); font-weight:700; }
+    .auth-tab:hover:not(.active) { color:var(--white); }
+
+    .auth-panel { display:none; }
+    .auth-panel.active { display:block; }
+
+    .auth-title { font-family:var(--font-sub); font-size:1.15rem; font-weight:700; color:var(--white); margin-bottom:.4rem; }
+    .auth-desc  { font-size:.83rem; color:var(--gray); margin-bottom:1.5rem; line-height:1.6; }
+
+    .field-group { margin-bottom:1rem; }
+    .field-label { display:block; font-size:.7rem; color:var(--gray); letter-spacing:.08em; text-transform:uppercase; margin-bottom:.4rem; }
+
+    .auth-input {
+      width:100%; background:rgba(255,255,255,0.06); border:1px solid rgba(201,168,76,0.2);
+      border-radius:9px; color:var(--white); font-family:var(--font-body); font-size:.95rem;
+      padding:.8rem 1rem; outline:none; transition:border-color .2s, background .2s; box-sizing:border-box;
+    }
+    .auth-input:focus { border-color:var(--gold); background:rgba(201,168,76,0.05); }
+    .auth-input::placeholder { color:rgba(150,160,180,0.5); }
+
+    .auth-btn {
+      width:100%; background:linear-gradient(135deg,#C9A84C,#E2C06A); color:var(--navy-dark);
+      font-family:var(--font-title); font-size:.78rem; font-weight:700; letter-spacing:.15em;
+      padding:.9rem 1rem; border-radius:9px; border:none; cursor:pointer;
+      transition:opacity .2s, transform .1s; margin-top:.5rem;
+    }
+    .auth-btn:hover:not(:disabled) { opacity:.9; transform:translateY(-1px); }
+    .auth-btn:disabled { opacity:.45; cursor:not-allowed; }
+
+    .auth-status {
+      margin-top:1rem; font-size:.82rem; border-radius:8px;
+      padding:.65rem .9rem; display:none; line-height:1.5;
+    }
+    .auth-status.ok  { display:block; background:rgba(34,197,94,.13); color:#4ade80; border:1px solid rgba(34,197,94,.25); }
+    .auth-status.err { display:block; background:rgba(239,68,68,.1);  color:#f87171; border:1px solid rgba(239,68,68,.2);  }
+    .auth-status.info{ display:block; background:rgba(201,168,76,.09);color:var(--gold);border:1px solid rgba(201,168,76,.2); }
+
+    .pwd-wrap { position:relative; }
+    .pwd-eye  { position:absolute; right:.85rem; top:50%; transform:translateY(-50%); background:none; border:none; cursor:pointer; color:var(--gray); font-size:.9rem; }
+    .pwd-eye:hover { color:var(--gold); }
+
+    .auth-switch { text-align:center; margin-top:1.25rem; font-size:.78rem; color:var(--gray); }
+    .auth-switch a { color:var(--gold); cursor:pointer; text-decoration:underline; }
+
+    .auth-footer { text-align:center; margin-top:1.5rem; font-size:.73rem; color:var(--gray); border-top:1px solid rgba(255,255,255,0.06); padding-top:1.25rem; }
+    .auth-footer a { color:var(--gold); text-decoration:none; }
+
+    .code-row { display:flex; gap:.5rem; }
+    .code-row .auth-input { flex:1; text-transform:uppercase; letter-spacing:.06em; }
+    .code-ok-btn {
+      background:rgba(201,168,76,0.15); border:1px solid rgba(201,168,76,0.3); color:var(--gold);
+      font-family:var(--font-title); font-size:.85rem; padding:.8rem 1.1rem; border-radius:9px; cursor:pointer; transition:background .2s;
+    }
+    .code-ok-btn:hover { background:rgba(201,168,76,0.28); }
+
+    .admin-note {
+      display:flex; align-items:center; gap:.5rem; margin-bottom:1.25rem;
+      background:rgba(201,168,76,.08); border:1px solid rgba(201,168,76,.25);
+      border-radius:8px; padding:.6rem .9rem; font-size:.75rem; color:var(--gold);
+    }
+
+    .spinner { display:inline-block; width:14px; height:14px; border:2px solid rgba(13,27,62,0.35); border-top-color:var(--navy-dark); border-radius:50%; animation:spin .65s linear infinite; vertical-align:middle; margin-right:.4rem; }
+    @keyframes spin { to { transform:rotate(360deg); } }
+  </style>
+</head>
+<body>
+
+<div class="auth-card">
+
+  <div class="auth-logo">
+    <div class="auth-logo-main">ATLAS</div>
+    <div class="auth-logo-sub">Académie</div>
+  </div>
+
+  <div class="auth-tabs">
+    <button class="auth-tab active" id="tab-login"    onclick="goTab('login')">Connexion</button>
+    <button class="auth-tab"        id="tab-register" onclick="goTab('register')">Créer un compte</button>
+  </div>
+
+  <!-- ══ PANNEAU 1 : CONNEXION ══ -->
+  <div class="auth-panel active" id="panel-login">
+    <div class="auth-title">Bon retour 👋</div>
+    <p class="auth-desc">Connecte-toi avec ton email et ton mot de passe.</p>
+
+    <div class="field-group">
+      <label class="field-label">Email</label>
+      <input class="auth-input" id="l-email" type="email" placeholder="ton@email.com" autocomplete="email"/>
+    </div>
+    <div class="field-group">
+      <label class="field-label">Mot de passe</label>
+      <div class="pwd-wrap">
+        <input class="auth-input" id="l-pwd" type="password" placeholder="••••••••" autocomplete="current-password"/>
+        <button class="pwd-eye" type="button" onclick="eyeToggle('l-pwd',this)">👁</button>
+      </div>
+    </div>
+
+    <button class="auth-btn" id="loginBtn" onclick="doLogin()">Se connecter →</button>
+    <div class="auth-status" id="loginMsg"></div>
+
+    <div class="auth-switch">Pas encore de compte ? <a onclick="goTab('register')">Créer un compte</a></div>
+  </div>
+
+  <!-- ══ PANNEAU 2 : INSCRIPTION ══ -->
+  <div class="auth-panel" id="panel-register">
+    <div class="auth-title">Créer ton compte</div>
+    <p class="auth-desc">Inscris-toi pour accéder à tes formations Atlas Académie.</p>
+
+    <div class="field-group">
+      <label class="field-label">Prénom</label>
+      <input class="auth-input" id="r-name" type="text" placeholder="Ton prénom" autocomplete="given-name"/>
+    </div>
+    <div class="field-group">
+      <label class="field-label">Email</label>
+      <input class="auth-input" id="r-email" type="email" placeholder="ton@email.com" autocomplete="email"/>
+    </div>
+    <div class="field-group">
+      <label class="field-label">Mot de passe</label>
+      <div class="pwd-wrap">
+        <input class="auth-input" id="r-pwd" type="password" placeholder="Min. 6 caractères" autocomplete="new-password"/>
+        <button class="pwd-eye" type="button" onclick="eyeToggle('r-pwd',this)">👁</button>
+      </div>
+    </div>
+    <div class="field-group">
+      <label class="field-label">Confirmer le mot de passe</label>
+      <div class="pwd-wrap">
+        <input class="auth-input" id="r-pwd2" type="password" placeholder="••••••••" autocomplete="new-password"/>
+        <button class="pwd-eye" type="button" onclick="eyeToggle('r-pwd2',this)">👁</button>
+      </div>
+    </div>
+
+    <button class="auth-btn" id="registerBtn" onclick="doRegister()">Créer mon compte →</button>
+    <div class="auth-status" id="registerMsg"></div>
+
+    <div class="auth-switch">Déjà inscrit ? <a onclick="goTab('login')">Se connecter</a></div>
+  </div>
+
+  <div class="auth-footer">
+    <a href="index.html">← Retour à l'accueil</a> &nbsp;·&nbsp; <a href="contact.html">Besoin d'aide ?</a>
+  </div>
+
+</div>
+
+<script src="atlas-config.js"></script>
+<script>
+/* ═══════════════════════════════════════════════════════════════
+   ATLAS ACADÉMIE — AUTH.HTML
+   Système d'authentification 100% localStorage, sans backend requis
+═══════════════════════════════════════════════════════════════ */
+
+/* ── Codes valides ───────────────────────────────────────────── */
+var VALID_CODES = ['ATLAS2026','CREATOR','SAINT-THOMAS','TEST','ULTIMATECLOSING2024'];
+try {
+  var cfgCodes = window.ATLAS_CONFIG && window.ATLAS_CONFIG.accessCodes;
+  if (cfgCodes && cfgCodes.length) VALID_CODES = cfgCodes.map(function(c){ return c.toUpperCase(); });
+} catch(e){}
+
+var ADMIN_CODE = 'ULTIMATECLOSING2024';
+
+/* ── Utilitaires UI ─────────────────────────────────────────── */
+function goTab(name) {
+  ['login','register'].forEach(function(t) {
+    document.getElementById('tab-'+t).classList.toggle('active', t===name);
+    document.getElementById('panel-'+t).classList.toggle('active', t===name);
+  });
+}
+
+function eyeToggle(id, btn) {
+  var inp = document.getElementById(id);
+  var show = inp.type === 'password';
+  inp.type = show ? 'text' : 'password';
+  btn.textContent = show ? '🙈' : '👁';
+}
+
+function setMsg(id, text, type) {
+  var el = document.getElementById(id);
+  el.textContent = text;
+  el.className = 'auth-status ' + type;
+}
+function clearMsg(id) { var el=document.getElementById(id); el.className='auth-status'; el.textContent=''; }
+
+/* ── Encodage mot de passe (simple, côté client uniquement) ─── */
+function encPwd(pwd) {
+  // Obfuscation basique pour ne pas stocker en clair dans localStorage
+  try { return btoa(unescape(encodeURIComponent(pwd + ':atlas-2024'))); }
+  catch(e) { return btoa(pwd + ':atlas-2024'); }
+}
+
+/* ── Base de données utilisateurs (localStorage) ────────────── */
+function getDB() {
+  try { return JSON.parse(localStorage.getItem('atlas_users_db') || '{}'); } catch(e) { return {}; }
+}
+function saveDB(db) { localStorage.setItem('atlas_users_db', JSON.stringify(db)); }
+
+/* ── Créer une session et rediriger ─────────────────────────── */
+function createSession(user, access) {
+  localStorage.setItem('atlas_user',   JSON.stringify(user));
+  localStorage.setItem('atlas_access', JSON.stringify(access));
+  var dest = localStorage.getItem('atlas_auth_return') || 'dashboard.html';
+  localStorage.removeItem('atlas_auth_return');
+  window.location.href = dest;
+}
+
+/* ── Déjà connecté ? ─────────────────────────────────────────── */
+(function(){
+  try {
+    var u = JSON.parse(localStorage.getItem('atlas_user') || 'null');
+    if (u && u.id) {
+      var dest = localStorage.getItem('atlas_auth_return') || 'dashboard.html';
+      localStorage.removeItem('atlas_auth_return');
+      window.location.href = dest;
+    }
+  } catch(e){}
+})();
+
+/* ══════════════════════════════════════════════════════════════
+   CONNEXION EMAIL + MOT DE PASSE
+══════════════════════════════════════════════════════════════ */
+function doLogin() {
+  var email = (document.getElementById('l-email').value || '').trim().toLowerCase();
+  var pwd   = (document.getElementById('l-pwd').value   || '');
+  clearMsg('loginMsg');
+
+  if (!email || email.indexOf('@') < 0) { setMsg('loginMsg','Entre un email valide.','err'); return; }
+  if (!pwd || pwd.length < 6)           { setMsg('loginMsg','Mot de passe trop court (min. 6 car.).','err'); return; }
+
+  var db   = getDB();
+  var hash = encPwd(pwd);
+
+  if (!db[email]) {
+    setMsg('loginMsg','Aucun compte trouvé. Crée un compte d\'abord.','err'); return;
+  }
+  if (db[email].pwd !== hash) {
+    setMsg('loginMsg','Mot de passe incorrect.','err'); return;
+  }
+
+  setMsg('loginMsg','✅ Connexion réussie — redirection…','ok');
+  setTimeout(function() {
+    createSession(
+      { id: db[email].id, email: email, name: db[email].name || '', mode: 'password' },
+      { has_access: true, access_type: 'standard', messages_remaining: 50, messages_used: 0 }
+    );
+  }, 700);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   CRÉATION DE COMPTE
+══════════════════════════════════════════════════════════════ */
+function doRegister() {
+  var name  = (document.getElementById('r-name').value  || '').trim();
+  var email = (document.getElementById('r-email').value || '').trim().toLowerCase();
+  var pwd   = (document.getElementById('r-pwd').value   || '');
+  var pwd2  = (document.getElementById('r-pwd2').value  || '');
+  clearMsg('registerMsg');
+
+  if (!name)                            { setMsg('registerMsg','Entre ton prénom.','err'); return; }
+  if (!email || email.indexOf('@') < 0) { setMsg('registerMsg','Entre un email valide.','err'); return; }
+  if (!pwd || pwd.length < 6)           { setMsg('registerMsg','Mot de passe trop court (min. 6 car.).','err'); return; }
+  if (pwd !== pwd2)                     { setMsg('registerMsg','Les mots de passe ne correspondent pas.','err'); return; }
+
+  var db = getDB();
+  if (db[email]) {
+    setMsg('registerMsg','Un compte existe déjà avec cet email. Connecte-toi.','err'); return;
+  }
+
+  var uid = 'u_' + Date.now() + '_' + Math.random().toString(36).substr(2,5);
+  db[email] = { id: uid, name: name, email: email, pwd: encPwd(pwd), created: new Date().toISOString() };
+  saveDB(db);
+
+  setMsg('registerMsg','✅ Compte créé — bienvenue ' + name + ' !','ok');
+  setTimeout(function() {
+    createSession(
+      { id: uid, email: email, name: name, mode: 'password' },
+      { has_access: true, access_type: 'standard', messages_remaining: 50, messages_used: 0 }
+    );
+  }, 800);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   CODE D'ACCÈS
+   ULTIMATECLOSING2024 → admin total (formations + coach illimité)
+   Autres codes → accès standard
+══════════════════════════════════════════════════════════════ */
+function doCode() {
+  var code  = (document.getElementById('c-code').value  || '').trim().toUpperCase();
+  var email = (document.getElementById('c-email').value || '').trim().toLowerCase() || 'admin@atlasacademie.fr';
+  clearMsg('codeMsg');
+
+  if (!code) { setMsg('codeMsg','Entre ton code d\'accès.','err'); return; }
+
+  if (VALID_CODES.indexOf(code) < 0) {
+    setMsg('codeMsg','❌ Code invalide — vérifie l\'orthographe.','err'); return;
+  }
+
+  var isAdmin = (code === ADMIN_CODE);
+  var uid     = 'code_' + code + '_' + Date.now();
+
+  var access = isAdmin ? {
+    has_access: true, access_type: 'admin',
+    messages_remaining: -1, messages_used: 0,
+    coach: 'unlimited', formations: 'all',
+    features: ['formations','coach','simulateur','challenges','certifications','leaderboard','missions']
+  } : {
+    has_access: true, access_type: 'code',
+    messages_remaining: 200, messages_used: 0, formations: 'all'
+  };
+
+  var msg = isAdmin
+    ? '🏆 Accès admin activé — tout débloqué, coach illimité !'
+    : '✅ Code validé — accès aux formations activé !';
+  setMsg('codeMsg', msg, 'ok');
+
+  setTimeout(function() {
+    createSession({ id: uid, email: email, code: code, mode: 'code', isAdmin: isAdmin }, access);
+  }, 900);
+}
+
+/* ── Touches Entrée ─────────────────────────────────────────── */
+document.getElementById('l-pwd').addEventListener('keydown',   function(e){ if(e.key==='Enter') doLogin(); });
+document.getElementById('l-email').addEventListener('keydown', function(e){ if(e.key==='Enter') doLogin(); });
+document.getElementById('r-pwd2').addEventListener('keydown',  function(e){ if(e.key==='Enter') doRegister(); });
+</script>
+</body>
+</html>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           

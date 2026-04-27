@@ -1,0 +1,1724 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Formation — Atlas Académie</title>
+  <link rel="icon" type="image/png" href="assets/img/logo.png"/>
+  <link rel="stylesheet" href="assets/css/style.css"/>
+  <style>
+    * { box-sizing: border-box; }
+    body { background: var(--navy-dark); overflow: hidden; height: 100dvh; }
+
+    /* ── LAYOUT ── */
+    .fp-layout {
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      grid-template-rows: 56px 1fr;
+      height: 100dvh;
+    }
+
+    /* ── TOP BAR ── */
+    .fp-topbar {
+      grid-column: 1 / -1;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 0 1.25rem;
+      background: rgba(10,22,40,0.98);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      position: relative;
+      z-index: 10;
+    }
+    .fp-back {
+      color: var(--gray);
+      text-decoration: none;
+      font-size: 1.1rem;
+      line-height: 1;
+      padding: .25rem .5rem;
+      border-radius: 6px;
+      transition: color .2s, background .2s;
+    }
+    .fp-back:hover { color: var(--gold); background: rgba(201,168,76,.08); }
+    .fp-formation-title {
+      font-family: var(--font-title);
+      font-size: .85rem;
+      color: var(--white);
+      letter-spacing: .05em;
+      flex: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .fp-progress-bar {
+      height: 4px;
+      background: rgba(255,255,255,.07);
+      border-radius: 2px;
+      width: 160px;
+      overflow: hidden;
+    }
+    .fp-progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--gold-dark), var(--gold));
+      border-radius: 2px;
+      transition: width .6s ease;
+    }
+    .fp-progress-label {
+      font-size: .72rem;
+      color: var(--gray);
+      font-family: var(--font-title);
+      white-space: nowrap;
+    }
+
+    /* ── SIDEBAR ── */
+    .fp-sidebar {
+      background: rgba(10,22,40,.95);
+      border-right: 1px solid rgba(255,255,255,.06);
+      overflow-y: auto;
+      padding: 1rem 0;
+    }
+    .fp-sidebar::-webkit-scrollbar { width: 4px; }
+    .fp-sidebar::-webkit-scrollbar-track { background: transparent; }
+    .fp-sidebar::-webkit-scrollbar-thumb { background: rgba(201,168,76,.2); border-radius: 2px; }
+
+    .fp-module-header {
+      padding: .6rem 1.25rem;
+      font-family: var(--font-title);
+      font-size: .65rem;
+      letter-spacing: .15em;
+      color: var(--gold);
+      text-transform: uppercase;
+      border-bottom: 1px solid rgba(255,255,255,.05);
+      margin-top: .5rem;
+    }
+    .fp-module-header:first-child { margin-top: 0; }
+
+    .fp-lesson-btn {
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      width: 100%;
+      padding: .65rem 1.25rem;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      text-align: left;
+      transition: background .15s;
+      position: relative;
+    }
+    .fp-lesson-btn:hover:not(:disabled) { background: rgba(255,255,255,.04); }
+    .fp-lesson-btn.active { background: rgba(201,168,76,.08); }
+    .fp-lesson-btn.active::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 3px;
+      background: var(--gold);
+      border-radius: 0 2px 2px 0;
+    }
+    .fp-lesson-btn:disabled { cursor: not-allowed; opacity: .45; }
+
+    .fp-lesson-icon {
+      width: 24px; height: 24px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: .7rem;
+      flex-shrink: 0;
+      border: 1.5px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.04);
+      color: var(--gray);
+    }
+    .fp-lesson-icon.done {
+      background: rgba(34,197,94,.12);
+      border-color: rgba(34,197,94,.3);
+      color: #4ade80;
+    }
+    .fp-lesson-icon.active {
+      background: rgba(201,168,76,.12);
+      border-color: rgba(201,168,76,.4);
+      color: var(--gold);
+    }
+    .fp-lesson-icon.locked { opacity: .4; }
+
+    .fp-lesson-info { flex: 1; min-width: 0; }
+    .fp-lesson-name {
+      font-family: var(--font-sub);
+      font-size: .8rem;
+      color: var(--off-white);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .fp-lesson-btn.active .fp-lesson-name { color: var(--gold); }
+    .fp-lesson-btn:disabled .fp-lesson-name { color: var(--gray); }
+    .fp-lesson-meta {
+      font-size: .67rem;
+      color: var(--gray);
+      margin-top: .1rem;
+    }
+
+    /* ── MAIN CONTENT ── */
+    .fp-main {
+      overflow-y: auto;
+      padding: 2.5rem 3rem;
+      position: relative;
+    }
+    .fp-main::-webkit-scrollbar { width: 5px; }
+    .fp-main::-webkit-scrollbar-track { background: transparent; }
+    .fp-main::-webkit-scrollbar-thumb { background: rgba(255,255,255,.08); border-radius: 3px; }
+
+    @media (max-width: 768px) {
+      .fp-layout { grid-template-columns: 1fr; grid-template-rows: 56px auto 1fr; }
+      .fp-sidebar { display: none; height: auto; overflow: visible; padding: .5rem 0; }
+      .fp-sidebar.open { display: block; position: fixed; top: 56px; left: 0; right: 0; bottom: 0; z-index: 100; }
+      .fp-main { padding: 1.5rem 1.25rem; }
+    }
+
+    /* ── CONTENU LEÇON ── */
+    .fp-lesson-content h2 {
+      font-family: var(--font-title);
+      font-size: 1.6rem;
+      color: var(--white);
+      margin-bottom: .5rem;
+      line-height: 1.25;
+    }
+    .fp-lesson-content h2 em { color: var(--gold); font-style: normal; }
+    .fp-lesson-breadcrumb {
+      font-size: .72rem;
+      color: var(--gray);
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      font-family: var(--font-title);
+      margin-bottom: .75rem;
+    }
+    .fp-lesson-duration {
+      display: inline-flex;
+      align-items: center;
+      gap: .4rem;
+      font-size: .75rem;
+      color: var(--gray);
+      background: rgba(255,255,255,.05);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 20px;
+      padding: .25rem .75rem;
+      margin-bottom: 2rem;
+    }
+    .fp-divider {
+      height: 1px;
+      background: rgba(255,255,255,.07);
+      margin: 2rem 0;
+    }
+    .fp-lesson-body {
+      font-family: var(--font-sub);
+      font-size: .97rem;
+      color: var(--off-white);
+      line-height: 1.85;
+      max-width: 720px;
+    }
+    .fp-lesson-body h3 {
+      font-family: var(--font-title);
+      font-size: 1.1rem;
+      color: var(--gold);
+      margin: 2rem 0 .75rem;
+    }
+    .fp-lesson-body p { margin-bottom: 1.1rem; }
+    .fp-lesson-body ul, .fp-lesson-body ol {
+      padding-left: 1.5rem;
+      margin-bottom: 1.1rem;
+    }
+    .fp-lesson-body li { margin-bottom: .4rem; }
+    .fp-lesson-body strong { color: var(--white); }
+    .fp-lesson-body .highlight {
+      background: rgba(201,168,76,.08);
+      border-left: 3px solid var(--gold);
+      border-radius: 0 8px 8px 0;
+      padding: 1rem 1.25rem;
+      margin: 1.5rem 0;
+      font-style: italic;
+    }
+    .fp-lesson-body .tip {
+      background: rgba(59,130,246,.08);
+      border: 1px solid rgba(59,130,246,.2);
+      border-radius: 8px;
+      padding: .85rem 1.1rem;
+      margin: 1.25rem 0;
+      font-size: .88rem;
+    }
+    .fp-lesson-body .tip::before { content: '💡 '; }
+    .fp-lesson-body .warning {
+      background: rgba(251,191,36,.06);
+      border: 1px solid rgba(251,191,36,.2);
+      border-radius: 8px;
+      padding: .85rem 1.1rem;
+      margin: 1.25rem 0;
+      font-size: .88rem;
+    }
+    .fp-lesson-body .warning::before { content: '⚠️ '; }
+
+    /* Points clés */
+    .fp-key-points {
+      background: linear-gradient(135deg, rgba(13,27,62,.9), rgba(26,44,85,.7));
+      border: 1px solid rgba(201,168,76,.2);
+      border-radius: 12px;
+      padding: 1.25rem 1.5rem;
+      margin: 2rem 0;
+      max-width: 720px;
+    }
+    .fp-key-points-title {
+      font-family: var(--font-title);
+      font-size: .75rem;
+      color: var(--gold);
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      margin-bottom: .85rem;
+    }
+    .fp-key-point {
+      display: flex;
+      gap: .75rem;
+      align-items: flex-start;
+      margin-bottom: .6rem;
+      font-family: var(--font-sub);
+      font-size: .88rem;
+      color: var(--off-white);
+    }
+    .fp-key-point::before {
+      content: '✦';
+      color: var(--gold);
+      flex-shrink: 0;
+      margin-top: .05rem;
+    }
+
+    /* Bouton exercice */
+    .fp-exercise-bar {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid rgba(255,255,255,.07);
+      max-width: 720px;
+      flex-wrap: wrap;
+    }
+    .fp-exercise-btn {
+      flex: 1;
+      min-width: 180px;
+      padding: .85rem 1.5rem;
+      background: rgba(201,168,76,.12);
+      border: 1px solid rgba(201,168,76,.3);
+      border-radius: 10px;
+      color: var(--gold);
+      font-family: var(--font-title);
+      font-size: .78rem;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all .2s;
+      text-align: center;
+    }
+    .fp-exercise-btn:hover {
+      background: rgba(201,168,76,.2);
+      border-color: rgba(201,168,76,.5);
+    }
+    .fp-exercise-btn.done {
+      background: rgba(34,197,94,.08);
+      border-color: rgba(34,197,94,.25);
+      color: #4ade80;
+    }
+    .fp-next-btn {
+      padding: .85rem 1.75rem;
+      background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+      border: none;
+      border-radius: 10px;
+      color: var(--navy-dark);
+      font-family: var(--font-title);
+      font-size: .78rem;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all .2s;
+      white-space: nowrap;
+    }
+    .fp-next-btn:hover { opacity: .9; transform: translateY(-1px); }
+    .fp-next-btn:disabled { opacity: .4; cursor: not-allowed; transform: none; }
+
+    /* ── MODAL EXERCICE ── */
+    .fp-modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.8);
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      animation: fadeIn .2s ease;
+    }
+    .fp-modal {
+      background: linear-gradient(135deg, #0d1b3e, #1a2c55);
+      border: 1px solid rgba(201,168,76,.25);
+      border-radius: 16px;
+      width: 100%;
+      max-width: 620px;
+      max-height: 80vh;
+      overflow-y: auto;
+      padding: 2rem;
+      position: relative;
+      animation: fadeInUp .3s ease;
+    }
+    .fp-modal-close {
+      position: absolute;
+      top: 1rem; right: 1rem;
+      background: rgba(255,255,255,.06);
+      border: none;
+      color: var(--gray);
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 1rem;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .fp-modal-close:hover { color: var(--white); background: rgba(255,255,255,.12); }
+    .fp-modal-title {
+      font-family: var(--font-title);
+      font-size: 1.1rem;
+      color: var(--gold);
+      margin-bottom: .25rem;
+    }
+    .fp-modal-subtitle {
+      font-size: .82rem;
+      color: var(--gray);
+      margin-bottom: 1.75rem;
+    }
+
+    /* QCM */
+    .qcm-question {
+      font-family: var(--font-sub);
+      font-size: .97rem;
+      color: var(--white);
+      font-weight: 600;
+      margin-bottom: 1rem;
+      line-height: 1.5;
+    }
+    .qcm-counter {
+      font-family: var(--font-title);
+      font-size: .65rem;
+      color: var(--gray);
+      letter-spacing: .1em;
+      margin-bottom: .5rem;
+    }
+    .qcm-options { display: flex; flex-direction: column; gap: .5rem; margin-bottom: 1.5rem; }
+    .qcm-option {
+      padding: .75rem 1rem;
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 8px;
+      cursor: pointer;
+      font-family: var(--font-sub);
+      font-size: .88rem;
+      color: var(--off-white);
+      text-align: left;
+      transition: all .15s;
+    }
+    .qcm-option:hover { border-color: rgba(201,168,76,.35); background: rgba(201,168,76,.06); }
+    .qcm-option.correct { background: rgba(34,197,94,.1); border-color: rgba(34,197,94,.4); color: #4ade80; }
+    .qcm-option.wrong   { background: rgba(239,68,68,.08); border-color: rgba(239,68,68,.3); color: #f87171; }
+    .qcm-option:disabled { cursor: default; }
+    .qcm-explanation {
+      background: rgba(255,255,255,.04);
+      border-radius: 8px;
+      padding: .85rem 1rem;
+      font-size: .83rem;
+      color: var(--gray);
+      margin-bottom: 1.25rem;
+      line-height: 1.6;
+      display: none;
+    }
+    .qcm-nav { display: flex; gap: .75rem; justify-content: flex-end; }
+
+    /* FLASHCARDS */
+    .flashcard-container {
+      perspective: 1000px;
+      height: 200px;
+      margin-bottom: 1.5rem;
+      cursor: pointer;
+    }
+    .flashcard {
+      width: 100%; height: 100%;
+      transform-style: preserve-3d;
+      transition: transform .5s ease;
+      border-radius: 12px;
+    }
+    .flashcard.flipped { transform: rotateY(180deg); }
+    .flashcard-front, .flashcard-back {
+      position: absolute;
+      inset: 0;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      text-align: center;
+      backface-visibility: hidden;
+    }
+    .flashcard-front {
+      background: linear-gradient(135deg, rgba(13,27,62,.9), rgba(26,44,85,.7));
+      border: 1px solid rgba(201,168,76,.2);
+    }
+    .flashcard-back {
+      background: linear-gradient(135deg, rgba(20,40,20,.9), rgba(10,40,25,.7));
+      border: 1px solid rgba(34,197,94,.25);
+      transform: rotateY(180deg);
+    }
+    .flashcard-front p {
+      font-family: var(--font-sub);
+      font-size: 1rem;
+      color: var(--white);
+      line-height: 1.5;
+    }
+    .flashcard-back p {
+      font-family: var(--font-sub);
+      font-size: .92rem;
+      color: #4ade80;
+      line-height: 1.6;
+    }
+    .flashcard-hint { font-size: .7rem; color: var(--gray); margin-top: .5rem; text-align: center; }
+    .fc-progress { text-align: center; font-size: .78rem; color: var(--gray); margin-bottom: 1rem; }
+    .fc-nav { display: flex; gap: .75rem; justify-content: center; flex-wrap: wrap; }
+    .fc-btn {
+      padding: .6rem 1.25rem;
+      border-radius: 8px;
+      font-family: var(--font-title);
+      font-size: .72rem;
+      letter-spacing: .1em;
+      cursor: pointer;
+      border: 1px solid rgba(201,168,76,.3);
+      background: rgba(201,168,76,.08);
+      color: var(--gold);
+      transition: all .15s;
+    }
+    .fc-btn:hover { background: rgba(201,168,76,.18); }
+
+    /* CAS PRATIQUE */
+    .cas-scenario {
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 10px;
+      padding: 1.1rem;
+      font-size: .88rem;
+      color: var(--off-white);
+      line-height: 1.7;
+      margin-bottom: 1.5rem;
+    }
+    .cas-scenario strong { color: var(--gold); }
+    .cas-step {
+      margin-bottom: 1.25rem;
+    }
+    .cas-step-label {
+      font-family: var(--font-title);
+      font-size: .7rem;
+      color: var(--gold);
+      letter-spacing: .1em;
+      margin-bottom: .5rem;
+    }
+    .cas-textarea {
+      width: 100%;
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 8px;
+      color: var(--off-white);
+      font-family: var(--font-sub);
+      font-size: .88rem;
+      padding: .75rem 1rem;
+      resize: vertical;
+      min-height: 80px;
+      line-height: 1.6;
+      transition: border-color .2s;
+    }
+    .cas-textarea:focus { outline: none; border-color: rgba(201,168,76,.35); }
+    .cas-hint {
+      font-size: .75rem;
+      color: rgba(201,168,76,.6);
+      margin-top: .35rem;
+      font-style: italic;
+    }
+    .cas-ideal {
+      background: rgba(34,197,94,.06);
+      border: 1px solid rgba(34,197,94,.2);
+      border-radius: 8px;
+      padding: 1rem;
+      margin-top: 1.5rem;
+      display: none;
+    }
+    .cas-ideal-label {
+      font-family: var(--font-title);
+      font-size: .68rem;
+      color: #4ade80;
+      letter-spacing: .1em;
+      margin-bottom: .5rem;
+    }
+    .cas-ideal p { font-size: .88rem; color: var(--off-white); line-height: 1.6; }
+
+    /* Score modal */
+    .fp-score-block {
+      text-align: center;
+      padding: 1.5rem;
+      background: rgba(255,255,255,.04);
+      border-radius: 12px;
+      margin-top: 1.5rem;
+    }
+    .fp-score-num {
+      font-family: var(--font-title);
+      font-size: 3rem;
+      color: var(--gold);
+    }
+    .fp-score-sub { font-size: .82rem; color: var(--gray); margin-top: .25rem; }
+    .fp-score-xp {
+      font-family: var(--font-title);
+      font-size: 1rem;
+      color: #4ade80;
+      margin-top: .75rem;
+    }
+
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* ════════════════════════════════════════════════════
+       SCENARIO INTERACTIF — MOTEUR ULTRA PREMIUM
+    ════════════════════════════════════════════════════ */
+
+    /* Overlay plein écran */
+    .sc-overlay {
+      position: fixed; inset: 0; z-index: 200;
+      background: #050d1a;
+      display: flex; flex-direction: column;
+      font-family: var(--font-body);
+      overflow: hidden;
+    }
+
+    /* ── Header ── */
+    .sc-header {
+      display: flex; align-items: center; gap: 1rem;
+      padding: .75rem 1.5rem;
+      background: rgba(10,22,40,.98);
+      border-bottom: 1px solid rgba(255,255,255,.07);
+      flex-shrink: 0; z-index: 10;
+    }
+    .sc-exit {
+      background: transparent; border: 1px solid rgba(255,255,255,.12);
+      color: var(--gray); cursor: pointer; border-radius: 8px;
+      width: 34px; height: 34px; font-size: .9rem;
+      display: flex; align-items: center; justify-content: center;
+      transition: all .2s;
+    }
+    .sc-exit:hover { color: var(--gold); border-color: var(--gold); }
+    .sc-scenario-title {
+      font-family: var(--font-title); font-size: .78rem;
+      color: var(--off-white); letter-spacing: .08em; flex: 1;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .sc-act-badge {
+      font-family: var(--font-title); font-size: .65rem;
+      letter-spacing: .15em; padding: .3rem .75rem;
+      border-radius: 20px; color: #fff; font-weight: 700;
+      flex-shrink: 0;
+    }
+    .sc-act-label {
+      font-size: .75rem; color: var(--gray);
+      font-family: var(--font-title); flex-shrink: 0;
+    }
+    .sc-score-live {
+      font-family: var(--font-title); font-size: .82rem;
+      color: var(--gold); flex-shrink: 0;
+      padding: .3rem .9rem; border: 1px solid rgba(201,168,76,.25);
+      border-radius: 20px; background: rgba(201,168,76,.08);
+    }
+    .sc-act-dots {
+      display: flex; gap: .4rem; flex-shrink: 0;
+    }
+    .sc-act-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: rgba(255,255,255,.15); transition: all .3s;
+    }
+    .sc-act-dot.active { background: var(--gold); transform: scale(1.3); }
+    .sc-act-dot.done { background: #4ade80; }
+
+    /* ── Body (scrollable) ── */
+    .sc-body {
+      flex: 1; overflow-y: auto; display: flex;
+      flex-direction: column; align-items: center;
+      padding: 2rem 1.5rem 3rem;
+      gap: 1.5rem;
+    }
+    .sc-body::-webkit-scrollbar { width: 4px; }
+    .sc-body::-webkit-scrollbar-thumb { background: rgba(201,168,76,.2); border-radius: 2px; }
+
+    /* ── Context banner ── */
+    .sc-context-banner {
+      width: 100%; max-width: 720px;
+      background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.08);
+      border-radius: 12px; padding: .75rem 1.1rem;
+      font-size: .8rem; color: var(--gray); line-height: 1.5;
+      animation: scFadeIn .4s ease;
+    }
+    .sc-context-banner strong { color: var(--off-white); }
+
+    /* ── Character + Bubble ── */
+    .sc-scene {
+      width: 100%; max-width: 720px; display: flex;
+      flex-direction: column; gap: 1.25rem;
+      animation: scSlideUp .4s ease;
+    }
+    .sc-character-row {
+      display: flex; align-items: center; gap: 1rem;
+    }
+    .sc-avatar {
+      width: 56px; height: 56px; border-radius: 50%;
+      background: linear-gradient(135deg, rgba(201,168,76,.2), rgba(201,168,76,.05));
+      border: 2px solid rgba(201,168,76,.3);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.8rem; flex-shrink: 0;
+    }
+    .sc-char-info { flex: 1; }
+    .sc-char-name {
+      font-family: var(--font-title); font-size: .95rem;
+      color: var(--white); letter-spacing: .05em;
+    }
+    .sc-char-role { font-size: .75rem; color: var(--gray); margin-top: .15rem; }
+    .sc-tone-badge {
+      font-family: var(--font-title); font-size: .6rem;
+      letter-spacing: .15em; padding: .25rem .65rem;
+      border-radius: 20px; flex-shrink: 0;
+    }
+    [data-tone="cold"] .sc-tone-badge,
+    .sc-tone-badge[data-tone="cold"]    { background: rgba(100,116,139,.25); color: #94a3b8; border: 1px solid rgba(100,116,139,.4); }
+    [data-tone="pressure"] .sc-tone-badge,
+    .sc-tone-badge[data-tone="pressure"]{ background: rgba(239,68,68,.2); color: #fca5a5; border: 1px solid rgba(239,68,68,.4); }
+    [data-tone="escape"] .sc-tone-badge,
+    .sc-tone-badge[data-tone="escape"]  { background: rgba(245,158,11,.2); color: #fcd34d; border: 1px solid rgba(245,158,11,.4); }
+    [data-tone="negotiation"] .sc-tone-badge,
+    .sc-tone-badge[data-tone="negotiation"]{ background: rgba(59,130,246,.2); color: #93c5fd; border: 1px solid rgba(59,130,246,.4); }
+    [data-tone="rushed"] .sc-tone-badge,
+    .sc-tone-badge[data-tone="rushed"]  { background: rgba(245,158,11,.2); color: #fcd34d; border: 1px solid rgba(245,158,11,.4); }
+    [data-tone="hostile"] .sc-tone-badge,
+    .sc-tone-badge[data-tone="hostile"] { background: rgba(239,68,68,.2); color: #fca5a5; border: 1px solid rgba(239,68,68,.4); }
+    [data-tone="analytical"] .sc-tone-badge,
+    .sc-tone-badge[data-tone="analytical"]{ background: rgba(139,92,246,.2); color: #c4b5fd; border: 1px solid rgba(139,92,246,.4); }
+    [data-tone="neutral"] .sc-tone-badge,
+    .sc-tone-badge[data-tone="neutral"] { background: rgba(148,163,184,.15); color: #94a3b8; border: 1px solid rgba(148,163,184,.3); }
+
+    /* Speech bubble */
+    .sc-bubble-wrap { position: relative; }
+    .sc-bubble {
+      background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1);
+      border-radius: 0 16px 16px 16px;
+      padding: 1.1rem 1.4rem;
+      font-size: .95rem; color: var(--off-white); line-height: 1.65;
+      position: relative;
+    }
+    .sc-bubble::before {
+      content: ''; position: absolute; top: 0; left: -8px;
+      border: 8px solid transparent;
+      border-right-color: rgba(255,255,255,.1);
+      border-top-color: rgba(255,255,255,.1);
+    }
+
+    /* ── Objective ── */
+    .sc-objective {
+      width: 100%; max-width: 720px;
+      background: rgba(201,168,76,.07); border: 1px solid rgba(201,168,76,.2);
+      border-radius: 10px; padding: .65rem 1.1rem;
+      font-size: .8rem; color: var(--gold); line-height: 1.5;
+    }
+    .sc-objective-label {
+      font-family: var(--font-title); font-size: .62rem;
+      letter-spacing: .12em; color: rgba(201,168,76,.7);
+      margin-bottom: .25rem;
+    }
+
+    /* ── Choices ── */
+    .sc-choices-header {
+      width: 100%; max-width: 720px;
+      font-family: var(--font-title); font-size: .7rem;
+      letter-spacing: .12em; color: var(--gray); text-align: center;
+    }
+    .sc-choices-grid {
+      width: 100%; max-width: 720px;
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: .75rem;
+    }
+    @media (max-width: 600px) { .sc-choices-grid { grid-template-columns: 1fr; } }
+
+    .sc-choice-card {
+      background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.1);
+      border-radius: 14px; padding: 1rem 1.1rem;
+      text-align: left; cursor: pointer; color: var(--off-white);
+      transition: all .2s; display: flex; flex-direction: column; gap: .5rem;
+      position: relative; overflow: hidden;
+    }
+    .sc-choice-card:hover {
+      border-color: rgba(201,168,76,.4);
+      background: rgba(201,168,76,.08);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0,0,0,.3);
+    }
+    .sc-choice-card:disabled { opacity: .5; cursor: default; transform: none; }
+    .sc-choice-tag {
+      font-family: var(--font-title); font-size: .6rem;
+      letter-spacing: .12em; color: var(--gold);
+      padding: .2rem .55rem; border-radius: 20px;
+      background: rgba(201,168,76,.1); border: 1px solid rgba(201,168,76,.2);
+      align-self: flex-start;
+    }
+    .sc-choice-text { font-size: .88rem; line-height: 1.5; }
+
+    /* ── Consequence screen ── */
+    .sc-consequence-wrap {
+      width: 100%; max-width: 720px; display: flex; flex-direction: column; gap: 1.25rem;
+      animation: scSlideUp .4s ease;
+    }
+    .sc-quality-row {
+      display: flex; align-items: center; gap: 1rem;
+    }
+    .sc-quality-badge {
+      font-family: var(--font-title); font-size: .7rem;
+      letter-spacing: .15em; padding: .4rem 1rem;
+      border-radius: 20px; color: #fff; font-weight: 700;
+    }
+    .sc-points-badge {
+      font-family: var(--font-title); font-size: 1.6rem;
+      font-weight: 700; letter-spacing: -.02em;
+    }
+    .sc-reaction-label {
+      font-family: var(--font-title); font-size: .65rem;
+      letter-spacing: .12em; color: var(--gray); margin-bottom: .5rem;
+    }
+    .sc-reaction-bubble {
+      background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.08);
+      border-radius: 0 16px 16px 16px;
+      padding: 1rem 1.2rem; font-size: .9rem;
+      color: var(--off-white); line-height: 1.6;
+      font-style: italic;
+    }
+    .sc-coaching-card {
+      background: linear-gradient(135deg, rgba(201,168,76,.08), rgba(201,168,76,.03));
+      border: 1px solid rgba(201,168,76,.25); border-radius: 14px;
+      padding: 1.2rem 1.4rem;
+    }
+    .sc-coaching-title {
+      font-family: var(--font-title); font-size: .78rem;
+      letter-spacing: .08em; color: var(--gold);
+      margin-bottom: .6rem;
+    }
+    .sc-coaching-detail {
+      font-size: .88rem; color: var(--off-white);
+      line-height: 1.6; margin-bottom: .8rem;
+    }
+    .sc-coaching-principle {
+      font-size: .8rem; color: var(--gray); line-height: 1.5;
+      padding-top: .75rem; border-top: 1px solid rgba(255,255,255,.07);
+      font-style: italic;
+    }
+    .sc-continue-btn {
+      background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+      color: #000; border: none; border-radius: 12px;
+      padding: .85rem 2rem; font-family: var(--font-title);
+      font-size: .82rem; letter-spacing: .1em;
+      cursor: pointer; font-weight: 700;
+      transition: all .2s; align-self: flex-end;
+    }
+    .sc-continue-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(201,168,76,.35); }
+
+    /* ── Final score screen ── */
+    .sc-final-wrap {
+      width: 100%; max-width: 600px; display: flex; flex-direction: column;
+      align-items: center; gap: 1.25rem; text-align: center;
+      animation: scSlideUp .5s ease;
+    }
+    .sc-final-trophy { font-size: 3.5rem; }
+    .sc-final-grade {
+      font-family: var(--font-title); font-size: 1.4rem;
+      letter-spacing: .1em; font-weight: 700;
+    }
+    .sc-final-score-num {
+      font-family: var(--font-title); font-size: 4.5rem;
+      line-height: 1; color: var(--gold);
+    }
+    .sc-final-score-num span { font-size: 1.8rem; color: var(--gray); }
+    .sc-final-bar-wrap {
+      width: 100%; max-width: 400px; height: 8px;
+      background: rgba(255,255,255,.1); border-radius: 4px; overflow: hidden;
+    }
+    .sc-final-bar { height: 100%; border-radius: 4px; transition: width 1s ease; }
+    .sc-final-msg {
+      font-size: .9rem; color: var(--gray); max-width: 400px; line-height: 1.6;
+    }
+    .sc-final-breakdown {
+      display: flex; gap: .75rem; flex-wrap: wrap; justify-content: center;
+    }
+    .sc-final-act {
+      background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.1);
+      border-radius: 10px; padding: .6rem 1rem;
+      display: flex; flex-direction: column; align-items: center; gap: .3rem;
+      min-width: 90px;
+    }
+    .sc-final-act-label {
+      font-family: var(--font-title); font-size: .6rem;
+      letter-spacing: .12em; color: var(--gray);
+    }
+    .sc-final-act-icon { font-size: 1.3rem; }
+    .sc-final-act-pts { font-family: var(--font-title); font-size: .82rem; color: var(--off-white); }
+    .sc-final-xp {
+      font-family: var(--font-title); font-size: 1.2rem;
+      color: #4ade80; letter-spacing: .05em;
+    }
+    .sc-final-btns { display: flex; gap: 1rem; justify-content: center; margin-top: .5rem; }
+    .sc-replay-btn {
+      background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.15);
+      color: var(--off-white); border-radius: 12px;
+      padding: .7rem 1.5rem; font-family: var(--font-title);
+      font-size: .78rem; letter-spacing: .1em; cursor: pointer;
+      transition: all .2s;
+    }
+    .sc-replay-btn:hover { background: rgba(255,255,255,.1); }
+
+    /* Animations */
+    @keyframes scFadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes scSlideUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* Exercise button — interactive-scenario variant */
+    .fp-exercise-btn.scenario-btn {
+      background: linear-gradient(135deg, rgba(201,168,76,.15), rgba(201,168,76,.05));
+      border-color: rgba(201,168,76,.4);
+    }
+  </style>
+</head>
+<body>
+
+<div class="fp-layout">
+
+  <!-- TOP BAR -->
+  <header class="fp-topbar">
+    <a href="javascript:history.back()" class="fp-back" title="Retour">←</a>
+    <div class="fp-formation-title" id="fpTitle">Formation</div>
+    <div class="fp-progress-bar">
+      <div class="fp-progress-fill" id="fpProgressFill" style="width:0%"></div>
+    </div>
+    <div class="fp-progress-label" id="fpProgressLabel">0%</div>
+    <button id="mobileSidebarBtn" style="display:none;background:transparent;border:1px solid rgba(255,255,255,.12);color:var(--gray);padding:.3rem .6rem;border-radius:6px;cursor:pointer;font-size:.8rem;margin-left:.5rem;">
+      ≡ Modules
+    </button>
+  </header>
+
+  <!-- SIDEBAR -->
+  <aside class="fp-sidebar" id="fpSidebar">
+    <!-- Généré par JS -->
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="fp-main" id="fpMain">
+    <div class="fp-lesson-content" id="fpLessonContent">
+      <!-- Généré par JS -->
+    </div>
+  </main>
+
+</div>
+
+<!-- MODAL EXERCICE -->
+<div class="fp-modal-overlay" id="fpModalOverlay" style="display:none;">
+  <div class="fp-modal" id="fpModal">
+    <button class="fp-modal-close" onclick="closeModal()">✕</button>
+    <div id="fpModalContent"><!-- Généré par JS --></div>
+  </div>
+</div>
+
+<!-- SCENARIO INTERACTIF OVERLAY -->
+<div id="scenarioOverlay" class="sc-overlay" style="display:none;">
+
+  <!-- HEADER -->
+  <div class="sc-header">
+    <button class="sc-exit" onclick="exitScenario()" title="Quitter">✕</button>
+    <div class="sc-scenario-title" id="scTitle">Scénario</div>
+    <div class="sc-act-dots" id="scActDots"></div>
+    <div class="sc-act-badge" id="scActBadge">ROOKIE</div>
+    <div class="sc-act-label" id="scActLabel">Acte 1 / 4</div>
+    <div class="sc-score-live" id="scScoreLive">0 / 12</div>
+  </div>
+
+  <!-- BODY SCROLLABLE -->
+  <div class="sc-body" id="scBody">
+
+    <!-- SCREEN : QUESTION (choix) -->
+    <div id="scScreenQuestion" style="display:flex;flex-direction:column;align-items:center;gap:1.5rem;width:100%;">
+      <div class="sc-context-banner" id="scContextBanner" style="display:none;"></div>
+      <div class="sc-scene" id="scScene">
+        <div class="sc-character-row">
+          <div class="sc-avatar" id="scAvatar">🧑‍💼</div>
+          <div class="sc-char-info">
+            <div class="sc-char-name" id="scCharName">—</div>
+            <div class="sc-char-role" id="scCharRole">—</div>
+          </div>
+          <div class="sc-tone-badge" id="scToneBadge" data-tone="neutral">NEUTRE</div>
+        </div>
+        <div class="sc-bubble-wrap">
+          <div class="sc-bubble" id="scBubble"></div>
+        </div>
+      </div>
+      <div class="sc-objective" id="scObjective" style="display:none;">
+        <div class="sc-objective-label">🎯 TON OBJECTIF</div>
+        <div id="scObjectiveText"></div>
+      </div>
+      <div class="sc-choices-header">— QUE RÉPONDS-TU ? —</div>
+      <div class="sc-choices-grid" id="scChoicesGrid"></div>
+    </div>
+
+    <!-- SCREEN : CONSEQUENCE (résultat) -->
+    <div id="scScreenConsequence" style="display:none;flex-direction:column;align-items:center;gap:1.5rem;width:100%;">
+      <div class="sc-consequence-wrap">
+        <div class="sc-quality-row">
+          <div class="sc-quality-badge" id="scQualityBadge">EXCELLENT</div>
+          <div class="sc-points-badge" id="scPointsBadge">+3</div>
+        </div>
+        <!-- Réaction perso -->
+        <div class="sc-scene" id="scReactScene">
+          <div class="sc-character-row">
+            <div class="sc-avatar" id="scReactAvatar">🧑‍💼</div>
+            <div class="sc-char-info">
+              <div class="sc-char-name" id="scReactCharName">—</div>
+              <div class="sc-char-role" id="scReactCharRole">—</div>
+            </div>
+            <div class="sc-tone-badge" id="scReactToneBadge" data-tone="interested">INTÉRESSÉ</div>
+          </div>
+          <div class="sc-bubble-wrap">
+            <div class="sc-bubble sc-reaction-bubble" id="scReactionBubble"></div>
+          </div>
+        </div>
+        <!-- Coaching -->
+        <div class="sc-coaching-card">
+          <div class="sc-coaching-title" id="scCoachingTitle">Pourquoi ça marche</div>
+          <div class="sc-coaching-detail" id="scCoachingDetail"></div>
+          <div class="sc-coaching-principle" id="scCoachingPrinciple"></div>
+        </div>
+        <div style="display:flex;justify-content:flex-end;">
+          <button class="sc-continue-btn" id="scContinueBtn" onclick="continueScenario()">Acte suivant →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SCREEN : SCORE FINAL -->
+    <div id="scScreenFinal" style="display:none;flex-direction:column;align-items:center;gap:1.5rem;width:100%;">
+      <div class="sc-final-wrap" id="scFinalWrap"></div>
+    </div>
+
+  </div><!-- /sc-body -->
+</div><!-- /scenarioOverlay -->
+
+<!-- SCRIPTS -->
+<script>
+/* ── GARDE D'ACCÈS — Redirection si non connecté ── */
+(function() {
+  try {
+    var u = JSON.parse(localStorage.getItem('atlas_user') || 'null');
+    if (!u || !u.id) {
+      localStorage.setItem('atlas_auth_return', window.location.href);
+      window.location.href = 'auth.html';
+    }
+  } catch(e) {
+    window.location.href = 'auth.html';
+  }
+})();
+</script>
+<script src="atlas-config.js"></script>
+<script src="assets/js/gamification.js"></script>
+<script src="assets/js/formations-data.js"></script>
+<script src="assets/js/scenarios-data.js"></script>
+<script src="assets/js/formations.js"></script>
+
+<script>
+/* ============================================================
+   FORMATION PLAYER — Atlas Académie
+   URL : formation-player.html?id=decode-close
+   ============================================================ */
+
+let FORMATION = null;
+let currentModuleIdx = 0;
+let currentLessonIdx = 0;
+
+/* ─── Init ─── */
+document.addEventListener('DOMContentLoaded', () => {
+  const params = new URLSearchParams(window.location.search);
+  const id = params.get('id') || '10-etapes';
+  FORMATION = ATLAS_FORMATIONS[id];
+  if (!FORMATION) { document.getElementById('fpMain').innerHTML = '<p style="color:var(--gray);padding:2rem;">Formation introuvable.</p>'; return; }
+
+  document.title = FORMATION.title + ' — Atlas Académie';
+  document.getElementById('fpTitle').textContent = FORMATION.title;
+
+  renderSidebar();
+  loadLesson(0, 0);
+  updateProgress();
+
+  // Restore from URL
+  const mod = parseInt(params.get('m')) || 0;
+  const les = parseInt(params.get('l')) || 0;
+  if (mod || les) loadLesson(mod, les);
+
+  // Mobile
+  const mBtn = document.getElementById('mobileSidebarBtn');
+  if (window.innerWidth <= 768) mBtn.style.display = 'block';
+  mBtn.addEventListener('click', () => {
+    document.getElementById('fpSidebar').classList.toggle('open');
+  });
+});
+
+/* ─── Sidebar ─── */
+function renderSidebar() {
+  const html = FORMATION.modules.map((mod, mi) => {
+    const lessons = mod.lessons.map((les, li) => {
+      const state = AtlasFormations.getLessonState(FORMATION.id, mod.id, les.id);
+      const unlocked = AtlasFormations.isLessonUnlocked(FORMATION.id, mi, li, FORMATION);
+      const isActive = mi === currentModuleIdx && li === currentLessonIdx;
+
+      let iconClass = 'locked';
+      let iconContent = '🔒';
+      if (state.read && state.exercisePassed) { iconClass = 'done'; iconContent = '✓'; }
+      else if (state.read) { iconClass = 'done'; iconContent = '✓'; }
+      else if (unlocked) { iconClass = isActive ? 'active' : ''; iconContent = li + 1; }
+
+      const btnClass = `fp-lesson-btn${isActive ? ' active' : ''}`;
+      return `
+        <button class="${btnClass}" onclick="loadLesson(${mi},${li})" ${!unlocked ? 'disabled' : ''}>
+          <div class="fp-lesson-icon ${iconClass}">${iconContent}</div>
+          <div class="fp-lesson-info">
+            <div class="fp-lesson-name">${les.title}</div>
+            <div class="fp-lesson-meta">
+              ${les.duration} · ${state.exercisePassed ? '✅ Exercice validé' : (state.read ? '📖 Lu' : (unlocked ? '▶ Disponible' : '🔒 Verrouillé'))}
+            </div>
+          </div>
+        </button>`;
+    }).join('');
+    return `<div class="fp-module-header">${mod.title}</div>${lessons}`;
+  }).join('');
+  document.getElementById('fpSidebar').innerHTML = html;
+}
+
+/* ─── Chargement leçon ─── */
+function loadLesson(mi, li) {
+  if (!FORMATION.modules[mi]?.lessons[li]) return;
+  currentModuleIdx = mi;
+  currentLessonIdx = li;
+  const mod = FORMATION.modules[mi];
+  const les = mod.lessons[li];
+  const state = AtlasFormations.getLessonState(FORMATION.id, mod.id, les.id);
+
+  // Update URL sans reload
+  const url = new URL(window.location);
+  url.searchParams.set('m', mi);
+  url.searchParams.set('l', li);
+  history.replaceState(null, '', url);
+
+  // Key points block
+  const kpHtml = les.keyPoints?.length ? `
+    <div class="fp-key-points">
+      <div class="fp-key-points-title">✦ Points clés à retenir</div>
+      ${les.keyPoints.map(k => `<div class="fp-key-point">${k}</div>`).join('')}
+    </div>` : '';
+
+  // Exercice type label
+  const exType = les.exercise?.type;
+  const exLabels = { qcm:'📝 Quiz QCM', cas:'💼 Cas pratique', flashcards:'🃏 Flashcards', roleplay:'🎯 Roleplay IA' };
+  const exLabel = exLabels[exType] || '📝 Exercice';
+
+  // Bonus scénario (champ séparé — NE remplace jamais l'exercice existant)
+  const hasBonus = !!les.bonus_scenario?.scenarioId;
+
+  document.getElementById('fpLessonContent').innerHTML = `
+    <div class="fp-lesson-breadcrumb">${FORMATION.title} · ${mod.title}</div>
+    <h2>${les.title}</h2>
+    <div class="fp-lesson-duration">⏱ ${les.duration}</div>
+    <div class="fp-lesson-body">${les.content}</div>
+    ${kpHtml}
+    <div class="fp-divider"></div>
+    <div class="fp-exercise-bar">
+      ${les.exercise ? `
+        <button class="fp-exercise-btn ${state.exercisePassed ? 'done' : ''}" onclick="openExercise()">
+          ${state.exercisePassed ? '✓ ' : ''}${exLabel}
+        </button>` : ''}
+      ${hasBonus ? `
+        <button class="fp-exercise-btn scenario-btn" onclick="launchScenario('${les.bonus_scenario.scenarioId}')" title="Exercice bonus — ne compte pas dans la progression">
+          🎬 Scénario Interactif
+        </button>` : ''}
+      <button class="fp-next-btn" id="nextBtn" onclick="goNext()">
+        ${isLastLesson() ? '🏁 Terminer la formation' : 'Leçon suivante →'}
+      </button>
+    </div>`;
+
+  // Marquer comme lu
+  const wasNew = AtlasFormations.markLessonRead(FORMATION.id, mod.id, les.id);
+  if (wasNew) setTimeout(updateProgress, 300);
+
+  renderSidebar();
+  document.getElementById('fpMain').scrollTo(0, 0);
+  document.getElementById('fpSidebar').classList.remove('open');
+}
+
+/* ─── Navigation ─── */
+function isLastLesson() {
+  const lastMod = FORMATION.modules.length - 1;
+  const lastLes = FORMATION.modules[lastMod].lessons.length - 1;
+  return currentModuleIdx === lastMod && currentLessonIdx === lastLes;
+}
+
+function goNext() {
+  const mod = FORMATION.modules[currentModuleIdx];
+  if (currentLessonIdx < mod.lessons.length - 1) {
+    loadLesson(currentModuleIdx, currentLessonIdx + 1);
+  } else if (currentModuleIdx < FORMATION.modules.length - 1) {
+    loadLesson(currentModuleIdx + 1, 0);
+  } else {
+    window.location.href = 'certificat.html';
+  }
+}
+
+/* ─── Progress ─── */
+function updateProgress() {
+  const pct = AtlasFormations.getFormationProgress(FORMATION.id);
+  document.getElementById('fpProgressFill').style.width = pct + '%';
+  document.getElementById('fpProgressLabel').textContent = pct + '%';
+}
+
+/* ─── Exercices ─── */
+function openExercise() {
+  const les = FORMATION.modules[currentModuleIdx].lessons[currentLessonIdx];
+  if (!les.exercise) return;
+  const ex = les.exercise;
+
+  // Scénario interactif — mode plein écran, pas de modal
+  if (ex.type === 'interactive-scenario') {
+    launchScenario(ex.scenarioId);
+    return;
+  }
+
+  let html = '';
+  switch (ex.type) {
+    case 'qcm':        html = renderQCM(ex); break;
+    case 'flashcards': html = renderFlashcards(les); break;
+    case 'cas':        html = renderCas(ex); break;
+    case 'roleplay':   html = renderRoleplay(ex); break;
+    default:           html = '<p style="color:var(--gray)">Exercice en cours de création…</p>';
+  }
+
+  document.getElementById('fpModalContent').innerHTML = html;
+  document.getElementById('fpModalOverlay').style.display = 'flex';
+}
+
+function closeModal() {
+  document.getElementById('fpModalOverlay').style.display = 'none';
+}
+
+/* ── QCM ── */
+let qcmCurrent = 0;
+let qcmScore = 0;
+
+function renderQCM(ex) {
+  qcmCurrent = 0; qcmScore = 0;
+  if (!ex.questions?.length) return '<p style="color:var(--gray)">Questions en cours de rédaction…</p>';
+  return renderQCMQuestion(ex);
+}
+
+function renderQCMQuestion(ex) {
+  const q = ex.questions[qcmCurrent];
+  return `
+    <div class="fp-modal-title">📝 Quiz — Teste tes connaissances</div>
+    <div class="fp-modal-subtitle">Réponds correctement à ${ex.passingScore}% des questions pour valider</div>
+    <div class="qcm-counter">Question ${qcmCurrent + 1} / ${ex.questions.length}</div>
+    <div class="qcm-question">${q.q}</div>
+    <div class="qcm-options" id="qcmOptions">
+      ${q.options.map((o, i) => `
+        <button class="qcm-option" onclick="answerQCM(${i}, ${o.correct}, this)">
+          ${o.text}
+        </button>`).join('')}
+    </div>
+    <div class="qcm-explanation" id="qcmExpl">${q.explanation || ''}</div>
+    <div class="qcm-nav">
+      <button id="qcmNext" class="fp-next-btn" style="display:none;" onclick="nextQCMQuestion()">
+        ${qcmCurrent + 1 < ex.questions.length ? 'Suivant →' : 'Voir le résultat →'}
+      </button>
+    </div>`;
+}
+
+function answerQCM(idx, isCorrect, btn) {
+  document.querySelectorAll('.qcm-option').forEach((b, i) => {
+    b.disabled = true;
+    const q = FORMATION.modules[currentModuleIdx].lessons[currentLessonIdx].exercise.questions[qcmCurrent];
+    if (q.options[i].correct) b.classList.add('correct');
+    else if (i === idx && !isCorrect) b.classList.add('wrong');
+  });
+  if (isCorrect) qcmScore++;
+  document.getElementById('qcmExpl').style.display = 'block';
+  document.getElementById('qcmNext').style.display = 'inline-flex';
+  // Update next button text
+  const ex = FORMATION.modules[currentModuleIdx].lessons[currentLessonIdx].exercise;
+  document.getElementById('qcmNext').textContent = qcmCurrent + 1 < ex.questions.length ? 'Suivant →' : 'Voir le résultat →';
+}
+
+function nextQCMQuestion() {
+  const ex = FORMATION.modules[currentModuleIdx].lessons[currentLessonIdx].exercise;
+  qcmCurrent++;
+  if (qcmCurrent < ex.questions.length) {
+    document.getElementById('fpModalContent').innerHTML = renderQCMQuestion(ex);
+  } else {
+    const pct = Math.round((qcmScore / ex.questions.length) * 100);
+    const passed = pct >= (ex.passingScore || 70);
+    if (passed) {
+      const mod = FORMATION.modules[currentModuleIdx];
+      const les = mod.lessons[currentLessonIdx];
+      AtlasFormations.markExercisePassed(FORMATION.id, mod.id, les.id, pct);
+      renderSidebar();
+      // Mettre à jour bouton exercice
+      const exBtn = document.querySelector('.fp-exercise-btn');
+      if (exBtn) { exBtn.classList.add('done'); exBtn.textContent = '✓ Quiz validé'; }
+    }
+    document.getElementById('fpModalContent').innerHTML = `
+      <div class="fp-modal-title">${passed ? '🏆 Bravo !' : '📖 Pas encore…'}</div>
+      <div class="fp-modal-subtitle">${passed ? 'Exercice validé !' : 'Relis la leçon et réessaie.'}</div>
+      <div class="fp-score-block">
+        <div class="fp-score-num">${pct}%</div>
+        <div class="fp-score-sub">${qcmScore} / ${ex.questions.length} bonnes réponses</div>
+        ${passed ? `<div class="fp-score-xp">+25 XP</div>` : ''}
+      </div>
+      <div style="text-align:center;margin-top:1.5rem;">
+        <button class="fp-next-btn" onclick="${passed ? 'closeModal();goNext()' : 'openExercise()'}">
+          ${passed ? 'Leçon suivante →' : '🔄 Réessayer'}
+        </button>
+      </div>`;
+  }
+}
+
+/* ── FLASHCARDS ── */
+let fcIdx = 0;
+let fcFlipped = false;
+
+function renderFlashcards(les) {
+  const cards = les.keyPoints || [];
+  if (!cards.length) return '<p style="color:var(--gray)">Flashcards en cours de création…</p>';
+  fcIdx = 0;
+  return `
+    <div class="fp-modal-title">🃏 Flashcards</div>
+    <div class="fp-modal-subtitle">Clique sur la carte pour révéler la définition</div>
+    <div class="fc-progress" id="fcProgress">Carte 1 / ${cards.length}</div>
+    <div class="flashcard-container" onclick="flipCard()">
+      <div class="flashcard" id="fcCard">
+        <div class="flashcard-front"><p id="fcFront">${cards[0].term || cards[0]}</p></div>
+        <div class="flashcard-back"><p id="fcBack">${cards[0].def || cards[0]}</p></div>
+      </div>
+    </div>
+    <p class="flashcard-hint">👆 Clique pour retourner</p>
+    <div class="fc-nav">
+      <button class="fc-btn" onclick="prevCard()">← Précédente</button>
+      <button class="fc-btn" onclick="nextCard()">Suivante →</button>
+      <button class="fp-next-btn" onclick="validateFlashcards()" style="padding:.6rem 1.25rem">✓ J'ai tout revu</button>
+    </div>`;
+}
+
+function flipCard() {
+  const card = document.getElementById('fcCard');
+  if (card) { fcFlipped = !fcFlipped; card.classList.toggle('flipped', fcFlipped); }
+}
+function prevCard() {
+  const les = FORMATION.modules[currentModuleIdx].lessons[currentLessonIdx];
+  const cards = les.keyPoints || [];
+  if (fcIdx > 0) { fcIdx--; showCard(cards); }
+}
+function nextCard() {
+  const les = FORMATION.modules[currentModuleIdx].lessons[currentLessonIdx];
+  const cards = les.keyPoints || [];
+  if (fcIdx < cards.length - 1) { fcIdx++; showCard(cards); }
+}
+function showCard(cards) {
+  const c = cards[fcIdx];
+  document.getElementById('fcFront').textContent = c.term || c;
+  document.getElementById('fcBack').textContent = c.def || c;
+  document.getElementById('fcProgress').textContent = `Carte ${fcIdx + 1} / ${cards.length}`;
+  const card = document.getElementById('fcCard');
+  fcFlipped = false;
+  card.classList.remove('flipped');
+}
+function validateFlashcards() {
+  const mod = FORMATION.modules[currentModuleIdx];
+  const les = mod.lessons[currentLessonIdx];
+  AtlasFormations.markExercisePassed(FORMATION.id, mod.id, les.id, 100);
+  renderSidebar();
+  const exBtn = document.querySelector('.fp-exercise-btn');
+  if (exBtn) { exBtn.classList.add('done'); exBtn.textContent = '✓ Flashcards révisées'; }
+  closeModal();
+}
+
+/* ── CAS PRATIQUE ── */
+function renderCas(ex) {
+  const steps = ex.steps || [];
+  return `
+    <div class="fp-modal-title">💼 Cas pratique</div>
+    <div class="fp-modal-subtitle">Analyse le scénario et réponds à chaque étape</div>
+    <div class="cas-scenario"><strong>Scénario :</strong> ${ex.scenario}</div>
+    ${steps.map((s, i) => `
+      <div class="cas-step">
+        <div class="cas-step-label">Étape ${i + 1} — ${s.instruction}</div>
+        <textarea class="cas-textarea" id="casStep${i}" placeholder="Ta réponse…"></textarea>
+        ${s.hint ? `<div class="cas-hint">💡 ${s.hint}</div>` : ''}
+      </div>`).join('')}
+    <div class="cas-ideal" id="casIdeal">
+      <div class="cas-ideal-label">✦ Réponse idéale</div>
+      <p>${ex.idealAnswer}</p>
+    </div>
+    <div style="display:flex;gap:.75rem;justify-content:flex-end;margin-top:1rem;">
+      <button class="fp-exercise-btn" onclick="revealCasIdeal()" style="flex:0;white-space:nowrap;min-width:0;padding:.6rem 1.1rem;">
+        Voir la correction
+      </button>
+      <button class="fp-next-btn" onclick="validateCas()">✓ Valider mon travail</button>
+    </div>`;
+}
+
+function revealCasIdeal() {
+  document.getElementById('casIdeal').style.display = 'block';
+}
+
+function validateCas() {
+  const mod = FORMATION.modules[currentModuleIdx];
+  const les = mod.lessons[currentLessonIdx];
+  AtlasFormations.markExercisePassed(FORMATION.id, mod.id, les.id, 100);
+  renderSidebar();
+  const exBtn = document.querySelector('.fp-exercise-btn');
+  if (exBtn) { exBtn.classList.add('done'); exBtn.textContent = '✓ Cas validé'; }
+  closeModal();
+}
+
+/* ── ROLEPLAY IA ── */
+function renderRoleplay(ex) {
+  return `
+    <div class="fp-modal-title">🎯 Roleplay IA</div>
+    <div class="fp-modal-subtitle">Mets en pratique ce que tu viens d'apprendre face à un prospect IA</div>
+    <div class="cas-scenario">
+      <strong>Scénario :</strong> ${ex.description || 'Applique les techniques de cette leçon dans une simulation de vente réelle.'}
+    </div>
+    <div style="text-align:center;padding:1.5rem 0;">
+      <a href="simulateur.html?scenario=${ex.scenarioId || 'objection-prix'}"
+         onclick="markRoleplayDone()"
+         class="fp-next-btn" style="display:inline-block;text-decoration:none;">
+        🎯 Lancer la simulation →
+      </a>
+      <p style="margin-top:1rem;font-size:.78rem;color:var(--gray);">
+        Tu reviendras automatiquement après la session
+      </p>
+    </div>`;
+}
+
+function markRoleplayDone() {
+  const mod = FORMATION.modules[currentModuleIdx];
+  const les = mod.lessons[currentLessonIdx];
+  localStorage.setItem('atlas_return_formation', FORMATION.id + ':' + currentModuleIdx + ':' + currentLessonIdx);
+  setTimeout(() => {
+    AtlasFormations.markExercisePassed(FORMATION.id, mod.id, les.id, 100);
+    renderSidebar();
+  }, 500);
+}
+
+/* Fermer modal avec Escape */
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    closeModal();
+    if (document.getElementById('scenarioOverlay').style.display !== 'none') exitScenario();
+  }
+});
+
+/* ═══════════════════════════════════════════════════════════════
+   MOTEUR DE SCÉNARIO INTERACTIF — ATLAS ACADÉMIE
+   Progression Rookie → Confirmé → Expert → Elite
+═══════════════════════════════════════════════════════════════ */
+
+let scState = {
+  scenario: null,
+  actIdx: 0,
+  totalScore: 0,
+  actScores: [],   // { actIdx, quality, points, choiceId }
+  choiceHistory: []
+};
+
+const SC_DIFFICULTIES = ['ROOKIE', 'CONFIRMÉ', 'EXPERT', 'ELITE'];
+const SC_DIFF_COLORS  = ['#64748b', '#3b82f6', '#f59e0b', '#ef4444'];
+
+const SC_TONE_LABELS = {
+  cold:'FROID', pressure:'PRESSION', escape:'FUITE', negotiation:'NÉGOCIATION',
+  rushed:'PRESSÉ', hostile:'HOSTILE', analytical:'ANALYTIQUE', neutral:'NEUTRE',
+  suspicious:'MÉFIANT', interested:'INTÉRESSÉ', hooked:'ACCROCHÉ',
+  respect:'RESPECT', disarmed:'DÉSAMORCÉ', end:'FERMÉ', open:'OUVERT'
+};
+
+const SC_QUALITY_CONFIG = {
+  excellent: { label:'✦ EXCELLENT',     color:'#4ade80', pts:'+3' },
+  good:      { label:'👍 BIEN JOUÉ',     color:'#3b82f6', pts:'+2' },
+  bad:       { label:'⚠️ PEUT MIEUX FAIRE', color:'#f59e0b', pts:'+0' },
+  critical:  { label:'❌ ERREUR CRITIQUE', color:'#ef4444', pts:'-1' }
+};
+
+/* ── Lancement ── */
+function launchScenario(scenarioId) {
+  if (!window.ATLAS_SCENARIOS) {
+    alert('Les scénarios ne sont pas encore chargés. Vérifie la connexion.');
+    return;
+  }
+  const scenario = ATLAS_SCENARIOS[scenarioId];
+  if (!scenario) {
+    alert('Scénario introuvable : ' + scenarioId);
+    return;
+  }
+  scState = { scenario, actIdx: 0, totalScore: 0, actScores: [], choiceHistory: [] };
+  document.getElementById('scenarioOverlay').style.display = 'flex';
+  document.getElementById('scTitle').textContent = scenario.title || 'Scénario';
+  _scBuildDots(scenario.acts.length);
+  _scShowScreen('question');
+  _scRenderAct();
+}
+
+/* ── Construire les points de progression ── */
+function _scBuildDots(count) {
+  const wrap = document.getElementById('scActDots');
+  wrap.innerHTML = Array.from({length: count}, (_, i) =>
+    `<div class="sc-act-dot" id="scDot${i}"></div>`
+  ).join('');
+}
+
+function _scUpdateDots(actIdx) {
+  const dots = document.getElementById('scActDots').children;
+  for (let i = 0; i < dots.length; i++) {
+    dots[i].className = 'sc-act-dot' + (i < actIdx ? ' done' : i === actIdx ? ' active' : '');
+  }
+}
+
+/* ── Switcher d'écran ── */
+function _scShowScreen(which) {
+  document.getElementById('scScreenQuestion').style.display   = (which === 'question')    ? 'flex' : 'none';
+  document.getElementById('scScreenConsequence').style.display= (which === 'consequence') ? 'flex' : 'none';
+  document.getElementById('scScreenFinal').style.display      = (which === 'final')       ? 'flex' : 'none';
+  // Scroll to top
+  document.getElementById('scBody').scrollTo(0, 0);
+}
+
+/* ── Rendu de l'acte courant ── */
+function _scRenderAct() {
+  const { scenario, actIdx, totalScore } = scState;
+  const act = scenario.acts[actIdx];
+  const maxScore = scenario.acts.length * 3;
+
+  // Header
+  const diffLabel = SC_DIFFICULTIES[actIdx] || 'ACTE';
+  const diffColor = SC_DIFF_COLORS[actIdx] || '#64748b';
+  document.getElementById('scActBadge').textContent = diffLabel;
+  document.getElementById('scActBadge').style.background = diffColor;
+  document.getElementById('scActLabel').textContent = `Acte ${actIdx + 1} / ${scenario.acts.length}`;
+  document.getElementById('scScoreLive').textContent = `${totalScore} / ${maxScore}`;
+  _scUpdateDots(actIdx);
+
+  // Context banner (affiché seulement si act.context existe)
+  const ctxEl = document.getElementById('scContextBanner');
+  if (act.context) {
+    ctxEl.innerHTML = `<strong>CONTEXTE</strong> — ${act.context}`;
+    ctxEl.style.display = 'block';
+  } else {
+    ctxEl.style.display = 'none';
+  }
+
+  // Character
+  const char = act.character_override || scenario.character;
+  document.getElementById('scAvatar').textContent   = char.avatar || '🧑‍💼';
+  document.getElementById('scCharName').textContent  = char.name || '—';
+  document.getElementById('scCharRole').textContent  = char.role || '—';
+
+  // Tone
+  const toneEl = document.getElementById('scToneBadge');
+  toneEl.textContent = SC_TONE_LABELS[act.tone] || (act.tone || '').toUpperCase();
+  toneEl.setAttribute('data-tone', act.tone || 'neutral');
+
+  // Bulle
+  document.getElementById('scBubble').innerHTML = `"${act.situation}"`;
+
+  // Objectif
+  const objEl = document.getElementById('scObjective');
+  if (act.objective) {
+    document.getElementById('scObjectiveText').textContent = act.objective;
+    objEl.style.display = 'block';
+  } else {
+    objEl.style.display = 'none';
+  }
+
+  // Choix
+  const grid = document.getElementById('scChoicesGrid');
+  grid.innerHTML = act.choices.map((c, idx) => `
+    <button class="sc-choice-card" onclick="scPickChoice(${idx})" id="scChoice${idx}">
+      <span class="sc-choice-tag">${c.tag || ''}</span>
+      <span class="sc-choice-text">${c.text}</span>
+    </button>
+  `).join('');
+}
+
+/* ── Choix du joueur ── */
+function scPickChoice(idx) {
+  const { scenario, actIdx } = scState;
+  const act = scenario.acts[actIdx];
+  const choice = act.choices[idx];
+
+  // Désactiver tous les boutons
+  document.querySelectorAll('.sc-choice-card').forEach(b => b.disabled = true);
+
+  // Màj score
+  const newPts = Math.max(0, scState.totalScore + choice.points);
+  scState.totalScore = Math.min(newPts, scenario.acts.length * 3); // cap at max
+  // Permettre score négatif si critical en acte 1
+  if (choice.quality === 'critical' && scState.totalScore > 0) {
+    scState.totalScore = scState.totalScore - 1;
+  }
+  // Recalcul propre
+  scState.totalScore = scState.actScores.reduce((s, a) => s + a.points, 0) + Math.max(-1, choice.points);
+  scState.totalScore = Math.max(0, scState.totalScore);
+
+  scState.actScores.push({ actIdx, quality: choice.quality, points: choice.points, choiceId: choice.id });
+  scState.choiceHistory.push(choice);
+
+  _scRenderConsequence(choice, act);
+}
+
+/* ── Écran conséquence ── */
+function _scRenderConsequence(choice, act) {
+  const qConf = SC_QUALITY_CONFIG[choice.quality] || SC_QUALITY_CONFIG.bad;
+  const char = act.character_override || scState.scenario.character;
+
+  // Badge qualité + points
+  const qBadge = document.getElementById('scQualityBadge');
+  qBadge.textContent = qConf.label;
+  qBadge.style.background = qConf.color;
+  document.getElementById('scPointsBadge').textContent = qConf.pts;
+  document.getElementById('scPointsBadge').style.color = qConf.color;
+
+  // Perso réaction (même avatar)
+  document.getElementById('scReactAvatar').textContent   = char.avatar || '🧑‍💼';
+  document.getElementById('scReactCharName').textContent  = char.name || '—';
+  document.getElementById('scReactCharRole').textContent  = char.role || '—';
+
+  const reactTone = document.getElementById('scReactToneBadge');
+  reactTone.textContent = SC_TONE_LABELS[choice.reactionTone] || (choice.reactionTone || '').toUpperCase();
+  reactTone.setAttribute('data-tone', choice.reactionTone || 'neutral');
+
+  // Réaction + coaching
+  document.getElementById('scReactionBubble').innerHTML = `"${choice.reaction}"`;
+  document.getElementById('scCoachingTitle').textContent  = choice.coaching?.title   || 'Analyse';
+  document.getElementById('scCoachingDetail').textContent = choice.coaching?.detail  || '';
+  document.getElementById('scCoachingPrinciple').textContent = choice.coaching?.principle || '';
+
+  // Score en live
+  const maxScore = scState.scenario.acts.length * 3;
+  document.getElementById('scScoreLive').textContent = `${scState.totalScore} / ${maxScore}`;
+
+  // Bouton continuer
+  const isLast = scState.actIdx >= scState.scenario.acts.length - 1;
+  const btn = document.getElementById('scContinueBtn');
+  if (isLast) {
+    btn.textContent = '🏆 Voir mon score final';
+  } else {
+    btn.textContent = `Acte ${scState.actIdx + 2} : ${SC_DIFFICULTIES[scState.actIdx + 1] || ''} →`;
+  }
+
+  _scShowScreen('consequence');
+}
+
+/* ── Continuer (acte suivant ou final) ── */
+function continueScenario() {
+  const isLast = scState.actIdx >= scState.scenario.acts.length - 1;
+  if (isLast) {
+    _scRenderFinal();
+  } else {
+    scState.actIdx++;
+    _scShowScreen('question');
+    _scRenderAct();
+  }
+}
+
+/* ── Écran score final ── */
+function _scRenderFinal() {
+  const { scenario, totalScore, actScores } = scState;
+  const maxScore = scenario.acts.length * 3;
+  const pct = Math.round((totalScore / maxScore) * 100);
+
+  let grade, gradeColor, gradeTrophy, gradeMsg;
+  if (totalScore >= 11)      { grade='ELITE';     gradeColor='#ef4444'; gradeTrophy='🔴'; gradeMsg='Performance exceptionnelle. Tu domines le closing de bout en bout.'; }
+  else if (totalScore >= 8)  { grade='EXPERT';    gradeColor='#f59e0b'; gradeTrophy='🟡'; gradeMsg='Excellente maîtrise. Affine les actes difficiles pour atteindre l\'élite.'; }
+  else if (totalScore >= 6)  { grade='CONFIRMÉ';  gradeColor='#3b82f6'; gradeTrophy='🔵'; gradeMsg='Bonne base solide. Continue à t\'entraîner sur les situations de pression.'; }
+  else                       { grade='ROOKIE';    gradeColor='#64748b'; gradeTrophy='⚪'; gradeMsg='Chaque répétition compte. Rejoue pour progresser vers le niveau supérieur.'; }
+
+  const actBreakdown = actScores.map((a, i) => {
+    const icons = { excellent:'✅', good:'👍', bad:'⚠️', critical:'❌' };
+    return `
+      <div class="sc-final-act">
+        <div class="sc-final-act-label">${SC_DIFFICULTIES[a.actIdx] || 'ACTE ' + (i+1)}</div>
+        <div class="sc-final-act-icon">${icons[a.quality] || '—'}</div>
+        <div class="sc-final-act-pts" style="color:${SC_QUALITY_CONFIG[a.quality]?.color || '#fff'}">${a.points >= 0 ? '+' : ''}${a.points} pts</div>
+      </div>`;
+  }).join('');
+
+  const xpGained = totalScore * 25 + (totalScore >= 10 ? 100 : 0);
+
+  document.getElementById('scFinalWrap').innerHTML = `
+    <div class="sc-final-trophy">${gradeTrophy}</div>
+    <div class="sc-final-grade" style="color:${gradeColor}">${grade}</div>
+    <div class="sc-final-score-num">${totalScore}<span> / ${maxScore}</span></div>
+    <div class="sc-final-bar-wrap">
+      <div class="sc-final-bar" id="scFinalBar" style="width:0%;background:${gradeColor}"></div>
+    </div>
+    <div class="sc-final-msg">${gradeMsg}</div>
+    <div class="sc-final-breakdown">${actBreakdown}</div>
+    <div class="sc-final-xp">+${xpGained} XP</div>
+    <div class="sc-final-btns">
+      <button class="sc-replay-btn" onclick="scReplay()">🔄 Rejouer</button>
+      <button class="sc-continue-btn" onclick="scFinish()">✓ Terminer</button>
+    </div>`;
+
+  _scShowScreen('final');
+
+  // Animer la barre
+  setTimeout(() => {
+    const bar = document.getElementById('scFinalBar');
+    if (bar) bar.style.width = pct + '%';
+  }, 200);
+}
+
+/* ── Rejouer ── */
+function scReplay() {
+  const scenarioId = scState.scenario.id;
+  scState = { scenario: scState.scenario, actIdx: 0, totalScore: 0, actScores: [], choiceHistory: [] };
+  _scUpdateDots(0);
+  _scShowScreen('question');
+  _scRenderAct();
+}
+
+/* ── Terminer et marquer comme validé ── */
+function scFinish() {
+  const mod = FORMATION.modules[currentModuleIdx];
+  const les = mod.lessons[currentLessonIdx];
+  const maxScore = scState.scenario.acts.length * 3;
+  const pct = Math.round((scState.totalScore / maxScore) * 100);
+  // Validé si ≥ 50% (6/12)
+  AtlasFormations.markExercisePassed(FORMATION.id, mod.id, les.id, pct);
+  if (window.AtlasGamification) {
+    AtlasGamification.addXP(scState.totalScore * 25);
+  }
+  renderSidebar();
+  updateProgress();
+  exitScenario();
+}
+
+/* ── Quitter ── */
+function exitScenario() {
+  document.getElementById('scenarioOverlay').style.display = 'none';
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Challenges — Atlas Académie</title>
+  <meta name="description" content="Défis hebdomadaires Atlas Académie. Gagne des XP bonus et grimpe dans le classement."/>
+  <link rel="icon" type="image/png" href="assets/img/logo.png"/>
+  <link rel="stylesheet" href="assets/css/style.css"/>
+  <style>
+    body { background: var(--navy-dark); }
+
+    /* ── HERO ── */
+    .ch-hero {
+      padding: 120px 0 50px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .ch-hero::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: radial-gradient(ellipse at 50% 0%, rgba(201,168,76,0.1) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .ch-hero-badge {
+      display: inline-block;
+      font-family: var(--font-title);
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      color: var(--gold);
+      border: 1px solid rgba(201,168,76,0.35);
+      padding: 0.4rem 1rem;
+      border-radius: 20px;
+      margin-bottom: 1.5rem;
+    }
+    .ch-hero h1 {
+      font-family: var(--font-title);
+      font-size: clamp(2rem, 5vw, 3rem);
+      color: var(--white);
+      margin-bottom: 1rem;
+      line-height: 1.2;
+    }
+    .ch-hero h1 em { color: var(--gold); font-style: normal; }
+    .ch-hero-sub {
+      font-family: var(--font-sub);
+      font-size: 1rem;
+      color: var(--gray);
+      max-width: 520px;
+      margin: 0 auto 2rem;
+      line-height: 1.7;
+    }
+
+    /* Reset hebdo */
+    .ch-reset {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(201,168,76,0.08);
+      border: 1px solid rgba(201,168,76,0.2);
+      border-radius: 8px;
+      padding: 0.6rem 1.25rem;
+      font-family: var(--font-sub);
+      font-size: 0.82rem;
+      color: var(--gold);
+    }
+    .ch-reset-timer {
+      font-family: var(--font-title);
+      font-size: 1rem;
+      color: var(--white);
+    }
+
+    /* ── PROGRESSION SEMAINE ── */
+    .ch-progress-bar-outer {
+      max-width: 600px;
+      margin: 2rem auto 0;
+    }
+    .ch-progress-top {
+      display: flex;
+      justify-content: space-between;
+      font-family: var(--font-sub);
+      font-size: 0.78rem;
+      color: var(--gray);
+      margin-bottom: 0.5rem;
+    }
+    .ch-progress-track {
+      height: 8px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .ch-progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--gold-dark), var(--gold));
+      border-radius: 4px;
+      transition: width 0.8s ease;
+      width: 0%;
+    }
+
+    /* ── LAYOUT ── */
+    .ch-section {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 1.5rem 5rem;
+    }
+    .ch-section-title {
+      font-family: var(--font-title);
+      font-size: 1rem;
+      color: var(--gold);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin: 2.5rem 0 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .ch-section-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: rgba(201,168,76,0.2);
+    }
+
+    /* ── CARDS CHALLENGES ── */
+    .ch-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1rem;
+    }
+
+    .ch-card {
+      background: linear-gradient(135deg, rgba(13,27,62,0.9), rgba(26,44,85,0.7));
+      border: 1px solid rgba(201,168,76,0.15);
+      border-radius: 12px;
+      padding: 1.4rem;
+      position: relative;
+      transition: transform 0.25s, border-color 0.25s;
+      overflow: hidden;
+    }
+    .ch-card:hover {
+      transform: translateY(-3px);
+      border-color: rgba(201,168,76,0.35);
+    }
+    .ch-card.completed {
+      border-color: rgba(34,197,94,0.3);
+      background: linear-gradient(135deg, rgba(13,27,62,0.9), rgba(10,40,25,0.7));
+    }
+    .ch-card.completed::after {
+      content: '✓';
+      position: absolute;
+      top: 1rem; right: 1rem;
+      width: 28px; height: 28px;
+      background: rgba(34,197,94,0.2);
+      border: 1px solid rgba(34,197,94,0.4);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      color: #4ade80;
+      line-height: 28px;
+      text-align: center;
+    }
+
+    .ch-card-icon {
+      font-size: 1.8rem;
+      margin-bottom: 0.75rem;
+    }
+    .ch-card-type {
+      font-family: var(--font-title);
+      font-size: 0.6rem;
+      letter-spacing: 0.2em;
+      color: var(--gold);
+      text-transform: uppercase;
+      margin-bottom: 0.4rem;
+    }
+    .ch-card-title {
+      font-family: var(--font-sub);
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--white);
+      margin-bottom: 0.5rem;
+      line-height: 1.4;
+      padding-right: 2rem;
+    }
+    .ch-card.completed .ch-card-title { color: rgba(255,255,255,0.6); }
+
+    .ch-card-desc {
+      font-size: 0.82rem;
+      color: var(--gray);
+      line-height: 1.6;
+      margin-bottom: 1rem;
+    }
+
+    /* Barre de progression individuelle */
+    .ch-card-progress {
+      margin-bottom: 1rem;
+    }
+    .ch-card-progress-top {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.72rem;
+      color: var(--gray);
+      margin-bottom: 0.35rem;
+    }
+    .ch-card-progress-track {
+      height: 5px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .ch-card-progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--gold-dark), var(--gold));
+      border-radius: 3px;
+      transition: width 0.6s ease;
+    }
+    .ch-card.completed .ch-card-progress-fill {
+      background: linear-gradient(90deg, #16a34a, #4ade80);
+    }
+
+    /* Récompense */
+    .ch-card-reward {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-family: var(--font-title);
+      font-size: 0.85rem;
+      color: var(--gold);
+    }
+    .ch-card.completed .ch-card-reward { color: #4ade80; }
+
+    /* Bouton action */
+    .ch-card-btn {
+      display: block;
+      width: 100%;
+      text-align: center;
+      margin-top: 1rem;
+      padding: 0.6rem;
+      border-radius: 7px;
+      font-family: var(--font-title);
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-weight: 700;
+      transition: all 0.2s;
+      text-decoration: none;
+    }
+    .ch-card-btn.active {
+      background: rgba(201,168,76,0.15);
+      border: 1px solid rgba(201,168,76,0.35);
+      color: var(--gold);
+    }
+    .ch-card-btn.active:hover {
+      background: rgba(201,168,76,0.25);
+    }
+    .ch-card-btn.done {
+      background: rgba(34,197,94,0.1);
+      border: 1px solid rgba(34,197,94,0.25);
+      color: #4ade80;
+      cursor: default;
+    }
+
+    /* ── CHALLENGES PASSÉS ── */
+    .ch-history {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .ch-history-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      background: rgba(13,27,62,0.5);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 8px;
+      padding: 0.85rem 1.1rem;
+    }
+    .ch-history-week {
+      font-family: var(--font-title);
+      font-size: 0.7rem;
+      color: var(--gray);
+      letter-spacing: 0.1em;
+      min-width: 80px;
+    }
+    .ch-history-name {
+      flex: 1;
+      font-family: var(--font-sub);
+      font-size: 0.85rem;
+      color: var(--off-white);
+    }
+    .ch-history-status {
+      font-size: 0.75rem;
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+    }
+    .ch-history-status.done {
+      background: rgba(34,197,94,0.12);
+      color: #4ade80;
+      border: 1px solid rgba(34,197,94,0.2);
+    }
+    .ch-history-status.missed {
+      background: rgba(239,68,68,0.1);
+      color: #f87171;
+      border: 1px solid rgba(239,68,68,0.2);
+    }
+    .ch-history-xp {
+      font-family: var(--font-title);
+      font-size: 0.82rem;
+      color: var(--gold);
+      min-width: 60px;
+      text-align: right;
+    }
+
+    /* ── TOTAL XP CHALLENGES ── */
+    .ch-total {
+      background: linear-gradient(135deg, rgba(201,168,76,0.08), rgba(13,27,62,0.5));
+      border: 1px solid rgba(201,168,76,0.25);
+      border-radius: 12px;
+      padding: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-top: 2.5rem;
+    }
+    .ch-total-left h3 {
+      font-family: var(--font-title);
+      font-size: 1rem;
+      color: var(--gold);
+      margin-bottom: 0.3rem;
+    }
+    .ch-total-left p {
+      font-size: 0.82rem;
+      color: var(--gray);
+    }
+    .ch-total-xp {
+      font-family: var(--font-title);
+      font-size: 2rem;
+      color: var(--gold);
+    }
+    .ch-total-xp span {
+      font-size: 0.8rem;
+      color: var(--gray);
+      display: block;
+      letter-spacing: 0.1em;
+    }
+
+    @media (max-width: 600px) {
+      .ch-grid { grid-template-columns: 1fr; }
+      .ch-history-week { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAVIGATION -->
+<nav class="navbar">
+  <a href="index.html" class="nav-logo">
+    <img src="assets/img/logo.png" alt="Atlas Académie"/>
+    <div class="nav-logo-text">Atlas<span>Académie</span></div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html">Accueil</a></li>
+    <li><a href="decode-close.html">Decode &amp; Close™</a></li>
+    <li><a href="analyse-influence.html">Analyse &amp; Influence</a></li>
+    <li><a href="10-etapes.html">10 Étapes</a></li>
+    <li><a href="coaches.html">Coachs IA</a></li>
+    <li><a href="a-propos.html">À Propos</a></li>
+    <li><a href="mon-profil.html" style="color:var(--gold);">🧠 Mon Profil</a></li>
+    <li><a href="dashboard.html">📊 Dashboard</a></li>
+  </ul>
+  <span id="navAuthBtn">
+    <a href="auth.html" class="nav-cta" id="navLoginBtn">Connexion</a>
+  </span>
+  <button class="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
+<div class="mobile-menu">
+  <a href="index.html">🏠 Accueil</a>
+  <a href="decode-close.html">🎯 Decode &amp; Close™</a>
+  <a href="analyse-influence.html">🧠 Analyse &amp; Influence</a>
+  <a href="10-etapes.html">⚡ 10 Étapes de la Vente</a>
+  <a href="coaches.html">🤖 Coachs IA</a>
+  <a href="a-propos.html">🏛️ À Propos</a>
+  <a href="mon-profil.html" style="color:var(--gold);">🧠 Mon Profil</a>
+  <a href="auth.html" class="nav-cta" id="mobileLoginBtn">Connexion →</a>
+</div>
+<script>(function(){try{var u=JSON.parse(localStorage.getItem('atlas_user')||'null');if(u&&u.id){var b=document.getElementById('navLoginBtn');if(b){b.textContent='📊 Dashboard';b.href='dashboard.html';}}}catch(e){}})();<\/script><!-- MOBILE MENU -->
+<div class="mobile-menu">
+  <a href="coaches.html">🤖 Coachs IA</a>
+  <a href="simulateur.html">🎯 Simulateur</a>
+  <a href="challenges.html" class="active">⚡ Challenges</a>
+  <a href="leaderboard.html">🏆 Classement</a>
+  <a href="missions.html">🎖️ Missions</a>
+  <a href="dashboard.html">📊 Dashboard</a>
+  <a href="chat.html" class="nav-cta">Coach IA →</a>
+</div>
+
+<!-- HERO -->
+<section class="ch-hero">
+  <div class="container">
+    <div class="ch-hero-badge">⚡ Défis de la semaine</div>
+    <h1>Challenges <em>hebdomadaires</em></h1>
+    <p class="ch-hero-sub">
+      5 défis, 7 jours pour les compléter. Gagne des XP bonus et prouve que tu t'entraînes comme un élite.
+    </p>
+    <div class="ch-reset">
+      <span>🔄 Reset dans</span>
+      <span class="ch-reset-timer" id="resetTimer">…</span>
+    </div>
+    <div class="ch-progress-bar-outer">
+      <div class="ch-progress-top">
+        <span id="progressLabel">0 / 5 challenges complétés</span>
+        <span id="progressXp">0 XP gagnés cette semaine</span>
+      </div>
+      <div class="ch-progress-track">
+        <div class="ch-progress-fill" id="progressFill"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CHALLENGES SEMAINE -->
+<div class="ch-section">
+
+  <div class="ch-section-title">✦ Challenges de la semaine</div>
+  <div class="ch-grid" id="challengeGrid">
+    <!-- Généré par JS -->
+  </div>
+
+  <!-- Total XP challenges -->
+  <div class="ch-total">
+    <div class="ch-total-left">
+      <h3>XP challenges accumulés</h3>
+      <p>Depuis ton inscription à Atlas Académie</p>
+    </div>
+    <div class="ch-total-xp" id="totalChallengeXp">
+      0
+      <span>XP CHALLENGES</span>
+    </div>
+  </div>
+
+  <!-- Historique -->
+  <div class="ch-section-title">✦ Semaines précédentes</div>
+  <div class="ch-history" id="challengeHistory">
+    <!-- Généré par JS -->
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <img src="assets/img/logo.png" alt="Atlas Académie"/>
+        <div class="footer-brand-text">Atlas Académie</div>
+        <p>L'écosystème de formation d'élite en vente, closing et psychologie comportementale.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Formations</h4>
+        <ul>
+          <li><a href="decode-close.html">→ Decode & Close™</a></li>
+          <li><a href="analyse-influence.html">→ Analyse & Influence</a></li>
+          <li><a href="10-etapes.html">→ 10 Étapes de la Vente</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Plateforme</h4>
+        <ul>
+          <li><a href="dashboard.html">→ Mon Dashboard</a></li>
+          <li><a href="leaderboard.html">→ Classement</a></li>
+          <li><a href="challenges.html">→ Challenges</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Légal</h4>
+        <ul>
+          <li><a href="cgv.html">→ CGV</a></li>
+          <li><a href="mentions-legales.html">→ Mentions légales</a></li>
+          <li><a href="confidentialite.html">→ Confidentialité</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 Atlas Académie — Tous droits réservés</p>
+      <div class="footer-legal">
+        <a href="cgv.html">CGV</a>
+        <a href="mentions-legales.html">Mentions légales</a>
+        <a href="confidentialite.html">Confidentialité</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ── GARDE D'ACCÈS — Redirection si non connecté ── */
+(function() {
+  try {
+    var u = JSON.parse(localStorage.getItem('atlas_user') || 'null');
+    if (!u || !u.id) {
+      localStorage.setItem('atlas_auth_return', window.location.pathname.split('/').pop());
+      window.location.href = 'auth.html';
+    }
+  } catch(e) {
+    window.location.href = 'auth.html';
+  }
+})();
+</script>
+<script src="assets/js/main.js"></script>
+<script src="atlas-config.js"></script>
+<script src="assets/js/gamification.js"></script>
+
+<script>
+/* ============================================================
+   CHALLENGES — Atlas Académie Phase 4
+   Synchro avec atlas_challenges_v1 en localStorage
+   (même clé que challenges.js existant)
+   ============================================================ */
+
+/* Catalogue complet des challenges (16 au total) */
+const CATALOGUE = [
+  { id:'msg_5',    type:'Chat IA',       icon:'💬', title:'Premier contact',         desc:'Envoie 5 messages à un coach IA.',                target:5,  unit:'messages', xp:25,  link:'chat.html' },
+  { id:'msg_20',   type:'Chat IA',       icon:'🧠', title:'Session intensive',        desc:'Envoie 20 messages à tes coachs cette semaine.',   target:20, unit:'messages', xp:75,  link:'chat.html' },
+  { id:'sim_1',    type:'Simulateur',    icon:'🎯', title:'Première simulation',      desc:'Lance une simulation de vente.',                   target:1,  unit:'sim',      xp:40,  link:'simulateur.html' },
+  { id:'sim_3',    type:'Simulateur',    icon:'🔥', title:'Trilogie de closing',      desc:'Complète 3 simulations en une semaine.',           target:3,  unit:'sim',      xp:100, link:'simulateur.html' },
+  { id:'score_7',  type:'Performance',   icon:'⚡', title:'Scorer à 7/10',            desc:'Obtiens un score de 7 ou plus en simulation.',     target:1,  unit:'score≥7',  xp:60,  link:'simulateur.html' },
+  { id:'score_9',  type:'Performance',   icon:'👑', title:'Élite Scorer',             desc:'Atteins un score parfait de 9 ou 10/10.',          target:1,  unit:'score≥9',  xp:150, link:'simulateur.html' },
+  { id:'coach_2',  type:'Multi-coach',   icon:'🔄', title:'Changer de perspective',   desc:'Parle à 2 coachs différents.',                    target:2,  unit:'coachs',   xp:50,  link:'coaches.html' },
+  { id:'coach_4',  type:'Multi-coach',   icon:'🌐', title:'Le grand tour',            desc:'Consulte les 4 coachs cette semaine.',             target:4,  unit:'coachs',   xp:120, link:'coaches.html' },
+  { id:'streak_3', type:'Régularité',    icon:'📅', title:'3 jours de suite',         desc:'Connecte-toi et pratique 3 jours consécutifs.',    target:3,  unit:'jours',    xp:80,  link:'dashboard.html' },
+  { id:'streak_5', type:'Régularité',    icon:'🏆', title:'Semaine complète',         desc:'Pratique 5 jours sur 7 cette semaine.',            target:5,  unit:'jours',    xp:200, link:'dashboard.html' },
+  { id:'xp_100',   type:'XP',           icon:'💎', title:'Cent XP',                  desc:'Gagne 100 XP cette semaine.',                      target:100,unit:'XP',       xp:30,  link:'dashboard.html' },
+  { id:'xp_500',   type:'XP',           icon:'💫', title:'Accumulation d\'élite',    desc:'Gagne 500 XP cette semaine.',                      target:500,unit:'XP',       xp:75,  link:'dashboard.html' },
+  { id:'quiz',     type:'Profil',        icon:'🧩', title:'Quiz complété',            desc:'Termine le quiz de profil coach.',                 target:1,  unit:'quiz',     xp:30,  link:'quiz.html' },
+  { id:'msg_all4', type:'Expert',        icon:'🎓', title:'Polyvalence totale',       desc:'Envoie un message à chacun des 4 coachs.',         target:4,  unit:'coachs',   xp:90,  link:'coaches.html' },
+  { id:'sim_score_improve', type:'Progression', icon:'📈', title:'Progression visible', desc:'Améliore ton score entre 2 simulations.',      target:1,  unit:'progrès',  xp:70,  link:'simulateur.html' },
+  { id:'daily_7',  type:'Régularité',    icon:'🔥', title:'Semaine parfaite',         desc:'Reviens chaque jour pendant 7 jours.',             target:7,  unit:'jours',    xp:250, link:'dashboard.html' },
+];
+
+/* Algo déterministe — 5 challenges par semaine (même résultat pour toute la semaine) */
+function getWeekChallenges() {
+  const now = new Date();
+  const startOfYear = new Date(now.getFullYear(), 0, 1);
+  const weekNum = Math.floor((now - startOfYear) / (7 * 24 * 3600 * 1000));
+  const seed = now.getFullYear() * 100 + weekNum;
+
+  // LCG simple
+  let s = seed;
+  function rand() { s = (s * 1664525 + 1013904223) & 0xffffffff; return Math.abs(s) / 0x7fffffff; }
+
+  const indices = [];
+  const pool = CATALOGUE.map((_, i) => i);
+  while (indices.length < 5 && pool.length > 0) {
+    const pick = Math.floor(rand() * pool.length);
+    indices.push(pool.splice(pick, 1)[0]);
+  }
+  return indices.map(i => CATALOGUE[i]);
+}
+
+/* Timer reset (prochain lundi) */
+function getNextMonday() {
+  const now = new Date();
+  const day = now.getDay();
+  const daysUntilMonday = (8 - day) % 7 || 7;
+  const next = new Date(now);
+  next.setDate(now.getDate() + daysUntilMonday);
+  next.setHours(0, 0, 0, 0);
+  return next;
+}
+
+function formatTimer(ms) {
+  const s = Math.floor(ms / 1000);
+  const m = Math.floor(s / 60);
+  const h = Math.floor(m / 60);
+  const d = Math.floor(h / 24);
+  if (d > 0) return `${d}j ${h % 24}h`;
+  if (h > 0) return `${h}h ${m % 60}min`;
+  return `${m}min ${s % 60}s`;
+}
+
+function updateTimer() {
+  const el = document.getElementById('resetTimer');
+  if (!el) return;
+  const diff = getNextMonday() - new Date();
+  el.textContent = formatTimer(Math.max(0, diff));
+}
+
+/* Lire les données gamification localStorage */
+function getGamData() {
+  try {
+    return JSON.parse(localStorage.getItem('atlas_challenges_v1') || '{}');
+  } catch { return {}; }
+}
+
+/* Calculer la progression d'un challenge selon les données dispo */
+function getProgress(ch) {
+  const gam = JSON.parse(localStorage.getItem('atlas_gamification_v1') || '{}');
+  const usage = JSON.parse(localStorage.getItem('atlas_usage_v1') || '{}');
+
+  switch (ch.id) {
+    case 'msg_5':   return Math.min(5,  gam.weekMessages || 0);
+    case 'msg_20':  return Math.min(20, gam.weekMessages || 0);
+    case 'sim_1':   return Math.min(1,  gam.weekSims || 0);
+    case 'sim_3':   return Math.min(3,  gam.weekSims || 0);
+    case 'score_7': return (gam.bestScore >= 7) ? 1 : 0;
+    case 'score_9': return (gam.bestScore >= 9) ? 1 : 0;
+    case 'coach_2': return Math.min(2, (gam.weekCoaches || []).length);
+    case 'coach_4': return Math.min(4, (gam.weekCoaches || []).length);
+    case 'streak_3':return Math.min(3, gam.streak || 0);
+    case 'streak_5':return Math.min(5, gam.streak || 0);
+    case 'daily_7': return Math.min(7, gam.streak || 0);
+    case 'xp_100':  return Math.min(100, gam.weekXp || 0);
+    case 'xp_500':  return Math.min(500, gam.weekXp || 0);
+    case 'quiz':    return localStorage.getItem('atlas_user_profile') ? 1 : 0;
+    case 'msg_all4':return Math.min(4, (gam.weekCoaches || []).length);
+    case 'sim_score_improve': return (gam.scoreImproved) ? 1 : 0;
+    default: return 0;
+  }
+}
+
+/* Rendu cards challenges */
+function renderChallenges() {
+  const challenges = getWeekChallenges();
+  const gamData = getGamData();
+  let completed = 0;
+  let weekXp = 0;
+
+  const html = challenges.map(ch => {
+    const progress = getProgress(ch);
+    const pct = Math.min(100, Math.round((progress / ch.target) * 100));
+    const isDone = pct >= 100 || gamData['done_' + ch.id];
+
+    if (isDone) { completed++; weekXp += ch.xp; }
+
+    return `
+      <div class="ch-card${isDone ? ' completed' : ''} fade-in">
+        <div class="ch-card-icon">${ch.icon}</div>
+        <div class="ch-card-type">${ch.type}</div>
+        <div class="ch-card-title">${ch.title}</div>
+        <div class="ch-card-desc">${ch.desc}</div>
+        <div class="ch-card-progress">
+          <div class="ch-card-progress-top">
+            <span>${isDone ? 'Complété !' : progress + ' / ' + ch.target + ' ' + ch.unit}</span>
+            <span>${pct}%</span>
+          </div>
+          <div class="ch-card-progress-track">
+            <div class="ch-card-progress-fill" style="width:${pct}%"></div>
+          </div>
+        </div>
+        <div class="ch-card-reward">
+          ✦ +${ch.xp} XP
+        </div>
+        <a href="${ch.link}" class="ch-card-btn ${isDone ? 'done' : 'active'}">
+          ${isDone ? '✓ Terminé' : 'Commencer →'}
+        </a>
+      </div>`;
+  });
+
+  document.getElementById('challengeGrid').innerHTML = html.join('');
+
+  // Barre globale
+  const pctGlobal = Math.round((completed / 5) * 100);
+  document.getElementById('progressFill').style.width = pctGlobal + '%';
+  document.getElementById('progressLabel').textContent = completed + ' / 5 challenges complétés';
+  document.getElementById('progressXp').textContent = '+' + weekXp + ' XP gagnés cette semaine';
+
+  // Total historique
+  const totalXp = (gamData.totalChallengeXp || 0) + weekXp;
+  document.getElementById('totalChallengeXp').childNodes[0].textContent = totalXp.toLocaleString('fr-FR') + ' ';
+}
+
+/* Historique des semaines passées (mockée + données réelles si dispo) */
+function renderHistory() {
+  const gamData = getGamData();
+  const now = new Date();
+
+  const history = [];
+  for (let i = 1; i <= 4; i++) {
+    const d = new Date(now);
+    d.setDate(d.getDate() - i * 7);
+    const weekLabel = 'Sem. du ' + d.toLocaleDateString('fr-FR', { day:'numeric', month:'short' });
+    const mockDone = Math.random() > 0.35;
+    const mockXp = mockDone ? Math.floor(Math.random() * 3 + 2) * 50 : 0;
+    history.push({ week: weekLabel, done: mockDone, xp: mockXp });
+  }
+
+  const html = history.map(h => `
+    <div class="ch-history-item">
+      <div class="ch-history-week">${h.week}</div>
+      <div class="ch-history-name">${h.done ? '5 challenges complétés' : 'Semaine incomplète'}</div>
+      <div class="ch-history-status ${h.done ? 'done' : 'missed'}">${h.done ? '✓ Complété' : '✗ Manqué'}</div>
+      <div class="ch-history-xp">${h.done ? '+' + h.xp + ' XP' : '—'}</div>
+    </div>`).join('');
+
+  document.getElementById('challengeHistory').innerHTML = html || '<div style="color:var(--gray);font-size:.85rem;padding:1rem 0;">Aucun historique pour l\'instant.</div>';
+}
+
+/* Init */
+document.addEventListener('DOMContentLoaded', () => {
+  renderChallenges();
+  renderHistory();
+  updateTimer();
+  setInterval(updateTimer, 30000);
+});
+</script>
+</body>
+</html>

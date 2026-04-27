@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Profil Vendeur — Atlas Académie</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#080c18;--navy-mid:#0d1425;--navy-card:#111a30;--gold:#c9a84c;--gold-light:#e8c97a;--gold-dim:#8a6f30;--white:#f0ead8;--white-dim:rgba(240,234,216,0.65);--white-faint:rgba(240,234,216,0.32);}
+*{margin:0;padding:0;box-sizing:border-box;}html{scroll-behavior:smooth;}
+body{background:var(--navy);color:var(--white);font-family:'Montserrat',sans-serif;min-height:100vh;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 90% 60% at 50% -5%,rgba(201,168,76,0.07) 0%,transparent 55%),repeating-linear-gradient(0deg,transparent,transparent 80px,rgba(201,168,76,0.013) 80px,rgba(201,168,76,0.013) 81px),repeating-linear-gradient(90deg,transparent,transparent 80px,rgba(201,168,76,0.013) 80px,rgba(201,168,76,0.013) 81px);pointer-events:none;z-index:0;}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:16px 52px;display:flex;align-items:center;justify-content:space-between;background:rgba(8,12,24,0.93);backdrop-filter:blur(16px);border-bottom:1px solid rgba(201,168,76,0.12);}
+.nav-logo{display:flex;align-items:center;gap:12px;text-decoration:none;}
+.nav-shield{width:38px;height:38px;background:linear-gradient(135deg,var(--gold-dim),var(--gold));clip-path:polygon(50% 0%,100% 20%,100% 70%,50% 100%,0% 70%,0% 20%);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-weight:900;color:var(--navy);font-size:15px;}
+.nav-txt{font-size:10px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:var(--white);}
+.nav-txt span{display:block;color:var(--gold);font-size:8px;letter-spacing:.35em;font-weight:300;margin-top:2px;}
+.nav-cta{background:transparent;border:1px solid rgba(201,168,76,.28);color:var(--gold);padding:9px 22px;font-family:'Montserrat',sans-serif;font-size:9px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;cursor:pointer;border-radius:2px;text-decoration:none;transition:all .2s;}
+.nav-cta:hover{background:rgba(201,168,76,.07);}
+
+/* QUIZ */
+#quizSection{position:relative;z-index:1;}
+.hero{padding:140px 24px 60px;text-align:center;max-width:820px;margin:0 auto;}
+.eyebrow{display:inline-flex;align-items:center;gap:10px;font-size:9px;font-weight:600;letter-spacing:.4em;text-transform:uppercase;color:var(--gold);margin-bottom:28px;opacity:0;animation:fadeUp .7s ease forwards .1s;}
+.eyebrow::before,.eyebrow::after{content:'';width:28px;height:1px;background:var(--gold-dim);}
+.hero h1{font-family:'Playfair Display',serif;font-size:clamp(32px,5vw,56px);font-weight:900;line-height:1.08;color:var(--white);margin-bottom:20px;opacity:0;animation:fadeUp .7s ease forwards .25s;}
+.hero h1 em{font-style:italic;color:var(--gold);}
+.hero-sub{font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:300;color:var(--white-dim);line-height:1.75;max-width:540px;margin:0 auto 44px;opacity:0;animation:fadeUp .7s ease forwards .4s;}
+.pills{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;opacity:0;animation:fadeUp .7s ease forwards .55s;}
+.pill{display:flex;align-items:center;gap:6px;background:rgba(201,168,76,.05);border:1px solid rgba(201,168,76,.15);border-radius:20px;padding:7px 15px;font-size:10px;font-weight:500;color:var(--white-dim);}
+.pill-dot{width:5px;height:5px;border-radius:50%;background:var(--gold);}
+
+.quiz-wrap{max-width:720px;margin:0 auto;padding:0 24px 100px;}
+.prog-wrap{margin-bottom:40px;opacity:0;animation:fadeUp .7s ease forwards .7s;}
+.prog-meta{display:flex;justify-content:space-between;margin-bottom:8px;}
+.prog-label{font-size:9px;letter-spacing:.28em;text-transform:uppercase;color:var(--gold-dim);font-weight:600;}
+.prog-dim{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--white-faint);font-weight:400;}
+.prog-num{font-family:'Playfair Display',serif;font-size:13px;color:var(--gold);}
+.prog-track{height:1px;background:rgba(201,168,76,.1);position:relative;}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--gold-dim),var(--gold-light));transition:width .6s cubic-bezier(.4,0,.2,1);width:0%;}
+.prog-dot{position:absolute;top:50%;transform:translate(-50%,-50%);width:8px;height:8px;border-radius:50%;background:var(--gold);border:2px solid var(--navy);box-shadow:0 0 12px rgba(201,168,76,.5);transition:left .6s cubic-bezier(.4,0,.2,1);left:0%;}
+
+.q-card{background:linear-gradient(145deg,rgba(17,26,48,.7),rgba(13,20,37,.9));border:1px solid rgba(201,168,76,.16);border-radius:4px;padding:52px 56px 44px;position:relative;overflow:hidden;opacity:0;animation:fadeUp .7s ease forwards .85s;}
+.q-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold) 40%,var(--gold-light) 60%,transparent);}
+.q-tag{display:inline-flex;align-items:center;gap:8px;font-size:8px;font-weight:700;letter-spacing:.35em;text-transform:uppercase;color:var(--gold-dim);margin-bottom:22px;}
+.q-tag-line{width:18px;height:1px;background:var(--gold-dim);}
+.q-text{font-family:'Playfair Display',serif;font-size:clamp(18px,2.2vw,24px);font-weight:700;line-height:1.45;color:var(--white);margin-bottom:44px;}
+.likert-extremes{display:flex;justify-content:space-between;margin-bottom:10px;}
+.l-ext{font-size:9px;letter-spacing:.08em;color:var(--white-faint);font-style:italic;max-width:150px;line-height:1.3;}
+.l-ext.r{text-align:right;}
+.likert-btns{display:flex;gap:10px;}
+.l-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;padding:18px 6px 14px;background:rgba(255,255,255,.02);border:1px solid rgba(201,168,76,.1);border-radius:3px;color:var(--white-faint);cursor:pointer;transition:all .18s;position:relative;overflow:hidden;}
+.l-btn:hover{border-color:rgba(201,168,76,.45);background:rgba(201,168,76,.05);color:var(--gold-light);transform:translateY(-2px);}
+.l-btn.sel{background:rgba(201,168,76,.1);border-color:var(--gold);color:var(--gold-light);}
+.l-btn.sel::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--gold-dim),var(--gold-light));}
+.l-num{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;line-height:1;}
+.l-sub{font-size:7px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;opacity:.55;text-align:center;line-height:1.3;}
+.q-nav{display:flex;justify-content:space-between;align-items:center;margin-top:36px;}
+.btn-prev{background:transparent;border:1px solid rgba(201,168,76,.2);color:var(--gold-dim);padding:12px 28px;font-family:'Montserrat',sans-serif;font-size:10px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;cursor:pointer;border-radius:2px;transition:all .18s;}
+.btn-prev:hover:not(:disabled){border-color:var(--gold);color:var(--gold);}
+.btn-prev:disabled{opacity:.2;cursor:not-allowed;}
+.btn-next{background:linear-gradient(135deg,var(--gold-dim),var(--gold));border:none;color:var(--navy);padding:14px 38px;font-family:'Montserrat',sans-serif;font-size:10px;font-weight:700;letter-spacing:.25em;text-transform:uppercase;cursor:pointer;border-radius:2px;transition:all .18s;}
+.btn-next:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 8px 28px rgba(201,168,76,.28);}
+.btn-next:disabled{opacity:.3;cursor:not-allowed;}
+
+/* RESULT */
+#resultSection{display:none;position:relative;z-index:1;padding-top:100px;}
+#resultSection.show{display:block;}
+
+.res-hero{padding:72px 24px 56px;text-align:center;max-width:900px;margin:0 auto;position:relative;}
+.profile-badge{display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(201,168,76,.28);padding:8px 20px;border-radius:20px;font-size:9px;font-weight:600;letter-spacing:.35em;text-transform:uppercase;color:var(--gold);margin-bottom:32px;background:rgba(201,168,76,.04);}
+.badge-dot{width:7px;height:7px;border-radius:50%;}
+.res-name{font-family:'Playfair Display',serif;font-size:clamp(42px,7vw,80px);font-weight:900;line-height:.95;margin-bottom:14px;letter-spacing:-.02em;}
+.res-subtitle{font-family:'Cormorant Garamond',serif;font-size:clamp(16px,2.2vw,21px);font-weight:300;font-style:italic;color:var(--white-dim);margin-bottom:28px;}
+.res-tagline{font-size:15px;font-weight:300;color:var(--white-dim);line-height:1.9;max-width:700px;margin:0 auto;}
+
+.res-section{max-width:920px;margin:0 auto;padding:0 24px;}
+.sec-div{display:flex;align-items:center;gap:16px;margin:52px 0 32px;}
+.sec-div-lbl{font-size:9px;font-weight:700;letter-spacing:.45em;text-transform:uppercase;color:var(--gold);white-space:nowrap;}
+.sec-div-line{flex:1;height:1px;background:rgba(201,168,76,.12);}
+
+/* OCEAN TABLE */
+.ocean-table{background:linear-gradient(145deg,rgba(17,26,48,.6),rgba(13,20,37,.8));border:1px solid rgba(201,168,76,.14);border-radius:4px;overflow:hidden;margin-bottom:16px;}
+.ocean-head{display:grid;grid-template-columns:1.8fr 1fr 80px 2.2fr;padding:13px 28px;background:rgba(201,168,76,.04);border-bottom:1px solid rgba(201,168,76,.1);font-size:8px;font-weight:700;letter-spacing:.28em;text-transform:uppercase;color:var(--gold-dim);gap:16px;align-items:center;}
+.ocean-row{display:grid;grid-template-columns:1.8fr 1fr 80px 2.2fr;padding:19px 28px;gap:16px;align-items:center;border-bottom:1px solid rgba(255,255,255,.04);transition:background .15s;}
+.ocean-row:last-child{border-bottom:none;}
+.ocean-row:hover{background:rgba(201,168,76,.025);}
+.o-dname{font-size:12px;font-weight:600;color:var(--white);line-height:1.35;}
+.o-dname span{display:block;font-size:9px;font-weight:300;color:var(--white-faint);margin-top:3px;letter-spacing:.03em;}
+.o-lvl{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;}
+.o-score{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--white);}
+.o-bar-wrap{}
+.o-bar-track{height:3px;background:rgba(255,255,255,.06);border-radius:2px;margin-bottom:6px;overflow:hidden;}
+.o-bar-fill{height:100%;border-radius:2px;transition:width 1.5s cubic-bezier(.4,0,.2,1) .2s;width:0;}
+.o-blocks{font-size:9px;font-family:monospace;color:var(--white-faint);opacity:.65;letter-spacing:.02em;}
+
+.lvl-h{color:#4ade80;}.lvl-m{color:var(--gold);}.lvl-l{color:#f87171;}
+.bar-h{background:linear-gradient(90deg,#1a6b3c,#4ade80);}
+.bar-m{background:linear-gradient(90deg,var(--gold-dim),var(--gold-light));}
+.bar-l{background:linear-gradient(90deg,#7a1c1c,#f87171);}
+
+/* INSIGHTS */
+.insights-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.ins-card{background:linear-gradient(145deg,rgba(17,26,48,.55),rgba(13,20,37,.75));border:1px solid rgba(201,168,76,.12);border-radius:4px;padding:26px 28px;position:relative;overflow:hidden;}
+.ins-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
+.ins-card.force::before{background:linear-gradient(90deg,#1a6b3c,#4ade80);}
+.ins-card.angle::before{background:linear-gradient(90deg,#7a1c1c,#f87171);}
+.ins-card.style::before{background:linear-gradient(90deg,var(--gold-dim),var(--gold-light));}
+.ins-card.closing::before{background:linear-gradient(90deg,#1a3a6b,#60a5fa);}
+.ins-card.prospect::before{background:linear-gradient(90deg,#4a1a6b,#c084fc);}
+.ins-card.next::before{background:linear-gradient(90deg,#3d6b1a,#a3e635);}
+.ins-icon{font-size:20px;margin-bottom:10px;display:block;}
+.ins-label{font-size:8px;font-weight:700;letter-spacing:.35em;text-transform:uppercase;color:var(--white-faint);margin-bottom:7px;}
+.ins-title{font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:var(--white);margin-bottom:10px;line-height:1.3;}
+.ins-body{font-size:12px;font-weight:300;color:var(--white-dim);line-height:1.75;}
+
+/* PHRASE */
+.phrase-block{background:linear-gradient(145deg,rgba(201,168,76,.07),rgba(201,168,76,.02));border:1px solid rgba(201,168,76,.22);border-radius:4px;padding:44px 52px;text-align:center;position:relative;overflow:hidden;margin-bottom:14px;}
+.phrase-block::before{content:'"';position:absolute;top:-20px;left:20px;font-family:'Playfair Display',serif;font-size:160px;font-weight:900;color:rgba(201,168,76,.055);line-height:1;pointer-events:none;}
+.phrase-text{font-family:'Playfair Display',serif;font-size:clamp(17px,2.2vw,22px);font-style:italic;font-weight:400;color:var(--white);line-height:1.65;max-width:640px;margin:0 auto 14px;position:relative;z-index:1;}
+.phrase-note{font-size:11px;color:var(--white-faint);font-weight:300;font-style:italic;}
+
+/* CTA */
+.cta-block{background:linear-gradient(145deg,rgba(17,26,48,.6),rgba(13,20,37,.85));border:1px solid rgba(201,168,76,.18);border-radius:4px;padding:52px;text-align:center;position:relative;overflow:hidden;margin-bottom:14px;}
+.cta-block::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);}
+.cta-eyebrow{font-size:9px;font-weight:700;letter-spacing:.45em;text-transform:uppercase;color:var(--gold-dim);margin-bottom:18px;}
+.cta-title{font-family:'Playfair Display',serif;font-size:clamp(21px,3vw,32px);font-weight:900;color:var(--white);margin-bottom:20px;line-height:1.2;}
+.cta-title em{color:var(--gold);font-style:italic;}
+.cta-feats{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin-bottom:36px;}
+.cta-feat{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.03);border:1px solid rgba(201,168,76,.12);border-radius:20px;padding:8px 16px;font-size:11px;font-weight:400;color:var(--white-dim);}
+.cta-feat::before{content:'→';color:var(--gold);font-size:10px;}
+.cta-btn{display:inline-block;background:linear-gradient(135deg,var(--gold-dim),var(--gold));color:var(--navy);padding:18px 56px;font-family:'Montserrat',sans-serif;font-size:11px;font-weight:700;letter-spacing:.28em;text-transform:uppercase;text-decoration:none;border-radius:2px;border:none;cursor:pointer;transition:all .2s;}
+.cta-btn:hover{transform:translateY(-2px);box-shadow:0 12px 36px rgba(201,168,76,.3);}
+
+.note-block{background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06);border-radius:3px;padding:24px 28px;margin-bottom:14px;}
+.note-lbl{font-size:8px;font-weight:700;letter-spacing:.35em;text-transform:uppercase;color:var(--white-faint);margin-bottom:10px;}
+.note-txt{font-size:12px;font-weight:300;color:var(--white-dim);line-height:1.8;font-style:italic;}
+.note-txt strong{color:var(--gold);font-style:normal;font-weight:600;}
+
+.restart-wrap{text-align:center;padding:32px 0 80px;}
+.restart-btn{background:transparent;border:1px solid rgba(201,168,76,.2);color:var(--gold-dim);padding:12px 32px;font-family:'Montserrat',sans-serif;font-size:10px;font-weight:500;letter-spacing:.22em;text-transform:uppercase;cursor:pointer;border-radius:2px;transition:all .18s;}
+.restart-btn:hover{border-color:var(--gold);color:var(--gold);}
+
+@media(max-width:620px){
+  .insights-grid{grid-template-columns:1fr;}
+  .ocean-head,.ocean-row{grid-template-columns:1.4fr 70px 1.6fr;gap:10px;}
+  .ocean-head>:nth-child(2),.ocean-row>:nth-child(2){display:none;}
+  .q-card{padding:32px 22px;}
+  nav{padding:14px 18px;}
+  .l-btn{padding:14px 3px 10px;}
+  .l-sub{display:none;}
+  .pills{display:none;}
+  .phrase-block,.cta-block{padding:32px 22px;}
+}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:translateY(0);}}
+@keyframes outL{to{opacity:0;transform:translateX(-28px);}}
+@keyframes inR{from{opacity:0;transform:translateX(28px);}to{opacity:1;transform:translateX(0);}}
+@keyframes outR{to{opacity:0;transform:translateX(28px);}}
+@keyframes inL{from{opacity:0;transform:translateX(-28px);}to{opacity:1;transform:translateX(0);}}
+.out-l{animation:outL .25s ease forwards;}
+.in-r{animation:inR .28s ease forwards;}
+.out-r{animation:outR .25s ease forwards;}
+.in-l{animation:inL .28s ease forwards;}
+</style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="nav-logo">
+    <div class="nav-shield">A</div>
+    <div class="nav-txt">Atlas <span>Académie</span></div>
+  </a>
+  <a href="index.html" class="nav-cta">Retour au site</a>
+</nav>
+
+<!-- QUIZ -->
+<div id="quizSection">
+  <div class="hero">
+    <div class="eyebrow">Diagnostic Comportemental</div>
+    <h1>Quel est votre <em>profil de vente</em> naturel ?</h1>
+    <p class="hero-sub">15 questions calibrées sur les 5 dimensions OCEAN. Résultats immédiats. Aucune inscription.</p>
+    <div class="pills">
+      <div class="pill"><div class="pill-dot"></div>3 minutes</div>
+      <div class="pill"><div class="pill-dot"></div>100% gratuit</div>
+      <div class="pill"><div class="pill-dot"></div>6 profils possibles</div>
+      <div class="pill"><div class="pill-dot"></div>Pure psychométrie</div>
+    </div>
+  </div>
+  <div class="quiz-wrap">
+    <div class="prog-wrap">
+      <div class="prog-meta">
+        <span class="prog-label">Progression</span>
+        <span class="prog-dim" id="progDim"></span>
+        <span class="prog-num" id="progNum">1 / 15</span>
+      </div>
+      <div class="prog-track">
+        <div class="prog-fill" id="progFill"></div>
+        <div class="prog-dot" id="progDot"></div>
+      </div>
+    </div>
+    <div class="q-card" id="qCard">
+      <div class="q-tag"><span class="q-tag-line"></span><span id="qTag">Question 01</span><span class="q-tag-line"></span></div>
+      <div class="q-text" id="qText"></div>
+      <div>
+        <div class="likert-extremes">
+          <span class="l-ext" id="lLeft"></span>
+          <span class="l-ext r" id="lRight"></span>
+        </div>
+        <div class="likert-btns">
+          <button class="l-btn" onclick="pick(1)"><span class="l-num">1</span><span class="l-sub" id="s1"></span></button>
+          <button class="l-btn" onclick="pick(2)"><span class="l-num">2</span><span class="l-sub" id="s2"></span></button>
+          <button class="l-btn" onclick="pick(3)"><span class="l-num">3</span><span class="l-sub" id="s3"></span></button>
+          <button class="l-btn" onclick="pick(4)"><span class="l-num">4</span><span class="l-sub" id="s4"></span></button>
+          <button class="l-btn" onclick="pick(5)"><span class="l-num">5</span><span class="l-sub" id="s5"></span></button>
+        </div>
+      </div>
+      <div class="q-nav">
+        <button class="btn-prev" id="btnPrev" onclick="prev()" disabled>← Précédent</button>
+        <button class="btn-next" id="btnNext" onclick="next()" disabled>Suivant →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- RESULT -->
+<div id="resultSection">
+  <div class="res-hero">
+    <div class="profile-badge"><div class="badge-dot" id="bdot"></div><span id="badgeLbl">Votre profil vendeur</span></div>
+    <div class="res-name" id="resName"></div>
+    <div class="res-subtitle" id="resSub"></div>
+    <p class="res-tagline" id="resTagline"></p>
+  </div>
+  <div class="res-section">
+    <div class="sec-div"><div class="sec-div-line"></div><div class="sec-div-lbl">Vos 5 dimensions comportementales</div><div class="sec-div-line"></div></div>
+    <div class="ocean-table">
+      <div class="ocean-head"><span>Dimension</span><span>Niveau</span><span>Score</span><span>Barre</span></div>
+      <div id="oceanRows"></div>
+    </div>
+    <div class="sec-div"><div class="sec-div-line"></div><div class="sec-div-lbl">Les 6 insights</div><div class="sec-div-line"></div></div>
+    <div class="insights-grid" id="insGrid"></div>
+    <div class="sec-div"><div class="sec-div-line"></div><div class="sec-div-lbl">Phrase choc</div><div class="sec-div-line"></div></div>
+    <div class="phrase-block"><div class="phrase-text" id="phraseText"></div><div class="phrase-note" id="phraseNote"></div></div>
+    <div class="sec-div"><div class="sec-div-line"></div><div class="sec-div-lbl">Va plus loin</div><div class="sec-div-line"></div></div>
+    <div class="cta-block">
+      <div class="cta-eyebrow">— Formation Lecture Comportementale —</div>
+      <div class="cta-title" id="ctaTitle"></div>
+      <div class="cta-feats">
+        <div class="cta-feat">Les 4 profils DISC appliqués à la vente</div>
+        <div class="cta-feat">Lire un prospect en moins de 60 secondes</div>
+        <div class="cta-feat">Scripts adaptés à chaque profil</div>
+        <div class="cta-feat">Les 10 étapes universelles du closing</div>
+      </div>
+      <a href="formations.html" class="cta-btn">Accéder aux formations →</a>
+    </div>
+    <div class="note-block"><div class="note-lbl">— Note sur ton profil —</div><div class="note-txt" id="noteText"></div></div>
+    <div class="restart-wrap"><button class="restart-btn" onclick="restart()">↺ Refaire l'analyse</button></div>
+  </div>
+</div>
+
+<script>
+// ─── QUESTIONS (ordre A→E→N→C→O, 3 par dim) ──────────────
+const Q=[
+  // AGRÉABILITÉ
+  {text:"Dans une négociation, tu cherches un accord qui satisfait les deux parties, même si tu pourrais obtenir plus.",dim:'A',rev:false,ex:["Je maximize toujours","Je cherche l'harmonie"],s:["Jamais","Rarement","Parfois","Souvent","Toujours"]},
+  {text:"Face à une objection forte, tu maintiens ta position sans chercher à rassurer le prospect.",dim:'A',rev:true,ex:["Toujours je tiens","Je cherche le compromis"],s:["Je tiens","Souvent","Parfois","Rarement","Jamais"]},
+  {text:"Tu adaptes ton discours pour ne pas mettre le prospect dans une position inconfortable.",dim:'A',rev:false,ex:["Jamais","Toujours"],s:["Jamais","Rarement","Parfois","Souvent","Toujours"]},
+  // EXTRAVERSION
+  {text:"Dans un call ou une réunion, tu prends naturellement de la place et tu guides la conversation.",dim:'E',rev:false,ex:["Je laisse mener","Je prends le lead"],s:["Jamais","Rarement","Parfois","Souvent","Toujours"]},
+  {text:"Appeler un inconnu ou entrer quelque part sans rendez-vous ne te pose aucun problème.",dim:'E',rev:false,ex:["C'est un vrai frein","Naturel, sans hésiter"],s:["Frein total","Effort requis","Ça dépend","Assez naturel","Très naturel"]},
+  {text:"Après une longue journée de calls, tu te sens épuisé et tu as besoin de silence.",dim:'E',rev:true,ex:["Les gens me rechargent","Les gens me vident"],s:["Jamais","Rarement","Parfois","Souvent","Toujours"]},
+  // NEUROTICISME
+  {text:"Un refus brutal d'un prospect te perturbe et impacte tes appels suivants.",dim:'N',rev:false,ex:["Je rebondis direct","Ça me reste longtemps"],s:["Jamais","Rarement","Parfois","Souvent","Toujours"]},
+  {text:"Sous pression (quota, deadline, gros deal), ton anxiété monte significativement.",dim:'N',rev:false,ex:["La pression me stimule","Je stresse beaucoup"],s:["Jamais","Rarement","Parfois","Souvent","Toujours"]},
+  {text:"Tu changes de comportement selon ton humeur ou les circonstances du moment.",dim:'N',rev:false,ex:["Je suis très constant","Je suis très variable"],s:["Jamais","Rarement","Parfois","Souvent","Toujours"]},
+  // CONSCIENCIOSITÉ
+  {text:"Tu suis un process de vente structuré — tu ne sautes pas d'étapes même si le prospect semble pressé.",dim:'C',rev:false,ex:["J'improvise toujours","Mon process est non-négociable"],s:["Jamais","Rarement","Parfois","Souvent","Toujours"]},
+  {text:"Il t'arrive de partir en rendez-vous sans avoir préparé tes arguments ou relu le dossier.",dim:'C',rev:true,ex:["J'improvise tout","Je prépare toujours"],s:["Toujours","Souvent","Parfois","Rarement","Jamais"]},
+  {text:"Tu notes tes calls, tu fais un suivi rigoureux de ton pipeline et tu respectes tes relances.",dim:'C',rev:false,ex:["Pas ma priorité","Tout est tracké"],s:["Jamais","Rarement","Parfois","Souvent","Toujours"]},
+  // OUVERTURE
+  {text:"Tu questionnes régulièrement tes propres méthodes de vente et tu cherches à les améliorer.",dim:'O',rev:false,ex:["Ma méthode fonctionne","Je cherche toujours mieux"],s:["Jamais","Rarement","Parfois","Souvent","Toujours"]},
+  {text:"Tu intègres facilement de nouvelles techniques ou de nouveaux outils dans ta pratique.",dim:'O',rev:false,ex:["Très difficilement","Très facilement"],s:["Jamais","Difficilement","Ça dépend","Facilement","Très facilement"]},
+  {text:"Tu préfères t'appuyer sur des techniques éprouvées plutôt qu'expérimenter de nouvelles approches.",dim:'O',rev:true,ex:["Je reste sur du solide","J'expérimente tout"],s:["Toujours","Souvent","Parfois","Rarement","Jamais"]},
+];
+
+const DIM_LABELS={A:"Agréabilité",E:"Extraversion",N:"Neuroticisme",C:"Conscienciosité",O:"Ouverture"};
+const DIM_DISPLAY={A:"Agréabilité",E:"Extraversion",N:"Stabilité émotionnelle",C:"Conscienciosité",O:"Ouverture"};
+const DIM_SUBS={A:"Coopération & empathie",E:"Assertivité sociale",N:"Réactivité émotionnelle (inversée)",C:"Discipline & rigueur",O:"Curiosité & adaptabilité"};
+const DIM_ORDER=['A','E','N','C','O'];
+
+// ─── 6 PROFILS ────────────────────────────────────────────
+const PROFILES = {
+  closer:{
+    id:'closer',
+    name:"Le Closer Dominant",
+    emoji:"🔴",
+    color:"#ef4444",
+    sub:"Extraversion élevée · Compétitif · Assertif",
+    tagline:"Tu prends le lead naturellement, sans te demander si tu en as le droit. Dans une salle, les gens le sentent quand tu parles — pas parce que tu élèves la voix, mais parce que tu portes ta conviction comme une évidence. Tu vas au fait, tu assumes tes positions et tu traites les objections comme de simples étapes vers la signature. Tu n'as pas besoin qu'on t'aime pour vendre — tu as besoin qu'on te respecte. Et ça, tu l'obtiens naturellement. Ton seul vrai risque : passer comme un rouleau compresseur sur les profils sensibles qui ont besoin d'être accompagnés, pas guidés. Le jour où tu apprends à détecter ces profils en 30 secondes et à adapter ton registre — tu deviendras inarrêtable.",
+    cta:"Tu es dominant — imagine quand tu sais adapter ton registre à chaque profil en face de toi.",
+    phrase:"Tu t'es reconnu ? Un simple questionnaire vient de te décrire mieux que la plupart de tes proches. Imagine ce que tu peux faire quand tu sais lire un prospect aussi précisément et connais réellement les étapes de vente.",
+    phraseNote:"Le Closer Dominant est rare — et redoutable quand il apprend à switcher de registre.",
+    note:"Le combo <strong>E ≥ 65% + A faible</strong> est le profil du chasseur pur. Tu closes sous pression sans décompenser. Le seul vrai levier de progression : apprendre à détecter les profils opposés et à switcher de registre au bon moment.",
+    insights:[
+      {t:'force',i:'💪',l:'Ta force en vente',ti:'Présence, leadership, conviction',b:"Tu entres dans une pièce et les gens le sentent. Tu n'as pas besoin de valider — tu poses le cadre. Les prospects hésitants te suivent parce que tu assumes."},
+      {t:'angle',i:'⚠️',l:'Ton angle mort',ti:'Les acheteurs discrets te passent entre les doigts',b:"Le prospect qui ne dit rien et ne signe pas non plus — c'est lui que tu rates. Il a besoin d'être accompagné, pas guidé. Ton énergie peut l'inhiber."},
+      {t:'style',i:'🎯',l:'Comment tu vends',ti:'Droit au but. Avec les décideurs pressés.',b:"Va droit au but. Le prospect dominant te respectera si tu n'as pas peur de lui. Tes meilleures ventes : face à des décideurs pressés qui veulent quelqu'un qui assume."},
+      {t:'closing',i:'🔑',l:'Ton closing naturel',ti:'Le silence stratégique',b:"Après ta dernière phrase de closing, tu poses ta question et tu fermes ta gueule. C'est là que ça se passe. Le premier qui parle perd. Pour toi, c'est difficile — donc dévastateur quand tu le fais."},
+      {t:'prospect',i:'🧩',l:'Face à un prospect',ti:'Adapter ton registre selon le profil',b:"Face à un Dominant : résultats, chiffres, rapidité. Face à un profil inverse (empathique, analytique) : ralentis, écoute 30 secondes de plus — c'est tout ce qu'il faut."},
+      {t:'next',i:'📈',l:'Ton prochain pas',ti:'Lire le profil en 3 phrases',b:"Identifie la dominante de ton prochain prospect dès les 3 premières phrases. Adapte ton script en conséquence. Un closing raté c'est presque toujours un mismatch de registre."},
+    ]
+  },
+  empathique:{
+    id:'empathique',
+    name:"L'Empathique Naturel",
+    emoji:"🟢",
+    color:"#4ade80",
+    sub:"Agréabilité élevée · Chaleureux · Conseiller",
+    tagline:"Tu ne vends pas — tu crées une relation, et c'est elle qui vend à ta place. Les gens te font confiance sans vraiment savoir pourquoi : tu poses les bonnes questions, tu écoutes vraiment, tu te souviens de ce qui compte pour eux. Dans un monde où tout le monde pitche, tu es celui qui écoute — et ça change tout. Tes clients restent, recommandent, reviennent. Tu es le vendeur que les gens appellent avant de prendre une décision, pas parce que tu les suis de près, mais parce qu'ils savent que tu penses à eux. Le seul angle mort : tu construis tellement bien la relation que tu oublies parfois que le but final, c'est de signer. Conclure n'est pas une trahison de la confiance que tu as construite — c'en est l'aboutissement logique.",
+    cta:"Tu conseilles naturellement — imagine quand tu apprends à conclure avec la même fluidité.",
+    phrase:"Tu t'es reconnu ? Un simple questionnaire vient de te décrire mieux que la plupart de tes proches. Imagine ce que tu peux faire quand tu sais lire un prospect aussi précisément et connais réellement les étapes de vente.",
+    phraseNote:"L'Empathique Naturel bâtit des fortunes lentes — et durables.",
+    note:"<strong>A ≥ 65% + N faible</strong> : le profil du vendeur-partenaire. Tes clients restent. Le levier principal : développer l'assertivité dans la phase de conclusion sans perdre ta chaleur naturelle.",
+    insights:[
+      {t:'force',i:'💚',l:'Ta force en vente',ti:'La confiance instantanée',b:"Les gens te font confiance naturellement. Tu poses des questions que d'autres n'osent pas, tu écoutes vraiment — et tes clients le sentent. C'est la base de tout closing durable."},
+      {t:'angle',i:'⚠️',l:'Ton angle mort',ti:'Tu oublies de demander la vente',b:"Tu crées tellement de valeur dans la relation que tu oublies parfois l'objectif final. Le prospect qui t'apprécie mais ne signe pas — c'est souvent parce que tu n'as pas osé conclure."},
+      {t:'style',i:'🎯',l:'Comment tu vends',ti:'Vente consultative. Long terme.',b:"Tu excelles dans les cycles de vente longs où la confiance prime. Tes meilleures ventes arrivent naturellement, par recommandation ou après plusieurs échanges approfondis."},
+      {t:'closing',i:'🔑',l:'Ton closing naturel',ti:"La question directe après l'écoute",b:"Après avoir vraiment compris le besoin, ose la question directe : 'Sur la base de ce qu'on vient de voir, qu'est-ce qui t'empêche d'avancer maintenant ?' Ta crédibilité rend cette question naturelle."},
+      {t:'prospect',i:'🧩',l:'Face à un prospect',ti:'Adapter selon la dominante',b:"Face à un analytique : donne des données et du temps. Face à un dominant : sois plus direct et va à l'essentiel — il perçoit ta gentillesse comme un manque d'assurance."},
+      {t:'next',i:'📈',l:'Ton prochain pas',ti:'Pratiquer la conclusion directe',b:"Dans ton prochain appel, engage la conclusion 10 minutes plus tôt que d'habitude. Ton instinct dit d'attendre — c'est exactement là qu'il faut résister."},
+    ]
+  },
+  analyste:{
+    id:'analyste',
+    name:"L'Analyste Structuré",
+    emoji:"🔵",
+    color:"#60a5fa",
+    sub:"Conscienciosité très élevée · Méthodique · Rigoureux",
+    tagline:"Tu entres dans chaque rendez-vous comme un architecte qui a déjà dessiné le plan. Chaque objection anticipée, chaque chiffre prêt, chaque étape balisée. Là où d'autres improvisent, tu construis — et ça se voit dans tes résultats sur la durée. Tes clients corporates et rationnels te font confiance parce que tu rassures sans bullshit, tu tiens tes engagements, tu ne promets pas ce que tu ne peux pas livrer. Tu es le vendeur qui dure — celui qui a encore des clients satisfaits cinq ans après. Mais le closing n'est pas une case à cocher dans ton process. C'est un moment à saisir — et ce moment n'attend pas que tu aies fini ta dernière slide.",
+    cta:"Tu prépares mieux que n'importe qui — imagine quand tu apprends à lire le profil de ton prospect aussi précisément.",
+    phrase:"Tu t'es reconnu ? Un simple questionnaire vient de te décrire mieux que la plupart de tes proches. Imagine ce que tu peux faire quand tu sais lire un prospect aussi précisément et connais réellement les étapes de vente.",
+    phraseNote:"L'Analyste Structuré construit des systèmes qui vendent à sa place — quand il lâche le contrôle au bon moment.",
+    note:"<strong>C ≥ 80%</strong> : le socle des top performers qui durent. Le risque : la rigidité du process peut empêcher de saisir des opportunités imprévues. Développer l'intuition et la flexibilité est ton prochain niveau.",
+    insights:[
+      {t:'force',i:'📊',l:'Ta force en vente',ti:'Préparation et process non-négociables',b:"Tu entres en rendez-vous avec chaque objection anticipée, chaque chiffre prêt. Cette préparation rassure les acheteurs rationnels et les décideurs qui cherchent un partenaire fiable."},
+      {t:'angle',i:'⚠️',l:'Ton angle mort',ti:'La sur-préparation qui retarde la conclusion',b:"À force de vouloir avoir toutes les réponses, tu peux manquer le moment où le prospect est prêt. Le deal ne se fait pas toujours à l'étape prévue — parfois entre deux slides."},
+      {t:'style',i:'🎯',l:'Comment tu vends',ti:'Process structuré. Pitchs préparés.',b:"Tu excelles dans les appels d'offres, les démonstrations préparées et les ventes complexes à plusieurs interlocuteurs. Ton sérieux rassure les acheteurs corporates."},
+      {t:'closing',i:'🔑',l:'Ton closing naturel',ti:'Le récapitulatif décisionnel',b:"'On a vu ensemble que X répond à votre enjeu Y. Les prochaines étapes sont A, B, C. Est-ce que vous validez qu'on avance ?' Tu transformes la conclusion en étape logique — pas en demande."},
+      {t:'prospect',i:'🧩',l:'Face à un prospect',ti:'Adapter la densité de tes pitchs',b:"Face à un analytique : c'est ton terrain, tu gagnes. Face à un expressif ou un dominant : coupe 50% de ton argumentaire, va à l'essentiel en 3 phrases."},
+      {t:'next',i:'📈',l:'Ton prochain pas',ti:'Tenter de conclure plus tôt',b:"Dans ton prochain rendez-vous, essaie de lancer la conclusion à mi-parcours. Si le prospect dit oui — tu as gagné 30 minutes. Si non, tu continues. Tu n'as rien à perdre."},
+    ]
+  },
+  reactif:{
+    id:'reactif',
+    name:"Le Réactif Émotionnel",
+    emoji:"🟠",
+    color:"#fb923c",
+    sub:"Neuroticisme élevé · Intense · Passionné",
+    tagline:"Tu vends avec tout ton être — quand tu y crois, ça se voit, ça se sent, ça se transmet. Ta passion est contagieuse dans les bons jours : tu crées de l'enthousiasme autour de ce que tu vends, tu fais rêver, et tes clients achètent autant ta conviction que ton produit. Mais ce que tu rayonnes en positif, tu le rayonnes aussi en négatif. Un refus sec, une nuit difficile, une pression sur le quota — et ton prochain call en porte les traces, que tu le veuilles ou non. Tes résultats ressemblent à une courbe avec des pics et des creux là où les meilleurs ont une ligne. Ton levier le plus puissant n'est pas un nouveau script. C'est la maîtrise de ton état interne, avant même de décrocher le téléphone.",
+    cta:"Tu vends avec intensité — imagine quand tu apprends à maîtriser ton état interne comme ton meilleur outil.",
+    phrase:"Tu t'es reconnu ? Un simple questionnaire vient de te décrire mieux que la plupart de tes proches. Imagine ce que tu peux faire quand tu sais lire un prospect aussi précisément et connais réellement les étapes de vente.",
+    phraseNote:"Le Réactif Émotionnel est souvent le vendeur qui génère les pics les plus hauts — et les creux les plus profonds.",
+    note:"<strong>N ≥ 65%</strong> : ton intensité émotionnelle peut être une force ou une faiblesse selon la journée. Le travail sur la régulation émotionnelle (état interne, routines pré-call) est ton investissement le plus rentable.",
+    insights:[
+      {t:'force',i:'🔥',l:'Ta force en vente',ti:'Passion et énergie contagieuses',b:"Quand tu y crois, tes prospects le ressentent. Tu crées de l'enthousiasme autour de ton produit mieux que n'importe qui. Les clients qui t'achètent t'achètent d'abord toi."},
+      {t:'angle',i:'⚠️',l:'Ton angle mort',ti:'Tes états internes sont visibles',b:"Un refus, une mauvaise réunion, une journée difficile — et ça se voit dans ton call suivant. Tes prospects captent ton énergie dans les deux sens : le positif comme le négatif."},
+      {t:'style',i:'🎯',l:'Comment tu vends',ti:"Par l'émotion et la conviction.",b:"Tu excelles dans les ventes où l'enthousiasme prime : produits grand public, vente directe, situations où ta personnalité fait la différence. Tu as besoin de croire en ce que tu vends."},
+      {t:'closing',i:'🔑',l:'Ton closing naturel',ti:"L'urgence émotionnelle",b:"'Imaginez dans 6 mois si vous n'avez pas agi.' Tu crées un sentiment d'opportunité manquée. Attention : utilisé trop fort, ça devient de la pression — et tu es sensible à la réaction des autres."},
+      {t:'prospect',i:'🧩',l:'Face à un prospect',ti:'Stabiliser avant de pitcher',b:"Avant chaque call difficile : 2 minutes de respiration, un ancrage positif. Face à un prospect agressif : ton émotivité est exploitable par ceux qui savent la déstabiliser. Reste dans ton centre."},
+      {t:'next',i:'📈',l:'Ton prochain pas',ti:'La routine pré-call',b:"Crée une routine de 5 minutes avant tes calls importants. Visualisation du bon déroulement, rappel de tes dernières victoires, état physique ancré. C'est ça qui stabilise tes performances."},
+    ]
+  },
+  stratege:{
+    id:'stratege',
+    name:"Le Stratège Curieux",
+    emoji:"🟣",
+    color:"#c084fc",
+    sub:"Ouverture élevée · Innovant · Adaptable",
+    tagline:"Tu n'es jamais sur le même chemin que les autres. Tu questionnes les méthodes en place, tu testes des angles que personne n'a essayés, tu adaptes ton pitch en temps réel selon ce que tu lis dans les réactions de ton interlocuteur. Dans un marché saturé où tout le monde dit la même chose avec les mêmes mots, tu es celui qui surprend — et les prospects s'en souviennent. Tu penses autrement, et certains clients viennent vers toi précisément pour ça. Le risque : à force d'expérimenter, tu peux manquer de cohérence aux yeux de tes clients, et disperser ton énergie sur dix approches différentes au lieu d'en maîtriser trois parfaitement. L'originalité qui dure a besoin d'un socle solide. Construis le tien.",
+    cta:"Tu innoves naturellement — imagine quand tu transformes ta créativité en process reproductible.",
+    phrase:"Tu t'es reconnu ? Un simple questionnaire vient de te décrire mieux que la plupart de tes proches. Imagine ce que tu peux faire quand tu sais lire un prospect aussi précisément et connais réellement les étapes de vente.",
+    phraseNote:"Le Stratège Curieux est le profil qui génère les meilleures idées — et qui a besoin d'un système pour les exploiter.",
+    note:"<strong>O ≥ 65%</strong> : le profil des top performers dans les marchés en mutation rapide. Le risque : disperser son énergie sur trop d'approches différentes. Construire 2-3 scripts solides sur lesquels tu improvises est ton prochain niveau.",
+    insights:[
+      {t:'force',i:'🔮',l:'Ta force en vente',ti:'Créativité et différenciation',b:"Tes pitchs sont mémorables. Tu trouves des angles que personne n'a essayés, tu adaptes ton approche en temps réel. Dans un marché saturé, tu te démarques naturellement."},
+      {t:'angle',i:'⚠️',l:'Ton angle mort',ti:"L'improvisation sans fil conducteur",b:"À force d'expérimenter, tu peux manquer de régularité. Le prospect qui te voit trop différent à chaque contact peut douter de ta cohérence. L'originalité doit reposer sur un socle stable."},
+      {t:'style',i:'🎯',l:'Comment tu vends',ti:'Approches inédites. Niches non exploitées.',b:"Tu excelles dans les marchés nouveaux, les produits complexes à expliquer et les prospects qui cherchent quelqu'un de différent. Ta curiosité te rend crédible sur des sujets variés."},
+      {t:'closing',i:'🔑',l:'Ton closing naturel',ti:'La question de disruption',b:"'La plupart des boîtes dans votre secteur font X — vous, vous pourriez faire Y. C'est pour ça qu'on parle.' Tu crées un écart cognitif qui rend ta solution inévitable."},
+      {t:'prospect',i:'🧩',l:'Face à un prospect',ti:"Calibrer ton degré d'originalité",b:"Face à un conservateur : réduis l'originalité, ancre tes propositions dans des références connues. Face à un innovateur : lâche-toi, c'est là que tu gagnes."},
+      {t:'next',i:'📈',l:'Ton prochain pas',ti:'Documenter ce qui fonctionne',b:"Note les 3 approches créatives qui ont le mieux fonctionné ce mois-ci. Transforme-les en scripts réutilisables. Ta créativité devient un système — et un système se scale."},
+    ]
+  },
+  equilibre:{
+    id:'equilibre',
+    name:"Le Vendeur Équilibré",
+    emoji:"⚖️",
+    color:"#c9a84c",
+    sub:"Profil composite · Polyvalent · Adaptable",
+    tagline:"Tu n'as pas de style dominant — et c'est, paradoxalement, l'un des profils les plus rares et les plus puissants. Tu peux vendre à un Dominant comme à un Empathique, à un analytique comme à un passionné, parce que tu n'as pas de biais fort qui te tire dans une seule direction. Là où les autres ont un style qui crée des affinités avec certains et des frictions avec d'autres, toi tu t'adaptes naturellement à l'interlocuteur qui est en face. Tu es le caméléon de la vente. La question n'est pas si tu peux vendre — c'est de choisir quel registre tu vas décider de développer en priorité pour créer une identité de vente forte et reconnaissable.",
+    cta:"Tu es équilibré — imagine quand tu identifies ton vrai levier de différenciation et tu l'amplifies.",
+    phrase:"Tu t'es reconnu ? Un simple questionnaire vient de te décrire mieux que la plupart de tes proches. Imagine ce que tu peux faire quand tu sais lire un prospect aussi précisément et connais réellement les étapes de vente.",
+    phraseNote:"Le Vendeur Équilibré est le caméléon de la vente — il a besoin d'un ancrage pour exploiter pleinement sa polyvalence.",
+    note:"Aucun seuil dominant atteint — c'est le profil par défaut et l'un des plus rares. Tu as une <strong>base solide dans toutes les dimensions</strong>. Le prochain step : identifier ton environnement de vente idéal et développer la dimension la plus stratégique pour ce contexte.",
+    insights:[
+      {t:'force',i:'🎭',l:'Ta force en vente',ti:'Polyvalence et adaptation instinctive',b:"Tu peux vendre à un dominant comme à un empathique. Tu n'as pas de biais fort — ce qui te rend naturellement adaptable à tous les profils de prospects que tu rencontres."},
+      {t:'angle',i:'⚠️',l:'Ton angle mort',ti:"Le manque d'identité de vente forte",b:"Sans style dominant, tu peux manquer de conviction visible. Les prospects qui cherchent un vendeur au profil marqué peuvent te percevoir comme moins affirmatif qu'un Closer ou moins chaleureux qu'un Empathique."},
+      {t:'style',i:'🎯',l:'Comment tu vends',ti:"Par le miroir. Tu t'adaptes à chaque interlocuteur.",b:"Tu excelles dans les environnements variés où tu dois changer de registre fréquemment. Les ventes en équipe, les comptes stratégiques complexes, les négociations multi-parties — c'est ton terrain."},
+      {t:'closing',i:'🔑',l:'Ton closing naturel',ti:'Le closing par alignement',b:"Tu détectes ce dont le prospect a besoin pour décider et tu lui donnes exactement ça : des chiffres pour l'analytique, de la chaleur pour l'empathique, de la rapidité pour le dominant. Tu closes sur mesure."},
+      {t:'prospect',i:'🧩',l:'Face à un prospect',ti:'Identifier la dominante adverse en premier',b:"Ta force : tu sais switcher. Ta méthode : dans les 2 premières minutes, identifie si ton prospect est dominant, empathique, analytique ou émotionnel — puis adapte-toi avant même de pitcher."},
+      {t:'next',i:'📈',l:'Ton prochain pas',ti:'Choisir une dimension à amplifier',b:"Identifie dans quel contexte tu vends le plus souvent. Si tu fais de la vente directe rapide : développe l'Extraversion. Si tu gères des comptes longs : développe la Conscienciosité. Choisis un axe et travaille-le."},
+    ]
+  }
+};
+
+// ─── SCORING ─────────────────────────────────────────────
+function calcScores(answers){
+  const sums={A:0,E:0,N:0,C:0,O:0};
+  Q.forEach((q,i)=>{
+    const v = answers[i]||3;
+    sums[q.dim] += q.rev ? (6-v) : v;
+  });
+  const pct={};
+  for(const d in sums) pct[d] = Math.round(sums[d]/15*100);
+  return pct;
+}
+
+function getProfile(pct){
+  if(pct.E>=65 && pct.A<55) return PROFILES.closer;
+  if(pct.A>=65 && pct.N<55) return PROFILES.empathique;
+  if(pct.C>=80)              return PROFILES.analyste;
+  if(pct.N>=65)              return PROFILES.reactif;
+  if(pct.O>=65)              return PROFILES.stratege;
+  return PROFILES.equilibre;
+}
+
+// ─── UI HELPERS ───────────────────────────────────────────
+function lvl(v){
+  if(v>=65)return{l:'Élevé',c:'lvl-h',b:'bar-h'};
+  if(v>=40)return{l:'Modéré',c:'lvl-m',b:'bar-m'};
+  return{l:'Faible',c:'lvl-l',b:'bar-l'};
+}
+function blks(v){const f=Math.round(v/100*21);return'█'.repeat(f)+'░'.repeat(21-f);}
+
+// ─── QUIZ STATE ───────────────────────────────────────────
+let cur=0, ans=new Array(15).fill(null);
+
+function render(){
+  const q=Q[cur];
+  document.getElementById('qTag').textContent=`Question ${String(cur+1).padStart(2,'0')} — ${DIM_LABELS[q.dim]}`;
+  document.getElementById('qText').textContent=q.text;
+  document.getElementById('lLeft').textContent=q.ex[0];
+  document.getElementById('lRight').textContent=q.ex[1];
+  for(let i=1;i<=5;i++) document.getElementById('s'+i).textContent=q.s[i-1];
+  const pct=((cur+1)/15)*100;
+  document.getElementById('progNum').textContent=`${cur+1} / 15`;
+  document.getElementById('progDim').textContent=DIM_LABELS[q.dim];
+  document.getElementById('progFill').style.width=pct+'%';
+  document.getElementById('progDot').style.left=pct+'%';
+  document.querySelectorAll('.l-btn').forEach((b,i)=>b.classList.toggle('sel',ans[cur]===i+1));
+  document.getElementById('btnPrev').disabled=cur===0;
+  document.getElementById('btnNext').disabled=ans[cur]===null;
+  document.getElementById('btnNext').textContent=cur===14?'Voir mon profil ✦':'Suivant →';
+}
+
+function pick(v){
+  ans[cur]=v;
+  document.querySelectorAll('.l-btn').forEach((b,i)=>b.classList.toggle('sel',i+1===v));
+  document.getElementById('btnNext').disabled=false;
+}
+
+function next(){
+  if(ans[cur]===null)return;
+  if(cur===14){showResult();return;}
+  const c=document.getElementById('qCard');
+  c.classList.add('out-l');
+  setTimeout(()=>{cur++;c.classList.remove('out-l');render();c.classList.add('in-r');setTimeout(()=>c.classList.remove('in-r'),280);},240);
+}
+
+function prev(){
+  if(cur===0)return;
+  const c=document.getElementById('qCard');
+  c.classList.add('out-r');
+  setTimeout(()=>{cur--;c.classList.remove('out-r');render();c.classList.add('in-l');setTimeout(()=>c.classList.remove('in-l'),280);},240);
+}
+
+// ─── SHOW RESULT ──────────────────────────────────────────
+function showResult(){
+  const pct = calcScores(ans);
+  const dispPct = {A:pct.A, E:pct.E, N:100-pct.N, C:pct.C, O:pct.O};
+  const p = getProfile(pct);
+
+  document.getElementById('quizSection').style.display='none';
+  document.getElementById('resultSection').classList.add('show');
+
+  document.getElementById('bdot').style.background=p.color;
+  document.getElementById('badgeLbl').textContent=`${p.emoji} Votre profil vendeur`;
+  const words=p.name.split(' ');
+  const first2=words.slice(0,2).join(' ');
+  const rest=words.slice(2).join(' ');
+  document.getElementById('resName').innerHTML=`<span style="color:${p.color}">${first2}</span>${rest?' <br>'+rest:''}`;
+  document.getElementById('resSub').textContent=p.sub;
+  document.getElementById('resTagline').textContent=p.tagline;
+
+  const rows=document.getElementById('oceanRows');rows.innerHTML='';
+  DIM_ORDER.forEach(d=>{
+    const v=dispPct[d];
+    const lv=lvl(v);
+    const row=document.createElement('div');row.className='ocean-row';
+    row.innerHTML=`
+      <div class="o-dname">${DIM_DISPLAY[d]}<span>${DIM_SUBS[d]}</span></div>
+      <div class="o-lvl ${lv.c}">${lv.l}</div>
+      <div class="o-score">${v}%</div>
+      <div class="o-bar-wrap">
+        <div class="o-bar-track"><div class="o-bar-fill ${lv.b}" id="bf-${d}"></div></div>
+        <div class="o-blocks">${blks(v)}</div>
+      </div>`;
+    rows.appendChild(row);
+  });
+  setTimeout(()=>DIM_ORDER.forEach(d=>{const el=document.getElementById('bf-'+d);if(el)el.style.width=dispPct[d]+'%';}),250);
+
+  const grid=document.getElementById('insGrid');grid.innerHTML='';
+  p.insights.forEach(ins=>{
+    const c=document.createElement('div');c.className=`ins-card ${ins.t}`;
+    c.innerHTML=`<span class="ins-icon">${ins.i}</span><div class="ins-label">${ins.l}</div><div class="ins-title">${ins.ti}</div><div class="ins-body">${ins.b}</div>`;
+    grid.appendChild(c);
+  });
+
+  document.getElementById('phraseText').textContent=p.phrase;
+  document.getElementById('phraseNote').textContent=p.phraseNote;
+  document.getElementById('ctaTitle').innerHTML=`${p.emoji} <em>${first2}</em> — ${p.cta}`;
+  document.getElementById('noteText').innerHTML=p.note;
+
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function restart(){
+  cur=0;ans=new Array(15).fill(null);
+  document.getElementById('resultSection').classList.remove('show');
+  document.getElementById('quizSection').style.display='block';
+  render();window.scrollTo({top:0,behavior:'smooth'});
+}
+
+render();
+</script>
+</body>
+</html>
