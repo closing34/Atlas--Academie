@@ -108,6 +108,7 @@
   <div class="auth-tabs">
     <button class="auth-tab active" id="tab-login"    onclick="goTab('login')">Connexion</button>
     <button class="auth-tab"        id="tab-register" onclick="goTab('register')">Créer un compte</button>
+    <button class="auth-tab"        id="tab-code"     onclick="goTab('code')">🔑 Code d'accès</button>
   </div>
 
   <!-- ══ PANNEAU 1 : CONNEXION ══ -->
@@ -167,6 +168,29 @@
     <div class="auth-switch">Déjà inscrit ? <a onclick="goTab('login')">Se connecter</a></div>
   </div>
 
+  <!-- ══ PANNEAU 3 : CODE D'ACCÈS ══ -->
+  <div class="auth-panel" id="panel-code">
+    <div class="admin-note">🏆 Accès administrateur ou code promo</div>
+    <div class="auth-title">Code d'accès</div>
+    <p class="auth-desc">Entre ton code pour débloquer toutes les formations et le coaching illimité.</p>
+
+    <div class="field-group">
+      <label class="field-label">Email (facultatif)</label>
+      <input class="auth-input" id="c-email" type="email" placeholder="ton@email.com (optionnel)"/>
+    </div>
+    <div class="field-group">
+      <label class="field-label">Ton code d'accès</label>
+      <div class="code-row">
+        <input class="auth-input" id="c-code" type="text"
+          placeholder="ULTIMATECLOSING2024" maxlength="40"
+          oninput="this.value=this.value.toUpperCase()"/>
+        <button class="code-ok-btn" onclick="doCode()">→</button>
+      </div>
+    </div>
+
+    <div class="auth-status" id="codeMsg"></div>
+  </div>
+
   <div class="auth-footer">
     <a href="index.html">← Retour à l'accueil</a> &nbsp;·&nbsp; <a href="contact.html">Besoin d'aide ?</a>
   </div>
@@ -191,7 +215,7 @@ var ADMIN_CODE = 'ULTIMATECLOSING2024';
 
 /* ── Utilitaires UI ─────────────────────────────────────────── */
 function goTab(name) {
-  ['login','register'].forEach(function(t) {
+  ['login','register','code'].forEach(function(t) {
     document.getElementById('tab-'+t).classList.toggle('active', t===name);
     document.getElementById('panel-'+t).classList.toggle('active', t===name);
   });
@@ -351,7 +375,7 @@ function doCode() {
 document.getElementById('l-pwd').addEventListener('keydown',   function(e){ if(e.key==='Enter') doLogin(); });
 document.getElementById('l-email').addEventListener('keydown', function(e){ if(e.key==='Enter') doLogin(); });
 document.getElementById('r-pwd2').addEventListener('keydown',  function(e){ if(e.key==='Enter') doRegister(); });
+document.getElementById('c-code').addEventListener('keydown',  function(e){ if(e.key==='Enter') doCode(); });
 </script>
 </body>
 </html>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           

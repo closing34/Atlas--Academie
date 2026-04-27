@@ -34,17 +34,12 @@ function getSupabase() {
 // ── Mapper produit Stripe → config Atlas ─────────────────────
 // À mettre à jour avec tes vrais Price IDs depuis Stripe Dashboard
 const STRIPE_PRODUCTS = {
-  // Plan Pro mensuel Coach IA (19,90€/mois)
-  'price_1TMa1yDwlJStC4YEqd69Z9Rn': { type: 'subscription', plan: 'pro', messages: 300, months: 1 },
-  // Packs crédits Coach IA
-  'price_1TMZerDwlJStC4YEleigPbU9': { type: 'credits', credits: 100 },
-  'price_1TMZg7DwlJStC4YE4AJ7lgEG': { type: 'credits', credits: 250 },
-  'price_1TMZnZDwlJStC4YE38Hr4qwl': { type: 'credits', credits: 500 },
-  // Formations (990€ chacune — inclut 2 mois Coach IA)
-  'price_FORMATION_ULTIMATE_TODO':   { type: 'formation', formation: 'ultimate-closing', coachMonths: 2, coachCredits: 300 },
-  'price_FORMATION_DISC_TODO':       { type: 'formation', formation: 'disc-premium', coachMonths: 2, coachCredits: 300 },
-  // Pack Bundle Complet (1490€ — Ultimate Closing + DISC Premium + 2 mois Coach IA)
-  'price_BUNDLE_COMPLET_TODO':       { type: 'bundle', plan: 'bundle_complet', formations: ['ultimate-closing', 'disc-premium'], coachMonths: 2, coachCredits: 300 },
+  // Plan Pro mensuel — remplacer par ton Price ID Stripe
+  'price_pro_mensuel':    { type: 'subscription', plan: 'pro', messages: 300, months: 1 },
+  // Packs crédits
+  'price_credits_100':    { type: 'credits', credits: 100 },
+  'price_credits_250':    { type: 'credits', credits: 250 },
+  'price_credits_500':    { type: 'credits', credits: 500 },
 };
 
 // Fallback : détection par metadata ou amount
@@ -54,26 +49,20 @@ function detectProduct(session) {
   // Si le product est passé en metadata dans checkout.html
   if (metadata.product) {
     const map = {
-      'pro':                   { type: 'subscription', plan: 'pro', messages: 300, months: 1 },
-      'credits_100':           { type: 'credits', credits: 100 },
-      'credits_250':           { type: 'credits', credits: 250 },
-      'credits_500':           { type: 'credits', credits: 500 },
-      'formation_ultimate':    { type: 'formation', formation: 'ultimate-closing', coachMonths: 2, coachCredits: 300 },
-      'formation_disc':        { type: 'formation', formation: 'disc-premium', coachMonths: 2, coachCredits: 300 },
-      'bundle_complet':        { type: 'bundle', plan: 'bundle_complet', formations: ['ultimate-closing', 'disc-premium'], coachMonths: 2, coachCredits: 300 },
+      'pro':          { type: 'subscription', plan: 'pro', messages: 300, months: 1 },
+      'credits_100':  { type: 'credits', credits: 100 },
+      'credits_250':  { type: 'credits', credits: 250 },
+      'credits_500':  { type: 'credits', credits: 500 },
     };
     return map[metadata.product] || null;
   }
 
   // Détection par amount_total (en centimes)
   const amount = session.amount_total;
-  if (amount === 1990)   return { type: 'subscription', plan: 'pro', messages: 300, months: 1 };
-  if (amount === 500)    return { type: 'credits', credits: 100 };
-  if (amount === 1000)   return { type: 'credits', credits: 250 };
-  if (amount === 1800)   return { type: 'credits', credits: 500 };
-  if (amount === 99000)  return { type: 'formation', formation: 'ultimate-closing', coachMonths: 2, coachCredits: 300 };
-  if (amount === 99000)  return { type: 'formation', formation: 'disc-premium', coachMonths: 2, coachCredits: 300 }; // TODO: distinguer par metadata
-  if (amount === 149000) return { type: 'bundle', plan: 'bundle_complet', formations: ['ultimate-closing', 'disc-premium'], coachMonths: 2, coachCredits: 300 };
+  if (amount === 2999) return { type: 'subscription', plan: 'pro', messages: 300, months: 1 };
+  if (amount === 500)  return { type: 'credits', credits: 100 };
+  if (amount === 1000) return { type: 'credits', credits: 250 };
+  if (amount === 1800) return { type: 'credits', credits: 500 };
 
   return null;
 }
@@ -219,20 +208,35 @@ exports.handler = async (event) => {
         await activateSubscription(supabase, userId, product);
       } else if (product.type === 'credits') {
         await addCredits(supabase, userId, product.credits);
-      } else if (product.type === 'formation') {
-        // Débloquer la formation
-        await supabase.from('user_formations').upsert({
-          user_id:      userId,
-          formation_id: product.formation,
-          unlocked_at:  new Date().toISOString(),
-          plan:         'formation',
-        }).catch(err => console.warn('[webhook] formation upsert:', err.message));
-        // Activer le Coach IA pour 2 mois (300 crédits/mois)
-        if (product.coachMonths) {
-          await activateSubscription(supabase, userId, {
-            plan: 'formation_coach',
-            messages: product.coachCredits || 300,
-            months: product.coachMonths,
-          });
-        }
-        console.log(`[webhook] ✅ Formation ${product.formation} débloquée pour ${userId} (Coach IA ${product.coachMonths} mois inc
+      }
+
+      // Log dans usage_logs pour analytics
+      await supabase.from('usage_logs').insert({
+        user_id:    userId,
+        coach_type: 'payment',
+        message_ref: `stripe_${stripeEvent.type}_${session.id}`,
+        message_cost_estimate: -(session.amount_total / 100), // revenu (négatif = recette)
+        created_at: new Date().toISOString(),
+      }).catch(() => {});
+    }
+
+    // ── customer.subscription.deleted ────────────────────────
+    if (stripeEvent.type === 'customer.subscription.deleted') {
+      const sub = stripeEvent.data.object;
+      await deactivateSubscription(supabase, sub.customer);
+    }
+
+    // ── invoice.payment_failed ────────────────────────────────
+    if (stripeEvent.type === 'invoice.payment_failed') {
+      const invoice = stripeEvent.data.object;
+      console.warn(`[webhook] Paiement échoué pour customer ${invoice.customer}`);
+      // Tu peux ici envoyer un email via Resend ou désactiver temporairement
+    }
+
+  } catch (e) {
+    console.error('[webhook] Erreur traitement:', e.message);
+    return { statusCode: 500, headers: CORS, body: JSON.stringify({ error: e.message }) };
+  }
+
+  return { statusCode: 200, headers: CORS, body: JSON.stringify({ received: true }) };
+};

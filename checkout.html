@@ -162,37 +162,6 @@
     .guarantee-icon { font-size: 1.5rem; flex-shrink: 0; }
     .guarantee-text { font-size: .8rem; color: var(--off-white); line-height: 1.5; }
     .guarantee-text strong { color: #4CAF50; }
-
-    /* Loading state */
-    .btn-loading {
-      opacity: .7;
-      pointer-events: none;
-      cursor: not-allowed;
-    }
-    .btn-loading::after {
-      content: ' ⏳';
-    }
-
-    /* Error/success message */
-    .checkout-msg {
-      margin-top: .75rem;
-      padding: .65rem 1rem;
-      border-radius: 8px;
-      font-size: .82rem;
-      text-align: center;
-      display: none;
-    }
-    .checkout-msg.error {
-      background: rgba(244,67,54,0.1);
-      border: 1px solid rgba(244,67,54,0.3);
-      color: #ef9a9a;
-    }
-    .checkout-msg.success {
-      background: rgba(76,175,80,0.1);
-      border: 1px solid rgba(76,175,80,0.3);
-      color: #a5d6a7;
-    }
-
     @media (max-width: 700px) {
       .checkout-grid { grid-template-columns: 1fr; gap: 1.5rem; }
       .plan-price { font-size: 2rem; }
@@ -208,180 +177,23 @@
   </a>
   <ul class="nav-links">
     <li><a href="index.html">Accueil</a></li>
-    <li><a href="formations.html">Formations</a></li>
     <li><a href="coaches.html">Coachs IA</a></li>
-    <li><a href="dashboard.html">Mon Espace</a></li>
+    <li><a href="contact.html">Guide Gratuit</a></li>
   </ul>
   <a href="coaches.html" class="nav-cta">Essayer gratuitement</a>
   <button class="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
 </nav>
 <div class="mobile-menu">
   <a href="index.html">🏠 Accueil</a>
-  <a href="formations.html">📚 Formations</a>
   <a href="coaches.html">🤖 Coachs IA</a>
-  <a href="dashboard.html">📊 Mon Espace</a>
-  <a href="coaches.html" class="nav-cta">Essayer gratuitement →</a>
+  <a href="contact.html">🎁 Guide Gratuit</a>
 </div>
 
 <div class="checkout-page">
   <div class="container">
 
-    <!-- ═══ SECTION BUNDLE (visible uniquement si ?bundle=complet) ═══ -->
-    <div id="bundleSection" style="display:none;max-width:650px;margin:0 auto 3rem;padding:0 1.5rem;">
-      <div style="background:linear-gradient(160deg,#0f1f3d,#141f14);border:1px solid rgba(201,168,76,0.45);border-radius:20px;padding:2.5rem 2rem;text-align:center;">
-        <div style="display:inline-flex;align-items:center;gap:.4rem;background:rgba(201,168,76,0.15);border:1px solid rgba(201,168,76,0.35);color:#c9a84c;font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;padding:.3rem 1rem;border-radius:50px;margin-bottom:1.5rem;">
-          ⚡ Meilleure offre — Pack Complet
-        </div>
-        <h1 style="font-family:Georgia,serif;font-size:1.8rem;color:#fff;margin-bottom:.5rem;">Pack Complet Atlas</h1>
-        <p style="color:#94a3b8;font-size:.95rem;margin-bottom:1.75rem;line-height:1.6;">
-          <strong style="color:#fff;">Ultimate Closing Mastery</strong> + <strong style="color:#fff;">DISC Premium</strong><br/>
-          Les 2 formations réunies — accès à vie — coach IA inclus
-        </p>
-        <div style="margin-bottom:1.5rem;">
-          <span style="color:#64748b;font-size:.85rem;text-decoration:line-through;display:block;">Valeur totale : 1980€</span>
-          <span style="font-family:Georgia,serif;font-size:3rem;color:#c9a84c;font-weight:700;line-height:1.1;">1490€</span>
-          <span style="display:inline-block;background:rgba(39,174,96,0.15);border:1px solid rgba(39,174,96,0.3);color:#2ecc71;font-size:.78rem;font-weight:700;padding:3px 12px;border-radius:20px;margin-top:6px;">✓ Tu économises 490€ — 25% de réduction</span>
-        </div>
-        <div style="display:flex;justify-content:center;flex-wrap:wrap;gap:.5rem;margin-bottom:2rem;">
-          <span style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);color:#94a3b8;font-size:.75rem;padding:4px 12px;border-radius:20px;">🔥 20+ heures de contenu</span>
-          <span style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);color:#94a3b8;font-size:.75rem;padding:4px 12px;border-radius:20px;">📚 36 leçons</span>
-          <span style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);color:#94a3b8;font-size:.75rem;padding:4px 12px;border-radius:20px;">🤖 Coach IA inclus</span>
-          <span style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);color:#94a3b8;font-size:.75rem;padding:4px 12px;border-radius:20px;">♾️ Accès à vie</span>
-        </div>
-        <form id="formBundle" style="max-width:380px;margin:0 auto;">
-          <div style="margin-bottom:.75rem;">
-            <input type="text" id="prenomBundle" placeholder="Ton prénom" required autocomplete="given-name"
-              style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:#e2e8f0;border-radius:8px;padding:.75rem 1rem;font-size:.9rem;width:100%;box-sizing:border-box;"/>
-          </div>
-          <div style="margin-bottom:1rem;">
-            <input type="email" id="emailBundle" placeholder="Ton email" required autocomplete="email"
-              style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:#e2e8f0;border-radius:8px;padding:.75rem 1rem;font-size:.9rem;width:100%;box-sizing:border-box;"/>
-          </div>
-          <button type="submit" id="btnBundle"
-            style="width:100%;background:linear-gradient(135deg,#b8922a,#c9a84c,#e8c46a);color:#0a1628;font-weight:800;font-size:1rem;letter-spacing:.08em;text-transform:uppercase;padding:16px 20px;border-radius:10px;border:none;cursor:pointer;transition:opacity .2s;">
-            ⚡ Obtenir le Pack Complet — 1490€ →
-          </button>
-          <div class="checkout-msg" id="msgBundle"></div>
-          <p style="font-size:.73rem;color:#64748b;text-align:center;margin-top:.75rem;">
-            🔒 Paiement sécurisé Stripe · Accès immédiat après paiement
-          </p>
-        </form>
-        <div style="margin-top:1.5rem;padding:1rem 1.25rem;background:rgba(76,175,80,0.05);border:1px solid rgba(76,175,80,0.15);border-radius:10px;text-align:left;display:flex;gap:.75rem;align-items:flex-start;">
-          <span style="font-size:1.4rem;">🛡️</span>
-          <span style="font-size:.8rem;color:#e2e8f0;line-height:1.5;"><strong style="color:#4CAF50;">Satisfait ou remboursé 7 jours.</strong> Si tu n'es pas convaincu dans les 7 premiers jours, on te rembourse sans question.</span>
-        </div>
-      </div>
-      <div style="text-align:center;margin-top:1.5rem;">
-        <a href="formations.html" style="color:#64748b;font-size:.82rem;">← Voir toutes les formations</a>
-        &nbsp;·&nbsp;
-        <a href="#checkout-autres" style="color:#64748b;font-size:.82rem;">Voir les autres plans</a>
-      </div>
-    </div>
-
-    <!-- ═══ SECTION FORMATION ULTIMATE CLOSING (visible si ?formation=ultimate-closing) ═══ -->
-    <div id="formationUCSection" style="display:none;max-width:650px;margin:0 auto 3rem;padding:0 1.5rem;">
-      <div style="background:linear-gradient(160deg,#0f1f3d,#1a1520);border:1px solid rgba(201,168,76,0.45);border-radius:20px;padding:2.5rem 2rem;text-align:center;">
-        <div style="display:inline-flex;align-items:center;gap:.4rem;background:rgba(192,57,43,0.12);border:1px solid rgba(192,57,43,0.3);color:#e74c3c;font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;padding:.3rem 1rem;border-radius:50px;margin-bottom:1.5rem;">
-          🔥 Formation 1 — Best-Seller
-        </div>
-        <h1 style="font-family:Georgia,serif;font-size:1.8rem;color:#fff;margin-bottom:.5rem;">Ultimate Closing Mastery</h1>
-        <p style="color:#94a3b8;font-size:.95rem;margin-bottom:1.75rem;line-height:1.6;">
-          Les 10 phases universelles du closing — Scripts verbatim — Méthode terrain<br/>
-          <strong style="color:#c9a84c;">+ Coach IA inclus 2 mois (300 crédits/mois)</strong>
-        </p>
-        <div style="margin-bottom:1.5rem;">
-          <span style="font-family:Georgia,serif;font-size:3rem;color:#c9a84c;font-weight:700;line-height:1.1;">990€</span>
-          <span style="display:block;color:#94a3b8;font-size:.82rem;margin-top:.3rem;">Accès à vie · 9h de contenu · 20 leçons</span>
-        </div>
-        <div style="display:flex;justify-content:center;flex-wrap:wrap;gap:.5rem;margin-bottom:2rem;">
-          <span style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);color:#94a3b8;font-size:.75rem;padding:4px 12px;border-radius:20px;">🔥 9h de contenu</span>
-          <span style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);color:#94a3b8;font-size:.75rem;padding:4px 12px;border-radius:20px;">📚 20 leçons</span>
-          <span style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);color:#94a3b8;font-size:.75rem;padding:4px 12px;border-radius:20px;">🤖 Coach IA 2 mois</span>
-          <span style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);color:#94a3b8;font-size:.75rem;padding:4px 12px;border-radius:20px;">♾️ Accès à vie</span>
-        </div>
-        <form id="formUC" style="max-width:380px;margin:0 auto;">
-          <div style="margin-bottom:.75rem;">
-            <input type="text" id="prenomUC" placeholder="Ton prénom" required autocomplete="given-name"
-              style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:#e2e8f0;border-radius:8px;padding:.75rem 1rem;font-size:.9rem;width:100%;box-sizing:border-box;"/>
-          </div>
-          <div style="margin-bottom:1rem;">
-            <input type="email" id="emailUC" placeholder="Ton email" required autocomplete="email"
-              style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:#e2e8f0;border-radius:8px;padding:.75rem 1rem;font-size:.9rem;width:100%;box-sizing:border-box;"/>
-          </div>
-          <button type="submit" id="btnUC"
-            style="width:100%;background:linear-gradient(135deg,#b8922a,#c9a84c,#e8c46a);color:#0a1628;font-weight:800;font-size:1rem;letter-spacing:.08em;text-transform:uppercase;padding:16px 20px;border-radius:10px;border:none;cursor:pointer;transition:opacity .2s;">
-            🔥 Accéder à Ultimate Closing — 990€ →
-          </button>
-          <div class="checkout-msg" id="msgUC"></div>
-          <p style="font-size:.73rem;color:#64748b;text-align:center;margin-top:.75rem;">
-            🔒 Paiement sécurisé Stripe · Accès immédiat · Coach IA activé sous 2 minutes
-          </p>
-        </form>
-        <div style="margin-top:1.5rem;padding:1rem 1.25rem;background:rgba(76,175,80,0.05);border:1px solid rgba(76,175,80,0.15);border-radius:10px;text-align:left;display:flex;gap:.75rem;align-items:flex-start;">
-          <span style="font-size:1.4rem;">🛡️</span>
-          <span style="font-size:.8rem;color:#e2e8f0;line-height:1.5;"><strong style="color:#4CAF50;">Satisfait ou remboursé 7 jours.</strong> Si tu n'es pas convaincu dans les 7 premiers jours, on te rembourse sans question.</span>
-        </div>
-      </div>
-      <div style="text-align:center;margin-top:1.5rem;">
-        <a href="formations.html" style="color:#64748b;font-size:.82rem;">← Voir toutes les formations</a>
-        &nbsp;·&nbsp;
-        <a href="checkout.html?bundle=complet" style="color:#c9a84c;font-size:.82rem;">⚡ Prendre le Pack Complet à 1490€ (–25%)</a>
-      </div>
-    </div>
-
-    <!-- ═══ SECTION FORMATION DISC PREMIUM (visible si ?formation=disc-premium) ═══ -->
-    <div id="formationDiscSection" style="display:none;max-width:650px;margin:0 auto 3rem;padding:0 1.5rem;">
-      <div style="background:linear-gradient(160deg,#0f1f3d,#111d35);border:1px solid rgba(52,152,219,0.35);border-radius:20px;padding:2.5rem 2rem;text-align:center;">
-        <div style="display:inline-flex;align-items:center;gap:.4rem;background:rgba(52,152,219,0.1);border:1px solid rgba(52,152,219,0.3);color:#3498db;font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;padding:.3rem 1rem;border-radius:50px;margin-bottom:1.5rem;">
-          🧠 Formation 2 — Avancé
-        </div>
-        <h1 style="font-family:Georgia,serif;font-size:1.8rem;color:#fff;margin-bottom:.5rem;">DISC Premium</h1>
-        <p style="color:#94a3b8;font-size:.95rem;margin-bottom:1.75rem;line-height:1.6;">
-          Analyse & Influence Comportementale — Lire un prospect en 60 secondes<br/>
-          <strong style="color:#c9a84c;">+ Coach IA inclus 2 mois (300 crédits/mois)</strong>
-        </p>
-        <div style="margin-bottom:1.5rem;">
-          <span style="font-family:Georgia,serif;font-size:3rem;color:#c9a84c;font-weight:700;line-height:1.1;">990€</span>
-          <span style="display:block;color:#94a3b8;font-size:.82rem;margin-top:.3rem;">Accès à vie · 11h de contenu · 16 leçons</span>
-        </div>
-        <div style="display:flex;justify-content:center;flex-wrap:wrap;gap:.5rem;margin-bottom:2rem;">
-          <span style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);color:#94a3b8;font-size:.75rem;padding:4px 12px;border-radius:20px;">🧠 11h de contenu</span>
-          <span style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);color:#94a3b8;font-size:.75rem;padding:4px 12px;border-radius:20px;">📚 16 leçons</span>
-          <span style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);color:#94a3b8;font-size:.75rem;padding:4px 12px;border-radius:20px;">🤖 Coach IA 2 mois</span>
-          <span style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);color:#94a3b8;font-size:.75rem;padding:4px 12px;border-radius:20px;">♾️ Accès à vie</span>
-        </div>
-        <form id="formDisc" style="max-width:380px;margin:0 auto;">
-          <div style="margin-bottom:.75rem;">
-            <input type="text" id="prenomDisc" placeholder="Ton prénom" required autocomplete="given-name"
-              style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:#e2e8f0;border-radius:8px;padding:.75rem 1rem;font-size:.9rem;width:100%;box-sizing:border-box;"/>
-          </div>
-          <div style="margin-bottom:1rem;">
-            <input type="email" id="emailDisc" placeholder="Ton email" required autocomplete="email"
-              style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:#e2e8f0;border-radius:8px;padding:.75rem 1rem;font-size:.9rem;width:100%;box-sizing:border-box;"/>
-          </div>
-          <button type="submit" id="btnDisc"
-            style="width:100%;background:linear-gradient(135deg,#1a6fa8,#3498db);color:#fff;font-weight:800;font-size:1rem;letter-spacing:.08em;text-transform:uppercase;padding:16px 20px;border-radius:10px;border:none;cursor:pointer;transition:opacity .2s;">
-            🧠 Accéder à DISC Premium — 990€ →
-          </button>
-          <div class="checkout-msg" id="msgDisc"></div>
-          <p style="font-size:.73rem;color:#64748b;text-align:center;margin-top:.75rem;">
-            🔒 Paiement sécurisé Stripe · Accès immédiat · Coach IA activé sous 2 minutes
-          </p>
-        </form>
-        <div style="margin-top:1.5rem;padding:1rem 1.25rem;background:rgba(76,175,80,0.05);border:1px solid rgba(76,175,80,0.15);border-radius:10px;text-align:left;display:flex;gap:.75rem;align-items:flex-start;">
-          <span style="font-size:1.4rem;">🛡️</span>
-          <span style="font-size:.8rem;color:#e2e8f0;line-height:1.5;"><strong style="color:#4CAF50;">Satisfait ou remboursé 7 jours.</strong> Si tu n'es pas convaincu dans les 7 premiers jours, on te rembourse sans question.</span>
-        </div>
-      </div>
-      <div style="text-align:center;margin-top:1.5rem;">
-        <a href="formations.html" style="color:#64748b;font-size:.82rem;">← Voir toutes les formations</a>
-        &nbsp;·&nbsp;
-        <a href="checkout.html?bundle=complet" style="color:#c9a84c;font-size:.82rem;">⚡ Prendre le Pack Complet à 1490€ (–25%)</a>
-      </div>
-    </div>
-
     <!-- Breadcrumb -->
-    <div id="checkout-autres" style="text-align:center;margin-bottom:3rem;">
+    <div style="text-align:center;margin-bottom:3rem;">
       <div style="display:inline-flex;align-items:center;gap:.5rem;background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.25);color:var(--gold);font-family:var(--font-title);font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;padding:.35rem 1rem;border-radius:50px;margin-bottom:1.5rem;">
         ⚡ Accès illimité aux Coachs IA
       </div>
@@ -402,7 +214,7 @@
         <p class="plan-desc">L'accès complet pour t'entraîner en continu et progresser chaque jour.</p>
 
         <div class="plan-price-block">
-          <span class="plan-price">19,90€</span>
+          <span class="plan-price">19,99€</span>
           <span class="plan-period">/mois · sans engagement</span>
         </div>
 
@@ -415,19 +227,18 @@
           <li><span class="check">✦</span> <span>Renouvellement automatique — annulation en 1 clic</span></li>
         </ul>
 
-        <form class="checkout-form" id="formPro">
+        <form class="checkout-form" id="formPro" action="#" method="post">
           <div class="form-group">
-            <input type="text" id="prenomPro" placeholder="Ton prénom" required autocomplete="given-name"/>
+            <input type="text" name="prenom" id="prenomPro" placeholder="Ton prénom" required autocomplete="given-name"/>
           </div>
           <div class="form-group">
-            <input type="email" id="emailPro" placeholder="Ton email" required autocomplete="email"/>
+            <input type="email" name="email" id="emailPro" placeholder="Ton email" required autocomplete="email"/>
           </div>
-          <button type="submit" class="btn btn-primary btn-block btn-lg" id="btnPro" style="font-size:.95rem;">
-            💰 S'abonner au Plan PRO — 19,90€/mois →
+          <button type="submit" class="btn btn-primary btn-block btn-lg" style="font-size:.95rem;">
+            💰 S'abonner au Plan PRO — 19,99€/mois →
           </button>
-          <div class="checkout-msg" id="msgPro"></div>
           <p class="checkout-note">
-            🔒 Paiement sécurisé Stripe · Annulation à tout moment depuis ton espace Stripe
+            🔒 Paiement sécurisé · Annulation à tout moment · Aucune carte requise pour démarrer
           </p>
         </form>
 
@@ -448,7 +259,202 @@
         <!-- Sélecteur pack -->
         <div style="margin-bottom:1.5rem;">
           <label style="font-size:.78rem;color:var(--gray);margin-bottom:.4rem;display:block;">Choisis ton pack :</label>
-          <select id="creditPack" style="width:100%;padding:.65rem 1rem;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:var(--off-white);border-radius:8px;font-size:.9rem;cursor:pointer;">
-            <option value="credits_100" data-price="5" data-label="100 messages">Pack Starter — 100 messages / 5€</option>
-            <option value="credits_250" data-price="10" data-label="250 messages">Pack Pro — 250 messages / 10€</option>
-            <option value="credits_500" data-price="18" data-label="500 messages">Pack Expert — 500 messages /
+          <select id="creditPack" class="checkout-form" style="width:100%;padding:.65rem 1rem;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:var(--off-white);border-radius:8px;font-size:.9rem;cursor:pointer;">
+            <option value="100" data-price="5">Pack Starter — 100 messages / 5€</option>
+            <option value="250" data-price="10">Pack Pro — 250 messages / 10€</option>
+            <option value="500" data-price="18">Pack Expert — 500 messages / 18€</option>
+          </select>
+        </div>
+
+        <div class="plan-price-block" id="creditsPrice">
+          <span class="plan-price" id="creditsPriceVal">5€</span>
+          <span class="plan-period" id="creditsPeriod">/ 100 messages · valable 6 mois</span>
+        </div>
+
+        <ul class="plan-features">
+          <li><span class="check">✦</span> <span>Messages disponibles immédiatement après achat</span></li>
+          <li><span class="check">✦</span> <span>Accès aux 4 coachs IA — sans limite de temps</span></li>
+          <li><span class="check">✦</span> <span>Valable 6 mois à compter de l'activation</span></li>
+          <li><span class="check">✦</span> <span>Sans engagement ni renouvellement automatique</span></li>
+          <li><span class="check">✦</span> <span><strong>Économie progressive</strong> — plus tu achètes, moins c'est cher/msg</span></li>
+        </ul>
+
+        <form class="checkout-form" id="formCredits" action="#" method="post">
+          <div class="form-group">
+            <input type="text" name="prenom" id="prenomCredits" placeholder="Ton prénom" required autocomplete="given-name"/>
+          </div>
+          <div class="form-group">
+            <input type="email" name="email" id="emailCredits" placeholder="Ton email" required autocomplete="email"/>
+          </div>
+          <button type="submit" class="btn btn-primary btn-block" style="font-size:.9rem;" id="creditsBtn">
+            💣 Acheter le Pack Starter — 5€ →
+          </button>
+          <p class="checkout-note">
+            🔒 Paiement sécurisé · Code d'activation envoyé par email
+          </p>
+        </form>
+
+        <div class="guarantee-block">
+          <div class="guarantee-icon">📦</div>
+          <div class="guarantee-text">
+            <strong>Activation instantanée.</strong> Tu reçois ton code d'accès par email dans les 2 minutes suivant ton achat.
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /checkout-grid -->
+
+    <!-- ═══ FAQ RAPIDE ═══ -->
+    <div style="max-width:700px;margin:4rem auto 0;padding:0 1.5rem;">
+      <h2 style="font-family:var(--font-title);font-size:1.25rem;text-align:center;margin-bottom:2rem;">Questions fréquentes</h2>
+      <div style="display:flex;flex-direction:column;gap:1rem;">
+        <details style="background:var(--navy-mid);border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:1rem 1.25rem;cursor:pointer;">
+          <summary style="font-size:.9rem;color:var(--off-white);font-family:var(--font-title);">Quelle est la différence entre PRO et Crédits ?</summary>
+          <p style="font-size:.84rem;color:var(--gray);margin-top:.75rem;line-height:1.6;">Le PRO est un abonnement mensuel avec 300 messages/mois renouvelés automatiquement — idéal pour une pratique régulière. Les crédits sont one-shot, sans engagement, valables 6 mois.</p>
+        </details>
+        <details style="background:var(--navy-mid);border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:1rem 1.25rem;cursor:pointer;">
+          <summary style="font-size:.9rem;color:var(--off-white);font-family:var(--font-title);">Comment activer mon accès après paiement ?</summary>
+          <p style="font-size:.84rem;color:var(--gray);margin-top:.75rem;line-height:1.6;">Tu reçois un email avec ton code d'accès personnel dans les 2 minutes. Entre-le dans la fenêtre de chat quand elle s'affiche.</p>
+        </details>
+        <details style="background:var(--navy-mid);border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:1rem 1.25rem;cursor:pointer;">
+          <summary style="font-size:.9rem;color:var(--off-white);font-family:var(--font-title);">Puis-je changer de plan après ?</summary>
+          <p style="font-size:.84rem;color:var(--gray);margin-top:.75rem;line-height:1.6;">Oui. Tu peux annuler le PRO à tout moment et passer sur des crédits. Ou passer de crédits au PRO si tu utilises beaucoup la plateforme.</p>
+        </details>
+        <details style="background:var(--navy-mid);border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:1rem 1.25rem;cursor:pointer;">
+          <summary style="font-size:.9rem;color:var(--off-white);font-family:var(--font-title);">300 messages/mois, est-ce suffisant ?</summary>
+          <p style="font-size:.84rem;color:var(--gray);margin-top:.75rem;line-height:1.6;">La plupart des utilisateurs actifs utilisent entre 50 et 150 messages/mois. 300 messages représentent environ 10 sessions d'entraînement intensives — largement suffisant pour progresser chaque semaine.</p>
+        </details>
+      </div>
+    </div>
+
+    <!-- CTA bas de page -->
+    <div style="text-align:center;margin-top:3.5rem;padding:2rem;background:rgba(201,168,76,0.05);border:1px solid rgba(201,168,76,0.15);border-radius:12px;max-width:600px;margin-left:auto;margin-right:auto;">
+      <p style="color:var(--gray);font-size:.88rem;margin-bottom:.5rem;">Tu veux tester avant de choisir ?</p>
+      <a href="coaches.html" style="color:var(--gold);font-family:var(--font-title);font-size:.85rem;">
+        ← Retour aux coachs IA — 5 messages gratuits disponibles
+      </a>
+    </div>
+
+  </div><!-- /container -->
+</div>
+
+<footer>
+  <div class="container">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <img src="assets/img/logo.png" alt="Atlas Académie"/>
+        <div class="footer-brand-text">Atlas Académie</div>
+        <p>L'écosystème de formation d'élite en vente, closing et psychologie comportementale.</p>
+      </div>
+      <div class="footer-col"><h4>Formations</h4><ul>
+        <li><a href="decode-close.html">→ Decode & Close™</a></li>
+        <li><a href="analyse-influence.html">→ Analyse & Influence</a></li>
+        <li><a href="10-etapes.html">→ 10 Étapes de la Vente</a></li>
+      </ul></div>
+      <div class="footer-col"><h4>Accès IA</h4><ul>
+        <li><a href="coaches.html">→ Coachs IA (gratuit)</a></li>
+        <li><a href="checkout.html?plan=pro">→ Plan PRO</a></li>
+        <li><a href="checkout.html?plan=credits">→ Pack Crédits</a></li>
+      </ul></div>
+      <div class="footer-col"><h4>Légal</h4><ul>
+        <li><a href="cgv.html">→ CGV</a></li>
+        <li><a href="mentions-legales.html">→ Mentions légales</a></li>
+        <li><a href="confidentialite.html">→ Confidentialité</a></li>
+      </ul></div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 Atlas Académie — Tous droits réservés</p>
+      <div class="footer-legal">
+        <a href="cgv.html">CGV</a>
+        <a href="mentions-legales.html">Mentions légales</a>
+        <a href="confidentialite.html">Confidentialité</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="atlas-config.js"></script>
+<script src="assets/js/supabase-client.js"></script>
+<script src="assets/js/main.js"></script>
+<script>
+(function () {
+  // ── Gestion du sélecteur crédits ──────────────────────────────
+  const select     = document.getElementById('creditPack');
+  const priceEl    = document.getElementById('creditsPriceVal');
+  const periodEl   = document.getElementById('creditsPeriod');
+  const btn        = document.getElementById('creditsBtn');
+  const packs      = { '100': { price: 5, label: '100 messages' }, '250': { price: 10, label: '250 messages' }, '500': { price: 18, label: '500 messages' } };
+
+  function updateCreditsUI() {
+    const pack = packs[select.value] || packs['100'];
+    priceEl.textContent  = pack.price + '€';
+    periodEl.textContent = `/ ${pack.label} · valable 6 mois`;
+    btn.textContent      = `💣 Acheter — ${pack.price}€ →`;
+  }
+  if (select) select.addEventListener('change', updateCreditsUI);
+
+  // ── Détection du plan depuis l'URL ────────────────────────────
+  const params = new URLSearchParams(window.location.search);
+  const plan   = params.get('plan');
+  if (plan === 'credits') {
+    document.getElementById('formCredits')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  } else if (plan === 'pro') {
+    document.getElementById('formPro')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  // ── Liens Stripe Payment Links ────────────────────────────────
+  const STRIPE_LINKS = {
+    pro:         'https://buy.stripe.com/test_8x228r6tab7daDb9yZ6oo0c', // 19,90€/mois — 600 msgs
+    unlimited:   'https://buy.stripe.com/test_eVqeVd2cUgrx5iRaD36oo0d', // 34,90€/mois — illimité
+    credits_500: 'https://buy.stripe.com/test_dRm9AT2cUcbhdPnaD36oo0g', // 18€ / 500 crédits
+    credits_250: 'https://buy.stripe.com/test_7sYcN5g3Kfnt7qZ7qR6oo0f', // 10€ / 250 crédits
+    credits_100: 'https://buy.stripe.com/test_00w5kD7xe1wD8v3h1r6oo0e', // 5€  / 100 crédits
+  };
+
+  function redirectToStripe(link, email, product) {
+    if (!link || link.startsWith('STRIPE_')) {
+      alert('⚠️ Paiement en cours de configuration. Reviens dans quelques heures !');
+      return;
+    }
+    // Récupérer l'userId pour les metadata Stripe (webhook activation)
+    const user   = window.AtlasAuth ? window.AtlasAuth.getUser() : null;
+    const userId = user ? user.id : (localStorage.getItem('atlas_user_profile') ? 'local_user' : '');
+
+    // Stripe Payment Link params
+    const params = new URLSearchParams();
+    params.set('prefilled_email', email);
+    if (userId)  params.set('client_reference_id', userId); // envoyé dans session.client_reference_id
+    if (product) params.set('utm_content', product);        // hack pour passer le product type
+
+    window.location.href = `${link}?${params.toString()}`;
+  }
+
+  // ── Soumission formulaire PRO ──────────────────────────────────
+  document.getElementById('formPro')?.addEventListener('submit', function (e) {
+    e.preventDefault();
+    const prenom = document.getElementById('prenomPro').value.trim();
+    const email  = document.getElementById('emailPro').value.trim();
+    if (!prenom || !email) return;
+    // Sauvegarder le prénom pour la page post-paiement
+    localStorage.setItem('atlas_checkout_name', prenom);
+    localStorage.setItem('atlas_checkout_email', email);
+    localStorage.setItem('atlas_checkout_plan', 'pro');
+    redirectToStripe(STRIPE_LINKS.pro, email, 'pro');
+  });
+
+  // ── Soumission formulaire Crédits ──────────────────────────────
+  document.getElementById('formCredits')?.addEventListener('submit', function (e) {
+    e.preventDefault();
+    const prenom = document.getElementById('prenomCredits').value.trim();
+    const email  = document.getElementById('emailCredits').value.trim();
+    if (!prenom || !email) return;
+    const packKey = 'credits_' + (select?.value || '100');
+    localStorage.setItem('atlas_checkout_name', prenom);
+    localStorage.setItem('atlas_checkout_email', email);
+    localStorage.setItem('atlas_checkout_plan', packKey);
+    redirectToStripe(STRIPE_LINKS[packKey], email, packKey);
+  });
+})();
+</script>
+</body>
+</html>

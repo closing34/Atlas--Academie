@@ -633,19 +633,6 @@ function showBilan(){
       el.style.width = el.dataset.pct+'%';
     });
   }, 300);
-
-  // Sauvegarder le bilan dans localStorage (visible depuis dashboard)
-  try {
-    var today = new Date();
-    var dateStr = today.toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'});
-    localStorage.setItem('atlas_bilan', JSON.stringify({
-      profile: prf.nom,
-      emoji: prf.emoji,
-      sub: prf.sub,
-      scores: sc,
-      date: dateStr
-    }));
-  } catch(e) {}
 }
 
 function restart(){

@@ -196,12 +196,11 @@
     <div class="nav-logo-text">Atlas<span>Académie</span></div>
   </a>
     <ul class="nav-links">
-    <li><a href="formations.html">Formations</a></li>
     <li><a href="coaches.html">Coachs IA</a></li>
     <li><a href="simulateur.html">Simulateur</a></li>
     <li><a href="challenges.html">⚡ Challenges</a></li>
     <li><a href="leaderboard.html">🏆 Classement</a></li>
-    <li><a href="mon-profil.html" style="color:var(--gold);">🧠 Mon Profil</a></li>
+    <li><a href="missions.html">🎖️ Missions</a></li>
     <li><a href="dashboard.html" class="active">Dashboard</a></li>
   </ul>
   <a href="chat.html" class="nav-cta">Coach IA →</a>
@@ -273,33 +272,6 @@
           <div class="usage-bar-wrap" id="usageBarWrap"></div>
         </div>
 
-        <!-- ── ANALYSE COMPORTEMENTALE ── -->
-        <div class="db-card db-full" style="background:linear-gradient(135deg,rgba(201,168,76,0.07) 0%,rgba(10,22,40,0.95) 100%);border-color:rgba(201,168,76,0.35);position:relative;overflow:hidden;">
-          <div style="position:absolute;top:-30px;right:-30px;font-size:8rem;opacity:0.05;pointer-events:none;">🧠</div>
-          <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
-            <div>
-              <div class="db-card-title" style="margin-bottom:0.5rem;">🧠 Ton Profil de Vendeur</div>
-              <p style="font-size:0.88rem;color:var(--gray);max-width:480px;line-height:1.6;margin:0;">
-                Découvre ton profil comportemental en 15 questions. L'IA analyse ta façon de vendre et te révèle tes forces cachées — <span style="color:var(--gold);">gratuit, en 3 min</span>.
-              </p>
-            </div>
-            <a href="analyse-gratuite.html" style="
-              display:inline-flex;align-items:center;gap:0.6rem;
-              background:linear-gradient(135deg,var(--gold),var(--gold-light));
-              color:var(--navy-dark);font-family:var(--font-title);font-size:0.75rem;
-              font-weight:700;letter-spacing:0.15em;padding:0.9rem 2rem;
-              border-radius:50px;text-decoration:none;white-space:nowrap;
-              box-shadow:0 4px 20px rgba(201,168,76,0.35);transition:all .2s;
-            " onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 30px rgba(201,168,76,0.5)'" onmouseout="this.style.transform='';this.style.boxShadow='0 4px 20px rgba(201,168,76,0.35)'">
-              FAIRE L'ANALYSE →
-            </a>
-          </div>
-          <div id="dbBilanSaved" style="display:none;margin-top:1.25rem;padding-top:1.25rem;border-top:1px solid rgba(201,168,76,0.15);">
-            <div style="font-size:0.75rem;color:var(--gray);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.5rem;">Ton dernier profil</div>
-            <div id="dbBilanContent" style="font-size:0.9rem;color:var(--gold);font-family:var(--font-title);letter-spacing:0.05em;"></div>
-          </div>
-        </div>
-
         <!-- Badges -->
         <div class="db-card db-full">
           <div class="db-card-title">🏅 Badges</div>
@@ -324,53 +296,6 @@
           <div style="margin-top:1.5rem;">
             <div class="db-card-title" style="margin-bottom:0.75rem;">🎯 Prochain niveau</div>
             <div id="nextLevelInfo" style="font-size:0.85rem; color:var(--gray);"></div>
-          </div>
-        </div>
-
-        <!-- ── MES FORMATIONS ── -->
-        <div class="db-card db-full" style="border-color:rgba(201,168,76,0.3);">
-          <div class="db-card-title" style="justify-content:space-between;">
-            <span>🎓 Mes Formations</span>
-            <a href="formations.html" style="font-size:0.75rem;color:var(--gold);text-decoration:none;font-family:var(--font-body);letter-spacing:0;text-transform:none;font-weight:600;">Voir tout →</a>
-          </div>
-          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;margin-top:4px;">
-
-            <a href="formation-player.html?id=ultimate-closing" style="text-decoration:none;">
-              <div style="background:rgba(192,57,43,0.1);border:1px solid rgba(192,57,43,0.25);border-radius:12px;padding:16px;transition:all .2s;" onmouseover="this.style.borderColor='rgba(201,168,76,0.5)';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='rgba(192,57,43,0.25)';this.style.transform=''">
-                <div style="font-size:1.6rem;margin-bottom:8px;">🔥</div>
-                <div style="font-family:Georgia,serif;font-size:0.95rem;color:#fff;margin-bottom:4px;">Ultimate Closing Mastery</div>
-                <div style="font-size:0.75rem;color:#94a3b8;margin-bottom:10px;">10 phases · 20 leçons · 9h</div>
-                <div style="font-size:0.7rem;color:var(--gold);font-weight:700;letter-spacing:0.08em;">▶ CONTINUER</div>
-              </div>
-            </a>
-
-            <a href="formation-player.html?id=modules-terrain" style="text-decoration:none;">
-              <div style="background:rgba(39,174,96,0.08);border:1px solid rgba(39,174,96,0.2);border-radius:12px;padding:16px;transition:all .2s;" onmouseover="this.style.borderColor='rgba(201,168,76,0.5)';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='rgba(39,174,96,0.2)';this.style.transform=''">
-                <div style="font-size:1.6rem;margin-bottom:8px;">⚡</div>
-                <div style="font-family:Georgia,serif;font-size:0.95rem;color:#fff;margin-bottom:4px;">Modules Terrain</div>
-                <div style="font-size:0.75rem;color:#94a3b8;margin-bottom:10px;">5 contextes · 10 leçons · 4h</div>
-                <div style="font-size:0.7rem;color:var(--gold);font-weight:700;letter-spacing:0.08em;">▶ CONTINUER</div>
-              </div>
-            </a>
-
-            <a href="formation-player.html?id=lecture-comportementale" style="text-decoration:none;">
-              <div style="background:rgba(52,152,219,0.08);border:1px solid rgba(52,152,219,0.2);border-radius:12px;padding:16px;transition:all .2s;" onmouseover="this.style.borderColor='rgba(201,168,76,0.5)';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='rgba(52,152,219,0.2)';this.style.transform=''">
-                <div style="font-size:1.6rem;margin-bottom:8px;">🧠</div>
-                <div style="font-family:Georgia,serif;font-size:0.95rem;color:#fff;margin-bottom:4px;">Lecture Comportementale</div>
-                <div style="font-size:0.75rem;color:#94a3b8;margin-bottom:10px;">4 profils · 8 leçons · 3h</div>
-                <div style="font-size:0.7rem;color:var(--gold);font-weight:700;letter-spacing:0.08em;">▶ CONTINUER</div>
-              </div>
-            </a>
-
-            <a href="formation-player.html?id=detection-contraintes" style="text-decoration:none;">
-              <div style="background:rgba(155,89,182,0.08);border:1px solid rgba(155,89,182,0.2);border-radius:12px;padding:16px;transition:all .2s;" onmouseover="this.style.borderColor='rgba(201,168,76,0.5)';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='rgba(155,89,182,0.2)';this.style.transform=''">
-                <div style="font-size:1.6rem;margin-bottom:8px;">🎯</div>
-                <div style="font-family:Georgia,serif;font-size:0.95rem;color:#fff;margin-bottom:4px;">Détection des Contraintes</div>
-                <div style="font-size:0.75rem;color:#94a3b8;margin-bottom:10px;">4 contraintes · 3 leçons · 1h30</div>
-                <div style="font-size:0.7rem;color:var(--gold);font-weight:700;letter-spacing:0.08em;">▶ CONTINUER</div>
-              </div>
-            </a>
-
           </div>
         </div>
 
@@ -425,24 +350,6 @@
 <script>
 (function () {
   'use strict';
-
-  // Afficher le dernier bilan comportemental
-  (function() {
-    try {
-      var bilan = JSON.parse(localStorage.getItem('atlas_bilan') || 'null');
-      if (bilan && bilan.profile) {
-        var el = document.getElementById('dbBilanSaved');
-        var content = document.getElementById('dbBilanContent');
-        if (el && content) {
-          content.textContent = bilan.emoji + ' ' + bilan.profile + ' — ' + (bilan.date || '');
-          el.style.display = 'block';
-          // Changer le bouton
-          var btn = el.previousElementSibling && el.previousElementSibling.querySelector('a');
-          if (btn) btn.textContent = 'REFAIRE L\'ANALYSE →';
-        }
-      }
-    } catch(e) {}
-  })();
 
   const SKILL_LABELS = {
     closing:    { label: 'Closing',         icon: '🔐' },

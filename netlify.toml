@@ -37,8 +37,7 @@
 # IMPORTANT : Ne jamais mettre les vraies clés ici.
 # Aller dans : Netlify Dashboard → Site → Environment Variables
 # Ajouter :
-#   CLAUDE_API_KEY       = sk-ant-api03-...
-#   SUPABASE_URL         = https://xxxx.supabase.co
+#   CLAUDE_API_KEY    = sk-ant-api03-...
+#   SUPABASE_URL      = https://xxxx.supabase.co
 #   SUPABASE_SERVICE_KEY = eyJhbGc...  (clé service_role — JAMAIS anon)
-#   SITE_URL             = https://atlas-academie.netlify.app
-#   STRIPE_SECRET_KEY    = sk_live_...  ← OBLIGATOIRE pour create-checkout.js
+#   SITE_URL          = https://atlasacademie.netlify.app
