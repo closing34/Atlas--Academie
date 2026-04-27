@@ -1,0 +1,1397 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ultimate Closing — Formation E-Learning 6h</title>
+<style>
+:root {
+  --navy: #0D1B2A;
+  --navy2: #152238;
+  --gold: #C9A84C;
+  --gold-light: #E8C97A;
+  --white: #F5F5F0;
+  --gray: #8A9BB0;
+  --red: #E05A5A;
+  --green: #4CAF82;
+  --blue: #3A7BD5;
+  --sidebar-w: 280px;
+  --header-h: 64px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; font-family: 'Segoe UI', Arial, sans-serif; background: #0D1B2A; color: var(--white); }
+
+/* ── LAYOUT ── */
+#app { display: flex; height: 100vh; overflow: hidden; }
+
+/* ── SIDEBAR ── */
+#sidebar {
+  width: var(--sidebar-w); min-width: var(--sidebar-w);
+  background: #08111C;
+  display: flex; flex-direction: column;
+  overflow-y: auto; border-right: 1px solid rgba(201,168,76,.15);
+}
+#sidebar-header {
+  padding: 20px 16px 16px;
+  border-bottom: 1px solid rgba(201,168,76,.15);
+}
+#sidebar-header .logo {
+  font-size: 11px; letter-spacing: 3px; color: var(--gold); text-transform: uppercase; margin-bottom: 4px;
+}
+#sidebar-header h1 { font-size: 16px; font-weight: 800; line-height: 1.2; }
+#sidebar-header .sub { font-size: 11px; color: var(--gray); margin-top: 4px; }
+
+/* Global progress */
+.global-progress { padding: 12px 16px; border-bottom: 1px solid rgba(255,255,255,.05); }
+.prog-label { font-size: 10px; color: var(--gray); text-transform: uppercase; letter-spacing: 1px; display: flex; justify-content: space-between; margin-bottom: 6px; }
+.prog-bar { height: 4px; background: rgba(255,255,255,.08); border-radius: 2px; }
+.prog-fill { height: 100%; background: var(--gold); border-radius: 2px; transition: width .4s ease; }
+
+/* Nav items */
+#nav { flex: 1; padding: 8px 0; }
+.nav-section { padding: 8px 16px 4px; font-size: 9px; letter-spacing: 2px; color: var(--gray); text-transform: uppercase; }
+.nav-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 16px; cursor: pointer;
+  transition: background .15s, color .15s;
+  border-left: 3px solid transparent;
+  font-size: 13px;
+}
+.nav-item:hover { background: rgba(201,168,76,.07); }
+.nav-item.active { background: rgba(201,168,76,.12); border-left-color: var(--gold); color: var(--gold-light); }
+.nav-item.done .nav-check { background: var(--green); border-color: var(--green); }
+.nav-num {
+  width: 22px; height: 22px; border-radius: 50%;
+  background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.12);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; font-weight: 700; flex-shrink: 0;
+}
+.nav-item.active .nav-num { background: var(--gold); border-color: var(--gold); color: #000; }
+.nav-item.done .nav-num { background: var(--green); border-color: var(--green); color: #fff; }
+.nav-title { flex: 1; line-height: 1.2; }
+.nav-title .phase-name { font-weight: 600; font-size: 13px; }
+.nav-title .phase-sub { font-size: 10px; color: var(--gray); }
+.nav-time { font-size: 10px; color: var(--gray); flex-shrink: 0; }
+
+/* ── MAIN AREA ── */
+#main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+
+/* Top bar */
+#topbar {
+  height: var(--header-h); min-height: var(--header-h);
+  background: rgba(13,27,42,.95);
+  border-bottom: 1px solid rgba(255,255,255,.07);
+  display: flex; align-items: center; padding: 0 32px;
+  gap: 20px;
+}
+.topbar-phase { font-size: 11px; color: var(--gold); text-transform: uppercase; letter-spacing: 2px; }
+.topbar-title { font-size: 18px; font-weight: 800; flex: 1; }
+.topbar-time {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 12px; color: var(--gray);
+  background: rgba(255,255,255,.06); padding: 6px 12px; border-radius: 20px;
+}
+.time-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--gold); }
+
+/* Content */
+#content { flex: 1; overflow-y: auto; padding: 32px; }
+#content::-webkit-scrollbar { width: 6px; }
+#content::-webkit-scrollbar-track { background: transparent; }
+#content::-webkit-scrollbar-thumb { background: rgba(201,168,76,.3); border-radius: 3px; }
+
+/* ── SCREENS ── */
+.screen { display: none; }
+.screen.active { display: block; }
+
+/* HOME */
+.home-hero {
+  text-align: center; padding: 40px 20px 32px;
+  background: linear-gradient(135deg, #152238 0%, #0D1B2A 100%);
+  border-radius: 16px; border: 1px solid rgba(201,168,76,.2);
+  margin-bottom: 32px;
+}
+.home-badge {
+  display: inline-block; background: var(--gold); color: #000;
+  font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
+  padding: 4px 12px; border-radius: 12px; font-weight: 700; margin-bottom: 16px;
+}
+.home-hero h1 { font-size: 40px; font-weight: 900; line-height: 1.1; margin-bottom: 8px; }
+.home-hero h1 span { color: var(--gold); }
+.home-hero p { color: var(--gray); font-size: 15px; max-width: 500px; margin: 0 auto 28px; line-height: 1.6; }
+.home-stats { display: flex; gap: 24px; justify-content: center; flex-wrap: wrap; margin-bottom: 28px; }
+.stat { text-align: center; }
+.stat .val { font-size: 28px; font-weight: 800; color: var(--gold); }
+.stat .lbl { font-size: 11px; color: var(--gray); }
+.btn-start {
+  background: var(--gold); color: #000; border: none;
+  padding: 14px 36px; border-radius: 8px; font-size: 15px; font-weight: 800;
+  cursor: pointer; letter-spacing: 0.5px; transition: background .2s, transform .1s;
+}
+.btn-start:hover { background: var(--gold-light); transform: translateY(-1px); }
+
+.phases-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; margin-bottom: 24px; }
+.phase-card {
+  background: rgba(21,34,56,.7); border: 1px solid rgba(255,255,255,.07);
+  border-radius: 10px; padding: 16px; cursor: pointer;
+  transition: border-color .2s, transform .15s;
+}
+.phase-card:hover { border-color: rgba(201,168,76,.4); transform: translateY(-2px); }
+.phase-card .pc-num { font-size: 10px; color: var(--gold); letter-spacing: 2px; text-transform: uppercase; }
+.phase-card .pc-title { font-size: 15px; font-weight: 700; margin: 4px 0; }
+.phase-card .pc-sub { font-size: 11px; color: var(--gray); }
+.phase-card .pc-time { font-size: 10px; color: var(--gray); margin-top: 8px; }
+
+/* ── PHASE CONTENT ── */
+.phase-intro {
+  background: linear-gradient(135deg, #152238 0%, #0D1B2A 100%);
+  border: 1px solid rgba(201,168,76,.2); border-radius: 12px;
+  padding: 28px 32px; margin-bottom: 28px;
+  display: flex; gap: 24px; align-items: flex-start;
+}
+.phase-intro-num {
+  font-size: 64px; font-weight: 900; color: rgba(201,168,76,.15);
+  line-height: 1; flex-shrink: 0; min-width: 80px;
+}
+.phase-intro-body h2 { font-size: 26px; font-weight: 800; color: var(--gold-light); margin-bottom: 4px; }
+.phase-intro-body .pi-sub { font-size: 14px; color: var(--gray); margin-bottom: 12px; }
+.phase-intro-body p { font-size: 14px; line-height: 1.7; color: rgba(245,245,240,.8); }
+
+.section-block {
+  background: rgba(21,34,56,.5); border: 1px solid rgba(255,255,255,.07);
+  border-radius: 10px; padding: 24px; margin-bottom: 20px;
+}
+.section-block h3 {
+  font-size: 11px; letter-spacing: 3px; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 14px;
+  display: flex; align-items: center; gap: 8px;
+}
+.section-block h3::after {
+  content: ''; flex: 1; height: 1px; background: rgba(201,168,76,.2);
+}
+.section-block p { font-size: 14px; line-height: 1.75; color: rgba(245,245,240,.85); }
+.section-block p + p { margin-top: 10px; }
+
+/* Piliers table */
+.piliers { width: 100%; border-collapse: collapse; margin-top: 8px; }
+.piliers tr { border-bottom: 1px solid rgba(255,255,255,.05); }
+.piliers td { padding: 10px 12px; font-size: 13px; line-height: 1.5; }
+.piliers td:first-child {
+  font-weight: 700; color: var(--gold); white-space: nowrap;
+  width: 200px; font-size: 12px; letter-spacing: .5px;
+}
+
+/* SCRIPT BOX */
+.script-box {
+  background: #060E18; border: 1px solid var(--gold);
+  border-radius: 10px; padding: 24px; margin-bottom: 20px;
+  position: relative;
+}
+.script-box::before {
+  content: '📋 SCRIPT — NE PAS MODIFIER';
+  display: block; font-size: 9px; letter-spacing: 3px;
+  color: var(--gold); text-transform: uppercase; margin-bottom: 16px;
+  padding-bottom: 12px; border-bottom: 1px solid rgba(201,168,76,.2);
+}
+.script-variant { margin-bottom: 16px; }
+.script-variant:last-child { margin-bottom: 0; }
+.script-label {
+  font-size: 10px; color: var(--gold); letter-spacing: 2px;
+  text-transform: uppercase; margin-bottom: 8px; font-weight: 700;
+}
+.script-text {
+  font-family: 'Consolas', 'Courier New', monospace;
+  font-size: 14px; line-height: 2; color: #E8DFC8;
+  white-space: pre-wrap;
+}
+.script-text .silence {
+  color: var(--gray); font-style: italic; font-size: 12px;
+}
+.script-text .arrow { color: var(--gold); }
+
+/* Erreurs */
+.erreurs-list { list-style: none; }
+.erreurs-list li {
+  display: flex; gap: 10px; align-items: flex-start;
+  padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,.05);
+  font-size: 13px; line-height: 1.6; color: rgba(245,245,240,.85);
+}
+.erreurs-list li:last-child { border-bottom: none; }
+.erreurs-list li::before {
+  content: '✗'; color: var(--red); font-weight: 900; flex-shrink: 0; margin-top: 1px;
+}
+
+/* Exercice */
+.exercice-box {
+  background: rgba(58,123,213,.08); border: 1px solid rgba(58,123,213,.25);
+  border-radius: 10px; padding: 20px;
+}
+.exercice-box .ex-header {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 11px; color: #7BA7E8; letter-spacing: 2px;
+  text-transform: uppercase; font-weight: 700; margin-bottom: 12px;
+}
+.exercice-box p { font-size: 13px; line-height: 1.75; color: rgba(245,245,240,.85); }
+.exercice-box .indicateur {
+  margin-top: 12px; padding: 8px 14px;
+  background: rgba(201,168,76,.1); border-radius: 6px;
+  font-size: 12px; color: var(--gold);
+  display: flex; align-items: center; gap: 6px;
+}
+
+/* Auto-évaluation */
+.eval-list { list-style: none; }
+.eval-item {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,.05);
+  cursor: pointer;
+}
+.eval-item:last-child { border-bottom: none; }
+.eval-check {
+  width: 20px; height: 20px; border-radius: 4px;
+  border: 2px solid rgba(255,255,255,.2); flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  transition: all .2s; margin-top: 1px;
+}
+.eval-item.checked .eval-check { background: var(--green); border-color: var(--green); }
+.eval-item.checked .eval-check::after { content: '✓'; font-size: 12px; color: #fff; font-weight: 700; }
+.eval-item .eval-text { font-size: 13px; line-height: 1.6; color: rgba(245,245,240,.85); }
+.eval-item.checked .eval-text { color: var(--green); text-decoration: line-through; opacity: .7; }
+.eval-score {
+  margin-top: 14px; padding: 12px 16px;
+  background: rgba(21,34,56,.8); border-radius: 8px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.eval-score-label { font-size: 12px; color: var(--gray); }
+.eval-score-val { font-size: 18px; font-weight: 800; color: var(--gold); }
+
+/* Signal */
+.signal-box {
+  background: rgba(76,175,130,.07); border: 1px solid rgba(76,175,130,.25);
+  border-radius: 10px; padding: 20px; margin-bottom: 20px;
+  display: flex; gap: 14px; align-items: flex-start;
+}
+.signal-icon { font-size: 22px; flex-shrink: 0; }
+.signal-body .signal-label {
+  font-size: 10px; color: var(--green); letter-spacing: 2px;
+  text-transform: uppercase; font-weight: 700; margin-bottom: 6px;
+}
+.signal-body p { font-size: 13px; line-height: 1.65; color: rgba(245,245,240,.85); }
+
+/* QUIZ */
+.quiz-section { margin-top: 28px; }
+.quiz-section h3 {
+  font-size: 11px; letter-spacing: 3px; color: var(--gold);
+  text-transform: uppercase; margin-bottom: 16px;
+}
+.quiz-question {
+  background: rgba(21,34,56,.7); border: 1px solid rgba(255,255,255,.07);
+  border-radius: 10px; padding: 20px; margin-bottom: 14px;
+}
+.quiz-q-text { font-size: 14px; font-weight: 600; margin-bottom: 14px; line-height: 1.5; }
+.quiz-options { display: flex; flex-direction: column; gap: 8px; }
+.quiz-opt {
+  padding: 11px 14px; border-radius: 7px;
+  border: 1px solid rgba(255,255,255,.1);
+  background: rgba(255,255,255,.03);
+  cursor: pointer; font-size: 13px; line-height: 1.4;
+  transition: all .15s; display: flex; gap: 10px; align-items: flex-start;
+}
+.quiz-opt:hover:not(.locked) { border-color: rgba(201,168,76,.4); background: rgba(201,168,76,.06); }
+.quiz-opt.correct { border-color: var(--green); background: rgba(76,175,130,.1); color: var(--green); }
+.quiz-opt.wrong { border-color: var(--red); background: rgba(224,90,90,.1); color: var(--red); }
+.quiz-opt.locked { cursor: default; }
+.quiz-feedback {
+  margin-top: 10px; padding: 10px 14px; border-radius: 7px;
+  font-size: 12px; line-height: 1.5; display: none;
+}
+.quiz-feedback.show { display: block; }
+.quiz-feedback.ok { background: rgba(76,175,130,.1); color: var(--green); }
+.quiz-feedback.ko { background: rgba(224,90,90,.1); color: var(--red); }
+.quiz-score-bar {
+  padding: 14px 20px; background: rgba(21,34,56,.8);
+  border-radius: 10px; display: flex; gap: 20px; align-items: center;
+  margin-top: 8px;
+}
+.qs-label { font-size: 12px; color: var(--gray); }
+.qs-val { font-size: 20px; font-weight: 800; color: var(--gold); }
+
+/* Navigation buttons */
+.phase-nav {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-top: 32px; padding-top: 24px;
+  border-top: 1px solid rgba(255,255,255,.08);
+}
+.btn-nav {
+  padding: 11px 24px; border-radius: 8px; font-size: 13px; font-weight: 700;
+  cursor: pointer; border: none; transition: all .2s; display: flex; align-items: center; gap: 8px;
+}
+.btn-prev { background: rgba(255,255,255,.07); color: var(--white); }
+.btn-prev:hover { background: rgba(255,255,255,.12); }
+.btn-next { background: var(--gold); color: #000; }
+.btn-next:hover { background: var(--gold-light); }
+.btn-next:disabled { background: rgba(255,255,255,.1); color: var(--gray); cursor: not-allowed; }
+
+/* SYNTHESE */
+.synthese-table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+.synthese-table th {
+  padding: 10px 12px; text-align: left; font-size: 10px;
+  letter-spacing: 2px; color: var(--gold); text-transform: uppercase;
+  border-bottom: 1px solid rgba(201,168,76,.2);
+}
+.synthese-table td {
+  padding: 12px 12px; font-size: 13px; line-height: 1.5;
+  border-bottom: 1px solid rgba(255,255,255,.05);
+  vertical-align: top;
+}
+.synthese-table tr:hover td { background: rgba(201,168,76,.04); }
+.synthese-table .td-num { color: var(--gold); font-weight: 800; font-size: 15px; }
+.synthese-table .td-phase { font-weight: 700; }
+.synthese-table .td-mecanique { color: rgba(245,245,240,.7); font-size: 12px; }
+.synthese-table .td-signal { color: var(--gray); font-size: 12px; font-style: italic; }
+
+/* Completion screen */
+.completion {
+  text-align: center; padding: 60px 20px;
+}
+.completion .trophy { font-size: 72px; margin-bottom: 20px; }
+.completion h2 { font-size: 32px; font-weight: 900; margin-bottom: 12px; }
+.completion h2 span { color: var(--gold); }
+.completion p { color: var(--gray); font-size: 15px; max-width: 480px; margin: 0 auto 28px; line-height: 1.6; }
+.completion-stats {
+  display: flex; gap: 24px; justify-content: center; flex-wrap: wrap;
+  margin-bottom: 32px;
+}
+.cstat { background: rgba(21,34,56,.7); border: 1px solid rgba(201,168,76,.2); border-radius: 10px; padding: 16px 24px; }
+.cstat .cv { font-size: 28px; font-weight: 800; color: var(--gold); }
+.cstat .cl { font-size: 11px; color: var(--gray); }
+
+/* Quote */
+.quote-finale {
+  background: rgba(201,168,76,.07); border-left: 3px solid var(--gold);
+  padding: 16px 20px; border-radius: 0 8px 8px 0;
+  font-style: italic; font-size: 14px; line-height: 1.7; color: rgba(245,245,240,.8);
+  margin: 20px 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  :root { --sidebar-w: 0px; }
+  #sidebar { display: none; }
+  .phase-intro { flex-direction: column; }
+  .phase-intro-num { font-size: 40px; }
+}
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- SIDEBAR -->
+<nav id="sidebar">
+  <div id="sidebar-header">
+    <div class="logo">Formation Premium</div>
+    <h1>Ultimate Closing</h1>
+    <div class="sub">10 Phases · 6 Heures</div>
+  </div>
+  <div class="global-progress">
+    <div class="prog-label">
+      <span>Progression globale</span>
+      <span id="prog-pct">0%</span>
+    </div>
+    <div class="prog-bar"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
+  </div>
+  <div id="nav"></div>
+</nav>
+
+<!-- MAIN -->
+<main id="main">
+  <div id="topbar">
+    <div>
+      <div class="topbar-phase" id="tb-phase">Introduction</div>
+      <div class="topbar-title" id="tb-title">Ultimate Closing Mastery</div>
+    </div>
+    <div class="topbar-time">
+      <div class="time-dot"></div>
+      <span id="tb-time">6h 00 restantes</span>
+    </div>
+  </div>
+  <div id="content"></div>
+</main>
+
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════════
+//  COURSE DATA — SCRIPTS VERBATIM
+// ══════════════════════════════════════════════════════════
+const PHASES = [
+{
+  id: 0, nav: "Accueil", time: 0, home: true
+},
+{
+  id: 1,
+  nav: "ATTENTION",
+  subtitle: "Capter en 5 secondes",
+  time: 32,
+  contexte: `C'est la porte d'entrée du processus de vente.\n\nLes premières secondes décident si le prospect accepte de t'écouter ou te classe comme un vendeur à éviter.\n\nLe rôle de cette phase : interrompre le mode réflexe de rejet et créer une ouverture mentale, sans parler d'offre ni de produit.\n\nUn closer débutant essaie souvent d'expliquer ou de se présenter — erreur fatale. Le prospect l'a déjà étiqueté.\n\nUn closer expérimenté ne cherche pas à informer. Il cherche d'abord à désarmer — par le ton, la rupture et le silence.`,
+  objectif: "Créer une réaction immédiate, visuelle ou verbale, qui déclenche une micro-attention et instaure ton contrôle de l'échange.",
+  explication: `Le cerveau humain agit par filtres. Si ta phrase ressemble à celle d'un commercial, elle sera automatiquement ignorée.\n\nTu dois casser ce schéma. Une phrase simple, courte et inattendue permet cette rupture.`,
+  piliers: [
+    ["1 — RYTHME", "Lent, posé. Ne cours pas après son attention."],
+    ["2 — SILENCE", "Marqué juste après la phrase. C'est lui qui crée la tension."],
+    ["3 — ABSENCE DE JUSTIFICATION", "Pas de présentation. Pas de \"je m'appelle\". Rien."],
+  ],
+  script: [
+    {
+      label: "Version Stand / Pare-brise",
+      text: `"Le pare-brise va bien ?"
+
+(Silence)
+
+"Pas d'impact, pas de fissure ?"
+
+"C'est justement pour ça que je vous arrête."`
+    },
+    {
+      label: "Version Call / Filtre secrétaire",
+      text: `"Bonjour, Monsieur Guine à l'appareil.
+
+Je souhaite parler à Monsieur [Nom]."
+
+→ "C'est à quel sujet ?"
+
+"Je vois ça directement avec lui."`
+    }
+  ],
+  analyse: `Ces scripts fonctionnent parce qu'ils créent une rupture cognitive.\n\nLa première question déclenche un réflexe : elle n'a pas de lien visible avec une vente.\n\nLe silence qui suit génère une légère tension — le cerveau veut combler le vide et répond.\n\nLa version call contourne les filtres administratifs par l'ancrage du nom et du ton : tu établis ton statut sans confrontation.`,
+  erreurs: [
+    "Se présenter avant d'avoir obtenu une réaction.",
+    "Parler sans marquer de pause après la phrase d'accroche.",
+    "Sourire de façon insistante ou adopter un ton trop commercial.",
+    "Expliquer l'objet de ta visite avant que le prospect ait réagi.",
+  ],
+  exercice: `Choisis 3 phrases d'accroche (rupture, autorité, curiosité). Répète chacune 10 fois à voix haute avec 2 secondes de silence après.\n\nMesure le nombre de réactions ou micro-mouvements.`,
+  indicateur: "Réaction en moins de 3 secondes",
+  autoEval: [
+    "Ai-je créé une réaction immédiate ?",
+    "Ai-je marqué un silence complet après ma phrase ?",
+    "Ai-je évité toute présentation ou justification ?",
+    "Mon ton transmet-il une certitude calme ?",
+    "Le prospect a-t-il posé une question ou réagi physiquement ?",
+  ],
+  signal: "Le prospect t'a regardé, répondu ou s'est arrêté. Même une micro-réaction suffit. Tu n'attends pas l'intérêt — tu passes.",
+  quiz: [
+    { q: "Quel est le rôle principal de la Phase 1 ?", opts: ["Présenter l'offre clairement", "Interrompre le mode réflexe de rejet et créer une ouverture mentale", "Obtenir un rendez-vous immédiat", "Convaincre le prospect de la valeur du produit"], ans: 1, fb: "La Phase 1 vise à désarmer, pas à informer. Tu ne parles ni d'offre ni de produit — tu crées d'abord une rupture cognitive." },
+    { q: "Que doit-on éviter absolument après la phrase d'accroche ?", opts: ["Maintenir le regard", "Marquer un silence", "Parler immédiatement pour expliquer l'objet de la visite", "Rester calme et posé"], ans: 2, fb: "Le silence après la phrase est l'outil principal. Parler avant que le prospect ait réagi brise la tension et annule l'effet." },
+    { q: "Quel est l'indicateur de réussite de la Phase 1 ?", opts: ["Le prospect demande le prix", "Le prospect réagit en moins de 3 secondes", "Le prospect accepte un rendez-vous", "Le prospect ne raccroche pas"], ans: 1, fb: "Une réaction en moins de 3 secondes — même un micro-mouvement — signale que l'attention est captée. C'est ton feu vert pour passer à la Phase 2." },
+  ]
+},
+{
+  id: 2,
+  nav: "LÉGITIMITÉ",
+  subtitle: "Être crédible instantanément",
+  time: 32,
+  contexte: `Le prospect est attentif — il évalue désormais qui tu es.\n\nEn quelques secondes, il juge ton professionnalisme : attitude, ton et fonction perçue.\n\nC'est ici que tu bascules d'interruption à conversation sérieuse.\n\nSans légitimité, tout effort est vain : il t'écoute mais n'accorde pas de poids à tes mots. Tu installes cette crédibilité par la présence, pas par les mots.`,
+  objectif: "Obtenir une écoute pleine et imposer ton rôle de référent dès ta première phrase complète.",
+  explication: `La légitimité ne se demande pas — elle se démontre.\n\nTu remplaces les formules modestes par des affirmations professionnelles.`,
+  piliers: [
+    ["À ÉVITER", "\"Je voulais vous proposer...\" / \"J'aimerais vous montrer...\" / \"Je peux vous aider ?\""],
+    ["À DIRE", "\"Je m'occupe de...\" / \"Je gère...\" / \"Je dois vérifier...\""],
+    ["RÈGLE ABSOLUE", "Aucun ton ascendant en fin de phrase. Si ta voix monte, tu perds ton autorité instantanément."],
+  ],
+  script: [
+    {
+      label: "Version Immobilier",
+      text: `"Je m'occupe de votre secteur, La Chamberte et La Martelle.
+
+Je voulais voir si votre bien pouvait correspondre
+
+aux acquéreurs que j'ai actuellement."`
+    },
+    {
+      label: "Version Fibre / Porte-à-porte",
+      text: `"Bonjour, je m'occupe du raccordement fibre optique.
+
+Je dois vérifier la mise aux normes de votre boîtier,
+
+ça prend 2 minutes."`
+    }
+  ],
+  analyse: `Ces phrases affirment une mission, pas une offre. "Je m'occupe" et "Je dois vérifier" signalent que ton action est légitime et prévue.\n\nLe client comprend qu'il n'a pas à décider si la discussion aura lieu — seulement comment elle se déroulera.`,
+  erreurs: [
+    "Utiliser des formulations de demande : \"je voudrais\", \"j'aimerais\", \"est-ce que je peux\".",
+    "Se sur-présenter : nom + entreprise + offre en une phrase = rejet immédiat.",
+    "Monter la voix en fin de phrase — cela transforme une affirmation en question.",
+    "Chercher l'approbation du prospect avant de continuer.",
+  ],
+  exercice: `Enregistre 5 présentations. Écoute-les et supprime chaque "je voulais", "j'aimerais" ou "je peux". Remplace par une phrase d'action directe.\n\nObjectif : 0 formulation de demande. 100 % d'affirmations.`,
+  indicateur: "Objectif : 0 formulation de demande. 100 % d'affirmations.",
+  autoEval: [
+    "Ai-je affirmé mon rôle sans chercher l'accord ?",
+    "Mon ton inspire-t-il calme et sécurité ?",
+    "Ai-je évité tout mot de demande ?",
+    "Le prospect m'a-t-il validé par une écoute ou un signe d'ouverture ?",
+    "Ai-je conclu cette étape sans me sur-présenter ?",
+  ],
+  signal: "Tu sens l'écoute installée : il ne cherche plus à partir, son corps s'est légèrement tourné vers toi, ou il a hoché la tête. Tu n'attends pas de validation verbale — tu passes.",
+  quiz: [
+    { q: "Que signifie 'installer sa légitimité par la présence, pas par les mots' ?", opts: ["Parler plus fort pour imposer sa voix", "Adopter une posture et un ton calme qui projettent la confiance", "Se présenter avec son titre officiel", "Montrer ses certifications au prospect"], ans: 1, fb: "La légitimité est une question d'énergie et de posture. Ton calme, ton rythme vocal lent et tes affirmations directes créent plus de crédibilité que n'importe quel titre." },
+    { q: "Laquelle de ces phrases est correcte selon la Phase 2 ?", opts: ["\"J'aimerais vous proposer notre solution\"", "\"Est-ce que je peux vous montrer quelque chose ?\"", "\"Je m'occupe du raccordement fibre de votre secteur\"", "\"Je voudrais vérifier si vous êtes intéressé\""], ans: 2, fb: "\"Je m'occupe de...\" est une affirmation de mission. Elle ne demande pas la permission — elle annonce une action légitime et prévue." },
+    { q: "Que se passe-t-il si ta voix monte en fin de phrase ?", opts: ["Le prospect se sent rassuré", "Tu renforces ton autorité", "Tu transformes ton affirmation en question et perds ton autorité", "Rien — c'est une question de style"], ans: 2, fb: "Un ton ascendant en fin de phrase est interprété comme une hésitation ou une demande d'approbation. Ton doit rester plat ou légèrement descendant." },
+  ]
+},
+{
+  id: 3,
+  nav: "ENGAGEMENT",
+  subtitle: "Micro-adhésion immédiate",
+  time: 30,
+  contexte: `Le prospect écoute, mais reste observateur.\n\nTu dois le faire passer de l'écoute passive à la participation active.\n\nCet accord verbal — même minime — change tout : il devient partie prenante d'un processus qu'il suivra jusqu'à la décision.`,
+  objectif: "Obtenir un \"oui\" concret avant toute démonstration ou argument, pour créer la collaboration.",
+  explication: `Psychologiquement, dire oui engage la cohérence : une fois qu'il a validé un principe, le cerveau cherche à rester aligné avec cette réponse.\n\nUtilise toujours un choix fermé : deux options valides, pas de porte de sortie.\n\nTon but : l'amener à s'impliquer en douceur, sans qu'il sente de pression.`,
+  piliers: [],
+  script: [
+    {
+      label: "Version Call",
+      text: `"Je vous explique en 2 minutes comment ça va se passer,
+
+et à la fin on voit si ça vaut le coup d'avancer. Ça vous va ?"`
+    },
+    {
+      label: "Version Rendez-vous / Terrain",
+      text: `"Le plus simple c'est que je passe le voir rapidement.
+
+Vous êtes plutôt disponible quand, jeudi ou vendredi ?"`
+    }
+  ],
+  analyse: `Le "ça vous va ?" obtient l'approbation du cadre — pas de l'offre.\n\nLe "jeudi ou vendredi ?" transforme une question ouverte en accord concret : tu offres un choix plutôt que de demander la permission.\n\nC'est une direction douce : il choisit, mais dans le couloir que tu as tracé.`,
+  erreurs: [
+    "Poser une question ouverte : \"Vous voulez qu'on se voit ?\" — il peut dire non.",
+    "Monter la voix sur le choix fermé — ça devient une question hésitante.",
+    "Ne pas attendre la réponse : silence après le choix, c'est lui qui parle en premier.",
+    "Enchaîner directement sur l'argument sans obtenir le oui.",
+  ],
+  exercice: `Formule 10 prises de rendez-vous avec choix fermés. Chronomètre la réaction : le délai entre ta proposition et la réponse doit être court et fluide.\n\nVariante : entraîne-toi à poser ces questions sans monter la voix en fin de phrase.`,
+  indicateur: "Délai de réponse court et fluide = engagement naturel",
+  autoEval: [
+    "Ai-je proposé deux choix fermés nets ?",
+    "Ai-je attendu la réponse sans insister ni compléter ?",
+    "Ai-je obtenu un engagement verbal réel ?",
+    "Mon ton est-il resté neutre et bas jusqu'à l'accord ?",
+    "Le prospect a-t-il perçu cette étape comme naturelle ?",
+  ],
+  signal: "Il a dit oui — même un \"oui d'accord\" ou \"ça marche\". Ce oui, aussi petit soit-il, est ton feu vert. Tu cadres immédiatement.",
+  quiz: [
+    { q: "Pourquoi utiliser un choix fermé plutôt qu'une question ouverte ?", opts: ["Pour aller plus vite", "Pour forcer la décision sans que le prospect s'en rende compte", "Pour guider vers une réponse dans un cadre que tu contrôles, sans laisser une porte de sortie", "Parce que c'est plus poli"], ans: 2, fb: "Le choix fermé oriente vers l'action tout en donnant l'impression de liberté. \"Jeudi ou vendredi ?\" présuppose qu'on se voit — seul le moment reste à choisir." },
+    { q: "Que faire après avoir posé le choix fermé ?", opts: ["Reformuler immédiatement pour être sûr d'être compris", "Garder le silence et attendre que le prospect réponde en premier", "Préciser les avantages de chaque option", "Sourire chaleureusement pour le rassurer"], ans: 1, fb: "Le silence après le choix est fondamental. C'est lui qui parle en premier. Si tu remplis le vide, tu annules la tension qui crée l'engagement." },
+    { q: "Quelle est la principale erreur à éviter lors de cette phase ?", opts: ["Parler trop vite", "Proposer une question ouverte qui laisse la porte à un refus", "Ne pas sourire suffisamment", "Proposer trop de choix"], ans: 1, fb: "\"Vous voulez qu'on se voit ?\" permet au prospect de dire non. Le choix fermé supprime cette option tout en restant respectueux." },
+  ]
+},
+{
+  id: 4,
+  nav: "CADRAGE",
+  subtitle: "Prise de contrôle immédiate",
+  time: 32,
+  contexte: `Le cadrage détermine qui dirige la conversation.\n\nSi tu ne cadres pas, le prospect prend le contrôle inconsciemment : il pose les questions, choisit les sujets, et la décision recule.\n\nCette phase te replace au centre. C'est le moment où tu poses le cadre professionnel et prépares la notion de décision finale.`,
+  objectif: "Poser une structure claire en moins de 25 secondes : ton rôle, le déroulement, et l'issue de la discussion.",
+  explication: `Un bon cadrage repose sur trois piliers.`,
+  piliers: [
+    ["POSITION", "Tu n'es pas en demande. Tu es là pour évaluer, pas pour convaincre."],
+    ["PROCESS", "Tu expliques comment se déroulera l'échange, avant qu'il pose la question."],
+    ["DÉCISION", "Tu annonces dès maintenant qu'une décision sera prise à la fin — dans un sens ou dans l'autre."],
+  ],
+  script: [
+    {
+      label: "Script Cadrage Universel",
+      text: `"Avant d'aller plus loin, je préfère être transparent avec vous.
+
+Mon rôle, c'est de comprendre votre situation,
+
+voir si je peux vous aider,
+
+et si ce n'est pas le cas, je vous le dirai.
+
+De votre côté, j'ai besoin de votre transparence
+
+pour ne pas perdre de temps.
+
+Et à la fin, on prendra une décision
+
+dans un sens ou dans l'autre. Ça vous va ?"`
+    }
+  ],
+  analyse: `Ce script crée un cadre rationnel et symétrique : chacun apporte de la clarté.\n\nQuand le client répond "oui", tu obtiens sa coopération et sécurises la décision finale.\n\nDurée idéale : entre 20 et 25 secondes. Pas plus. Si le prospect t'interrompt, c'est que ton ancrage vocal est insuffisant — travaille le débit, pas le texte.`,
+  erreurs: [
+    "Parler plus de 25 secondes — tu perds l'attention.",
+    "Ne pas obtenir le \"oui\" final au cadre — sans ce oui, tu n'as pas la coopération.",
+    "Monter la voix : ton calme est ta seule arme ici.",
+    "Sauter le cadrage pour aller directement au diagnostic — le prospect reste en mode défense.",
+  ],
+  exercice: `Entraîne-toi à cadrer 10 appels ou rendez-vous. Chronomètre chaque fois : objectif entre 20 et 25 secondes.\n\nObserve si le prospect interrompt : s'il le fait, tu manques d'ancrage vocal. Travaille le débit et la respiration, pas le contenu.`,
+  indicateur: "Durée cible : 20 à 25 secondes — ni plus, ni moins",
+  autoEval: [
+    "Ai-je annoncé clairement mon rôle et la décision finale ?",
+    "Ai-je obtenu un \"oui\" explicite au cadre ?",
+    "Ai-je parlé entre 20 et 25 secondes maximum ?",
+    "Mon ton est-il resté bas et posé du début à la fin ?",
+    "Ai-je senti l'écoute totale avant de passer au diagnostic ?",
+  ],
+  signal: "Il a dit \"oui\" ou \"d'accord\" au cadre. Son attitude s'est détendue — il ne cherche plus à contrôler. Tu peux maintenant poser tes questions sans résistance.",
+  quiz: [
+    { q: "Quel est l'objectif premier du cadrage ?", opts: ["Présenter rapidement l'offre", "Établir qui dirige la conversation et poser les règles de l'échange", "Rassurer le prospect sur ta bonne foi", "Obtenir des informations sur sa situation"], ans: 1, fb: "Le cadrage détermine la dynamique de tout l'entretien. Sans cadrage, le prospect dirige inconsciemment — il pose les questions et la décision recule." },
+    { q: "Si le prospect t'interrompt pendant le cadrage, que dois-tu travailler ?", opts: ["Le contenu du script", "Ton ancrage vocal — débit et respiration", "Ta tenue vestimentaire", "Ta façon de reformuler"], ans: 1, fb: "Les interruptions signalent un manque d'ancrage vocal, pas un problème de contenu. Travaille le débit, le rythme et la respiration — pas les mots." },
+    { q: "Pourquoi mentionner dès le cadrage qu'une décision sera prise \"dans un sens ou dans l'autre\" ?", opts: ["Pour faire peur au prospect", "Pour neutraliser la peur d'être vendu et la peur de perdre du temps", "Pour montrer que tu es indifférent au résultat", "Pour accélérer la vente"], ans: 1, fb: "Cette formulation désarme deux résistances majeures : la peur d'être manipulé et la peur de perdre son temps. Le prospect entre dans l'échange en sécurité." },
+  ]
+},
+{
+  id: 5,
+  nav: "DIAGNOSTIC",
+  subtitle: "Faire parler pour comprendre",
+  time: 34,
+  contexte: `Le diagnostic est la fondation du closing.\n\nTant que tu ne comprends pas le problème précis, tu ne peux pas proposer la bonne solution.\n\nCette phase établit la réalité : chiffres, faits, objectifs et blocages. Mal exécutée, elle tourne en simple conversation. Bien menée, elle fait émerger une prise de conscience.`,
+  objectif: "Obtenir des données précises pour que le prospect visualise lui-même l'écart entre sa situation actuelle et sa situation désirée.",
+  explication: `Un bon diagnostic repose sur 4 piliers.`,
+  piliers: [
+    ["SITUATION ACTUELLE", "Savoir exactement où il en est — en chiffres, pas en impressions."],
+    ["CHIFFRES CONCRETS", "Ancrer la discussion dans la réalité. Sans chiffre, pas de levier."],
+    ["OBJECTIF PRÉCIS", "Comprendre ce qu'il veut atteindre et dans quel délai."],
+    ["BLOCAGE IDENTIFIÉ", "Repérer ce qui freine. C'est souvent ici que se cache la vraie contrainte."],
+  ],
+  script: [
+    {
+      label: "Questions de Diagnostic + Reformulation Miroir",
+      text: `"Aujourd'hui, vous en êtes où exactement ?"
+
+"Ça donne quoi concrètement ?"
+
+"Vous voudriez être où ?"
+
+"Qu'est-ce qui vous empêche d'y arriver ?"
+
+Reformulation miroir :
+
+"Donc aujourd'hui vous êtes à [X],
+
+vous voulez [Y],
+
+et vous êtes bloqué par [Z].
+
+On est bien aligné ?"`
+    }
+  ],
+  analyse: `Ces questions amènent le client à objectiver sa situation — il met des mots et des chiffres sur des impressions.\n\nLa reformulation finale "On est bien aligné ?" crée un engagement subtil : tu valides ensemble la réalité du problème. Cette validation rend toute proposition ultérieure légitime.`,
+  erreurs: [
+    "Parler plus de 40 % du temps — le diagnostic, c'est lui qui parle, pas toi.",
+    "Ne pas reformuler en miroir — sans reformulation, le prospect ne se sent pas compris.",
+    "Rester dans le vague sans ancrer sur des chiffres concrets.",
+    "Passer à la solution avant d'avoir validé l'alignement avec le client.",
+  ],
+  exercice: `Dans ton prochain entretien, obtiens obligatoirement : une donnée chiffrée, une émotion exprimée, un blocage identifié.\n\nEnregistre-toi. Si tu parles plus de 40 % du temps, recommence.`,
+  indicateur: "Règle d'or : tu ne parles pas plus de 40 % du temps pendant le diagnostic",
+  autoEval: [
+    "Ai-je recueilli les 4 éléments (situation, chiffres, objectif, blocage) ?",
+    "Ai-je reformulé en miroir avec ses propres mots ?",
+    "Ai-je validé l'alignement avec \"On est bien aligné ?\" ?",
+    "Le client a-t-il reconnu la justesse de mon résumé ?",
+    "Ai-je parlé moins de 40 % du temps ?",
+  ],
+  signal: "Il a validé ta reformulation miroir. Il a dit \"oui c'est ça\" ou \"exactement\". À ce moment, il sait pourquoi il n'avance pas — mais il ne ressent pas encore l'urgence. C'est le rôle de la phase suivante.",
+  quiz: [
+    { q: "Quelle est la règle d'or du diagnostic ?", opts: ["Poser au moins 10 questions", "Ne pas parler plus de 40 % du temps", "Toujours commencer par le budget", "Éviter de reformuler pour ne pas influencer"], ans: 1, fb: "Le diagnostic, c'est lui qui parle. Tu écoutes, tu guides avec des questions courtes. Si tu parles trop, tu n'obtiens pas les données réelles." },
+    { q: "Pourquoi la reformulation miroir est-elle essentielle ?", opts: ["Pour montrer que tu as de la mémoire", "Pour valider la réalité du problème ensemble et créer un alignement", "Pour gagner du temps", "Pour impressionner le prospect avec ta compréhension"], ans: 1, fb: "La reformulation miroir fait deux choses : elle montre que tu as vraiment écouté, et elle fait valider au prospect sa propre situation — ce qui rend ta future proposition légitime." },
+    { q: "Que signifie \"ancrer sur des chiffres concrets\" ?", opts: ["Mentionner le prix dès le début", "Remplacer les impressions vagues par des données mesurables", "Calculer le ROI en direct", "Demander le chiffre d'affaires exact"], ans: 1, fb: "\"Vous vendez peu\" est vague. \"Vous faites 3 ventes par mois alors que votre objectif est 10\" est concret. Les chiffres créent le levier réel pour la suite." },
+  ]
+},
+{
+  id: 6,
+  nav: "ÉMOTION",
+  subtitle: "Faire ressentir le pourquoi",
+  time: 32,
+  contexte: `Le prospect a pris conscience de sa situation grâce au diagnostic.\n\nMais un constat logique ne suffit pas : il faut qu'il le ressente.\n\nCette phase le fait passer du rationnel — je comprends — au viscéral — je veux changer.\n\nUn closer performant ne pousse pas vers la douleur : il laisse le client descendre lui-même vers son propre pourquoi. Chaque silence est un espace d'écoute constructive.`,
+  objectif: "Faire émerger une émotion réelle — frustration, peur, fierté ou espoir — qui transforme le constat en décision imminente.",
+  explication: `La logique crée la compréhension, mais seule l'émotion déclenche l'action.\n\nTu dois obtenir la phrase à impact — celle où le prospect quitte le factuel pour parler de lui.`,
+  piliers: [
+    ["CAUSE", "\"Ça vous impacte comment ?\" — il décrit les conséquences concrètes."],
+    ["IMPACT", "\"À quel point ?\" — il mesure l'ampleur de la situation."],
+    ["RESSENTI", "\"Qu'est-ce que ça vous coûte vraiment ?\" — il touche l'émotion personnelle."],
+    ["IDENTITÉ", "Quand il dit \"j'en ai marre\" ou \"je me sens bloqué\" — tu as atteint le bon niveau."],
+  ],
+  script: [
+    {
+      label: "Descente Émotionnelle",
+      text: `"Et ça vous impacte comment ?"
+
+"À quel point ?"
+
+"Qu'est-ce que ça vous coûte vraiment, au quotidien ?"
+
+(Silence — laisse-le répondre complètement)`
+    }
+  ],
+  analyse: `Ces phrases créent une descente émotionnelle naturelle. Elles déclenchent des micro-réactions visibles : pauses, soupirs, changement de ton.\n\nQuand il parle de "frustration", de "fatigue", ou qu'il dit "j'en ai marre" — tu as atteint le bon niveau. La suite se joue sur la tension.\n\nNote : La question "Et si rien ne change ?" est réservée à la Phase 7 — Tension. En Phase 6, tu restes sur le ressenti présent, pas sur la projection du futur.`,
+  erreurs: [
+    "Passer directement à \"Et si rien ne change ?\" sans avoir fait exprimer le ressenti présent.",
+    "Couper le silence trop tôt — si tu parles avant qu'il ait fini, tu brises l'émotion.",
+    "Reformuler trop vite : laisse l'émotion s'installer avant de la nommer.",
+    "Chercher à consoler ou rassurer — ce n'est pas encore le moment.",
+  ],
+  exercice: `Objectif : maîtriser le silence. En simulation, pose une question forte, puis compte 3 secondes dans ta tête avant de parler à nouveau.\n\nConsigne : n'interprète jamais le silence comme un vide — c'est un outil.`,
+  indicateur: "Signal recherché : il parle en \"je\" et décrit ce qu'il ressent",
+  autoEval: [
+    "Ai-je réellement entendu une émotion — et pas seulement un constat factuel ?",
+    "Ai-je laissé un silence complet après chaque question ?",
+    "Le client a-t-il parlé de lui, pas seulement de son contexte ?",
+    "Ai-je évité de reformuler trop tôt ?",
+    "Ai-je perçu un changement de ton ou de rythme dans sa voix ?",
+  ],
+  signal: "Il parle en \"je\" et décrit ce qu'il ressent, pas seulement ce qui se passe. Il a dit quelque chose comme \"j'en ai marre\", \"c'est épuisant\", \"je me sens bloqué\". Ce mot émotionnel est ton feu vert.",
+  quiz: [
+    { q: "Pourquoi ne faut-il pas consoler le prospect lors de la Phase 6 ?", opts: ["Parce que c'est impoli", "Parce que la consolation dissout l'émotion nécessaire à la décision", "Parce qu'il ne faut pas montrer d'empathie", "Parce que ça prend trop de temps"], ans: 1, fb: "Consoler, c'est atténuer la douleur. Or c'est précisément cette douleur qui va créer l'urgence de changer. Tu écoutes, tu n'adoucis pas." },
+    { q: "Quelle question doit rester réservée à la Phase 7 ?", opts: ["\"Ça vous impacte comment ?\"", "\"À quel point ?\"", "\"Et si rien ne change ?\"", "\"Qu'est-ce que ça vous coûte vraiment ?\""], ans: 2, fb: "\"Et si rien ne change ?\" projette dans le futur — c'est la mécanique de la tension (Phase 7). En Phase 6, tu restes dans le ressenti présent." },
+    { q: "Quel signal indique que tu as atteint le bon niveau émotionnel ?", opts: ["Le prospect se tait complètement", "Le prospect parle en \"je\" et exprime ce qu'il ressent", "Le prospect demande le prix", "Le prospect hoche la tête"], ans: 1, fb: "Quand le prospect passe du factuel (\"le marché est difficile\") à l'émotionnel (\"j'en ai marre\", \"je me sens bloqué\"), tu as atteint le niveau d'émotion qui déclenche l'action." },
+  ]
+},
+{
+  id: 7,
+  nav: "TENSION",
+  subtitle: "Créer et maintenir l'écart",
+  time: 30,
+  contexte: `Le prospect a exprimé ce qu'il ressent. La tension transforme cette émotion en besoin d'action.\n\nC'est le moment où tu fais ressentir la différence entre maintenant et le futur inchangé.\n\nUn closer débutant cherche à rassurer. Un closer performant laisse la tension faire son travail.`,
+  objectif: "Créer un écart ressenti entre situation actuelle et objectif idéal, jusqu'à ce que le statu quo devienne intenable.",
+  explication: `Cette phase se construit sur le contraste : "là où tu es" vs "là où tu veux être".\n\nTu ne dramatises pas — tu mets en face deux réalités et tu laisses le prospect observer la distance.`,
+  piliers: [
+    ["NE PAS ADOUCIR", "Ton calme amplifie l'effet. Si tu consoles, tu dissous la tension."],
+    ["TENIR LE SILENCE", "Le silence prolonge la réflexion. L'esprit du client comble le vide en imaginant son avenir inchangé."],
+    ["ATTENDRE > 3 SEC", "Plus le silence dure, plus la tension est réelle. Mesure le délai."],
+  ],
+  script: [
+    {
+      label: "Contraste + Question Pivot",
+      text: `"Aujourd'hui vous êtes à [X]...
+
+Vous voulez être à [Y]...
+
+Mais pour l'instant, rien ne change."
+
+"Et si rien ne change ?"
+
+(Silence — minimum 3 secondes)`
+    }
+  ],
+  analyse: `"Et si rien ne change ?" suspend le temps. C'est le pivot réel du closing.\n\nQuand tu gardes le silence, tu obliges le cerveau à simuler le futur — et cette simulation déclenche l'envie de changement.\n\nIl finit souvent par : "Oui, faut que je fasse quelque chose." — Tu n'as rien ajouté. La tension a parlé.`,
+  erreurs: [
+    "Remplir le silence par une relance ou une explication — tu casses la tension.",
+    "Consoler ou atténuer : \"je comprends c'est difficile\" — tu dissous l'urgence.",
+    "Utiliser cette question sans avoir fait exprimer l'émotion en Phase 6 — elle tombe à plat.",
+    "Répéter la question si le silence dure — patience, c'est lui qui travaille.",
+  ],
+  exercice: `Choisis 3 situations, prononce l'enchaînement complet : "Vous êtes à... Vous voulez... Rien ne change... Et si rien ne change ?"\n\nMesure le délai entre ta dernière phrase et la réponse. Objectif : plus de 3 secondes. Plus c'est long, mieux c'est.`,
+  indicateur: "Silence cible : minimum 3 secondes après \"Et si rien ne change ?\"",
+  autoEval: [
+    "Ai-je posé les deux réalités (actuelle / désirée) sans jugement ?",
+    "Ai-je laissé un silence complet de plus de 3 secondes ?",
+    "Le prospect a-t-il fait une remarque émotionnelle ou pris une décision verbale ?",
+    "Ai-je évité toute tentative de consolation ?",
+    "Ai-je senti un changement d'énergie — une prise de conscience ?",
+  ],
+  signal: "Il a dit \"faut que je fasse quelque chose\", \"je peux pas continuer comme ça\", ou il a simplement hoché la tête en silence. L'urgence est ressentie. Tu peux maintenant lui montrer la sortie.",
+  quiz: [
+    { q: "Quelle est la mécanique principale de la Phase 7 ?", opts: ["Présenter les bénéfices du produit", "Créer un contraste entre la situation actuelle et le futur inchangé pour déclencher l'urgence", "Répondre aux objections avec des arguments", "Proposer une promotion limitée"], ans: 1, fb: "La tension ne vient pas d'une promesse ou d'un argument — elle vient du contraste entre le présent et un futur sans changement. C'est cette comparaison qui crée le besoin d'agir." },
+    { q: "Que faut-il faire après avoir dit \"Et si rien ne change ?\"", opts: ["Expliquer les conséquences en détail", "Proposer la solution immédiatement", "Garder le silence pendant au moins 3 secondes", "Reformuler la question différemment"], ans: 2, fb: "Le silence est l'outil. Il force le cerveau du prospect à simuler son avenir inchangé — et cette simulation est bien plus puissante que n'importe quelle explication." },
+    { q: "Pourquoi la Phase 7 échoue-t-elle si la Phase 6 a été mal exécutée ?", opts: ["Parce que le prospect n'est pas encore qualifié", "Parce que sans émotion préalable, la question de tension tombe à plat", "Parce que le timing est mauvais", "Parce que le prospect n'a pas encore dit oui au cadre"], ans: 1, fb: "\"Et si rien ne change ?\" ne crée de tension que si une émotion a déjà été exprimée. Sans la descente émotionnelle de la Phase 6, c'est une question vide de sens." },
+  ]
+},
+{
+  id: 8,
+  nav: "PROJECTION",
+  subtitle: "Faire voir la solution",
+  time: 32,
+  contexte: `Le prospect ressent désormais le besoin d'agir.\n\nTon rôle est de lui faire voir, sentir et anticiper le bénéfice futur — avec ses mots à lui.\n\nC'est une phase de visualisation, pas de pitch : tu l'aides à se représenter la réussite avant de lui parler de moyens.`,
+  objectif: "Faire imaginer concrètement l'état désiré, afin que la décision devienne une évidence logique et émotionnelle.",
+  explication: `Les décisions se prennent sur des images mentales. Quand il "voit" sa réussite comme réelle, il oriente naturellement sa décision pour s'en rapprocher.`,
+  piliers: [
+    ["LE CONCRET", "Résultat mesurable — \"dans 3 mois, vous serez à [Y]\""],
+    ["LE SENSORIEL", "Ressenti — \"comment vous vous sentiriez ?\""],
+  ],
+  script: [
+    {
+      label: "Visualisation + Ancrage",
+      text: `"Imaginez dans 3 mois...
+
+Qu'est-ce qui aurait changé ?"
+
+"Comment vous vous sentiriez ?"
+
+"Qu'est-ce qui montrerait que vous avez réussi ?"
+
+Reformulation d'ancrage :
+
+"Donc ce que vous voulez vraiment,
+
+c'est retrouver [mot qu'il a utilisé]."`
+    }
+  ],
+  analyse: `Ces questions déplacent le client vers un futur positif. Elles réactivent l'émotion mais orientée vers le plaisir, pas la douleur.\n\nQuand le client parle au futur — "je ferai", "ça sera", "je me sentirai" — c'est un signe fort : il a déjà accepté la possibilité du changement.\n\nLa reformulation finale ancre sa vision avec ses propres mots. Il valide : tu as verrouillé son objectif.\n\nNote : note les mots exacts qu'il emploie. Tu devras les réutiliser en Phase 10.`,
+  erreurs: [
+    "Faire du pitch produit à ce stade — tu dois projeter, pas présenter.",
+    "Utiliser tes mots à toi au lieu des siens — perd immédiatement l'effet d'ancrage.",
+    "Aller trop vite vers la décision sans laisser la visualisation s'installer.",
+    "Ne pas noter ses mots exacts — tu en auras besoin en Phase 10.",
+  ],
+  exercice: `Lors de 3 prochains entretiens, fais verbaliser : un changement concret ("je ferai...") et un ressenti personnel ("je me sentirai...").\n\nNote les mots exacts. Compte combien de fois il parle au futur.`,
+  indicateur: "Signal : il parle au futur — \"je ferai\", \"ça sera\", \"je me sentirai\"",
+  autoEval: [
+    "Le client parle-t-il au futur (\"je ferai\", \"ça sera\") ?",
+    "Ai-je suscité une image concrète et mesurable ?",
+    "Ai-je reformulé avec ses mots exacts ?",
+    "Ai-je gardé un ton calme, non vendeur ?",
+    "Ai-je noté ses mots pour les réutiliser en Phase 10 ?",
+  ],
+  signal: "Il a formulé son futur désiré avec ses mots. Il parle au futur et son ton est positif. Attention : c'est exactement à ce moment qu'une résistance peut remonter. La Phase 9 est là pour la faire sortir avant qu'elle bloque la décision.",
+  quiz: [
+    { q: "Quelle est la différence entre projection (Phase 8) et pitch produit ?", opts: ["Il n'y a aucune différence", "La projection utilise les mots du client pour visualiser son futur ; le pitch présente les caractéristiques du produit", "La projection est plus courte", "Le pitch est réservé aux débutants"], ans: 1, fb: "La projection, c'est faire parler le client de son futur avec ses propres mots. Le pitch, c'est te faire parler de ton produit. L'un crée une décision intérieure, l'autre crée de la résistance." },
+    { q: "Pourquoi est-il crucial de noter les mots exacts du client ?", opts: ["Pour prendre des notes propres", "Pour les réutiliser en Phase 10 et créer un ancrage puissant", "Pour pouvoir écrire un devis précis", "Pour montrer que tu es attentif"], ans: 1, fb: "Réutiliser les mots exacts du client en Phase 10 crée un effet miroir puissant : il entend ses propres mots dans ta bouche, ce qui renforce l'authenticité de la décision." },
+    { q: "Quel signal indique que la Phase 8 est réussie ?", opts: ["Le prospect redemande le prix", "Le prospect parle au futur : \"je ferai\", \"ça sera\", \"je me sentirai\"", "Le prospect dit \"c'est intéressant\"", "Le prospect cesse de poser des questions"], ans: 1, fb: "Parler au futur est un signe que le prospect a intégré la possibilité du changement. Il ne se demande plus si — il imagine déjà quand." },
+  ]
+},
+{
+  id: 9,
+  nav: "OBJECTIONS",
+  subtitle: "Faire sortir les freins",
+  time: 34,
+  contexte: `Tout prospect a une réserve. Si tu veux un vrai "oui", elle doit être identifiée avant la décision.\n\nTraiter les objections, c'est comprendre l'incertitude — pas argumenter contre elle.\n\nIl vient de visualiser son futur désiré. C'est précisément à ce moment qu'une résistance remonte — peur de se tromper, doute sur le budget, besoin de consulter quelqu'un. Tu dois la faire sortir maintenant, pas après la décision.`,
+  objectif: "Faire verbaliser la contrainte réelle et la traiter calmement avant la phase de décision.",
+  explication: `Une objection est un symptôme émotionnel. Le client ne te dit pas non — il exprime un manque de sécurité.\n\nIl n'y a que 4 sources possibles.`,
+  piliers: [
+    ["ARGENT", "Le budget est un frein réel ou perçu."],
+    ["TIMING", "Le moment ne lui semble pas le bon."],
+    ["PEUR", "Peur de se tromper, de ne pas obtenir les résultats, de l'inconnu."],
+    ["ENVIRONNEMENT", "Il doit consulter un tiers : conjoint, associé, comptable."],
+  ],
+  script: [
+    {
+      label: "Identification & Traitement de l'Objection",
+      text: `"Qu'est-ce qui vous freine aujourd'hui ?"
+
+(Silence — laisse-le répondre)
+
+"C'est plus une question de budget,
+
+de timing, de confiance,
+
+ou il y a quelqu'un d'autre impliqué ?"
+
+"C'est le montant en lui-même
+
+ou la peur que ce ne soit pas rentable ?"
+
+"Donc le vrai point c'est [...] — on est d'accord ?"`
+    },
+    {
+      label: "Exemple Terrain — Objection Prix",
+      text: `Prospect : "C'est cher."
+
+Closer : "Qu'est-ce qui vous fait dire ça ?
+
+Le prix en lui-même,
+
+ou la peur que ce ne soit pas rentable ?"
+
+Prospect : "C'est plutôt la peur."
+
+→ Tu as trouvé le vrai blocage : émotion, pas argent.`
+    }
+  ],
+  analyse: `La première question ouvre. La deuxième classe parmi les 4 contraintes. La troisième précise. La reformulation finale verrouille la compréhension commune.\n\nPlus il parle, plus la peur baisse. La clé : une question — un silence — une seule relance.`,
+  erreurs: [
+    "Argumenter face à l'objection au lieu de creuser — tu renforces la résistance.",
+    "Poser plusieurs questions à la fois — le prospect se ferme.",
+    "Ne pas couvrir l'environnement (\"vous décidez seul ?\") — c'est l'objection cachée la plus fréquente.",
+    "Accepter un \"je réfléchis\" sans creuser — c'est presque toujours une des 4 contraintes déguisée.",
+  ],
+  exercice: `Pour chacune des 4 contraintes, prépare une question préventive :\n• ARGENT : "Qu'est-ce qui vous ferait dire que l'investissement n'en vaut pas la peine ?"\n• PEUR : "Qu'est-ce qui vous ferait douter du résultat ?"\n• ENVIRONNEMENT : "Avec qui devez-vous en discuter avant de décider ?"\n• TIMING : "Qu'est-ce qui ferait que ce soit plus simple plus tard ?"\n\nRépète ce jeu avant chaque call ou rendez-vous.`,
+  indicateur: "Il a nommé le vrai blocage — plus de \"je réfléchis\"",
+  autoEval: [
+    "Ai-je identifié la contrainte réelle parmi les 4 ?",
+    "Ai-je posé une seule question à la fois ?",
+    "Ai-je couvert les 4 contraintes (argent, timing, peur, environnement) ?",
+    "Ai-je reformulé avant de répondre ?",
+    "Ai-je évité tout argument défensif ?",
+  ],
+  signal: "Il a nommé le vrai blocage et tu l'as validé ensemble. Il n'y a plus de résistance cachée. Il ne dit plus \"je réfléchis\" — il dit ce qui le bloque vraiment. Tu peux maintenant accompagner la décision.",
+  quiz: [
+    { q: "Qu'est-ce qu'une objection représente réellement selon l'approche Ultimate Closing ?", opts: ["Un refus définitif", "Un symptôme émotionnel — un manque de sécurité", "Une négociation sur le prix", "Un signe que le prospect n'est pas qualifié"], ans: 1, fb: "L'objection n'est jamais un non définitif. C'est l'expression d'une peur, d'un doute ou d'un manque d'information. Ton rôle est de trouver la source, pas de contrer l'argument." },
+    { q: "Que faire face à un \"je réfléchis\" ?", opts: ["Respecter le temps de réflexion et rappeler dans 2 jours", "Creuser immédiatement — c'est une des 4 contraintes déguisée", "Proposer une remise pour accélérer la décision", "Reformuler les bénéfices du produit"], ans: 1, fb: "\"Je réfléchis\" est presque toujours une contrainte déguisée (argent, peur, timing, environnement). Ne l'accepte jamais sans creuser avec \"Qu'est-ce qui vous retient exactement ?\"" },
+    { q: "Quelle est l'objection cachée la plus fréquente ?", opts: ["Le prix", "La qualité du produit", "L'environnement — \"je dois en parler à quelqu'un\"", "Le timing"], ans: 2, fb: "L'environnement (conjoint, associé, comptable) est l'objection la plus souvent omise — et la plus bloquante. Couvre toujours : \"Est-ce que vous décidez seul de votre côté ?\"" },
+  ]
+},
+{
+  id: 10,
+  nav: "DÉCISION",
+  subtitle: "Faire agir sans forcer",
+  time: 32,
+  contexte: `Le prospect a compris, ressenti et clarifié ses freins. L'heure est à la décision.\n\nTon rôle maintenant : accompagner cette bascule sans créer de pression.\n\nLe closing n'est pas un acte de persuasion — c'est un acte de clarté.`,
+  objectif: "Faire choisir consciemment, sans argument supplémentaire. Le client agit parce qu'il voit distinctement les conséquences de chaque option.",
+  explication: `Le client doit voir les deux chemins possibles : rester ou avancer.\n\nUne phrase, un silence et une posture posée suffisent à provoquer la décision.`,
+  piliers: [
+    ["LE CHOIX BINAIRE", "Tu poses clairement les deux options. Pas d'argument. Pas de pression. Juste la réalité de chaque chemin."],
+    ["LE SILENCE", "Tu ne remplis pas. Tu laisses la place au choix. Minimum 3 secondes — et tu attends."],
+    ["LA VÉRIFICATION", "Une dernière question pour t'assurer qu'aucune résistance cachée n'est restée."],
+  ],
+  script: [
+    {
+      label: "Choix Binaire + Vérification Finale",
+      text: `"Aujourd'hui vous avez deux options :
+
+Option 1 : vous continuez comme maintenant
+
+→ rien ne change.
+
+Option 2 : vous mettez en place ce qu'il faut
+
+→ vous atteignez [objectif avec ses mots]."
+
+(Silence — minimum 3 secondes)
+
+"Qu'est-ce qui pourrait encore vous bloquer aujourd'hui ?"
+
+"Ok parfait. On met ça en place ensemble."`
+    },
+    {
+      label: "Exemple Terrain",
+      text: `Closer : "Aujourd'hui, vous avez deux options..."
+
+(Pause — 4 secondes)
+
+Prospect : "Autant y aller."
+
+→ Tu n'as rien ajouté. La décision s'est faite d'elle-même.`
+    }
+  ],
+  analyse: `Le choix binaire crée un cadre clair et orienté décision. Le silence prolonge le raisonnement — l'autre s'écoute penser.\n\nLa dernière question vérifie l'absence de résistance cachée. Si une objection remonte ici, tu retournes brièvement en Phase 9.\n\nLe ton bas et lent agit comme signe de certitude : tu accompagnes, tu ne pousses pas.`,
+  erreurs: [
+    "Ajouter un argument après le silence — tu montres que tu doutes, lui aussi.",
+    "Parler avant que le silence ait fait son effet — moins de 3 secondes, c'est trop tôt.",
+    "Ne pas utiliser ses propres mots : \"vous atteignez [votre objectif]\" et non une formule générique.",
+    "Relancer avec une question ouverte si le silence dure — tiens la posture.",
+  ],
+  exercice: `Simule 5 clôtures avec un collègue. Expose le choix, marque 3 secondes de silence, puis observe la variation d'attitude.\n\nTravaille la maîtrise de ton regard et de ta respiration. C'est ton corps qui transmet la certitude, pas tes mots.`,
+  indicateur: "Silence minimum 3 secondes — ton corps transmet la certitude",
+  autoEval: [
+    "Ai-je posé le choix clairement avec ses mots dans l'option 2 ?",
+    "Ai-je marqué un silence réel d'au moins 3 secondes ?",
+    "Mon ton est-il resté bas et assuré jusqu'à la fin ?",
+    "Le client a-t-il pris sa propre décision sans que je pousse ?",
+    "Ai-je évité d'ajouter un argument final ?",
+  ],
+  signal: "Il a choisi. La décision est prise, de lui-même, sans pression. C'est ça le vrai closing.",
+  quiz: [
+    { q: "Le closing est défini comme :", opts: ["Un acte de persuasion", "Une technique de manipulation", "Un acte de clarté qui permet au client de choisir consciemment", "Une négociation finale"], ans: 2, fb: "Le closing Ultimate n'est pas de la persuasion — c'est de la clarté. Tu poses deux chemins, tu te tais, et le prospect choisit lui-même. Tu n'as rien à convaincre." },
+    { q: "Que faire si une objection remonte pendant la Phase 10 ?", opts: ["L'ignorer et maintenir la pression vers la décision", "Retourner brièvement en Phase 9 pour la traiter", "Proposer une remise pour débloquer", "Mettre fin à l'entretien"], ans: 1, fb: "Si une résistance cachée remonte, tu reviens en Phase 9. Le processus est flexible — tu n'abandones pas le closing, tu règles l'obstacle qui reste." },
+    { q: "Pourquoi ne pas ajouter un argument après le silence ?", opts: ["Par politesse", "Parce que tu montres que tu doutes, ce qui contamine le prospect", "Parce que tu as déjà trop parlé", "Parce que l'argument serait redondant"], ans: 1, fb: "Ajouter un argument après le silence signale ta propre incertitude. Le prospect le ressent et commence à douter lui aussi. Ta posture calme et silencieuse EST l'argument le plus fort." },
+  ]
+},
+{
+  id: 11, nav: "Synthèse", subtitle: "Récapitulatif complet", time: 0, synthese: true
+}
+];
+
+// ══════════════════════════════════════════════════════════
+//  STATE
+// ══════════════════════════════════════════════════════════
+let currentPhase = 0;
+const completed = new Set();
+const evalStates = {}; // phaseId -> array of bools
+const quizStates = {}; // phaseId -> array of answered index
+
+// ══════════════════════════════════════════════════════════
+//  UTILITIES
+// ══════════════════════════════════════════════════════════
+function totalMinutes() {
+  return PHASES.filter(p => p.time).reduce((s, p) => s + p.time, 0);
+}
+function remainingMinutes() {
+  const done = [...completed];
+  const doneMins = done.reduce((s, id) => {
+    const p = PHASES.find(x => x.id === id);
+    return s + (p ? p.time : 0);
+  }, 0);
+  return Math.max(0, totalMinutes() - doneMins);
+}
+function fmtTime(mins) {
+  const h = Math.floor(mins / 60);
+  const m = mins % 60;
+  if (h === 0) return `${m} min`;
+  return `${h}h ${m.toString().padStart(2,'0')} restantes`;
+}
+function updateProgress() {
+  const phases = PHASES.filter(p => p.id >= 1 && p.id <= 10);
+  const pct = Math.round((completed.size / phases.length) * 100);
+  document.getElementById('prog-fill').style.width = pct + '%';
+  document.getElementById('prog-pct').textContent = pct + '%';
+  document.getElementById('tb-time').textContent = fmtTime(remainingMinutes());
+}
+
+// ══════════════════════════════════════════════════════════
+//  NAV RENDER
+// ══════════════════════════════════════════════════════════
+function renderNav() {
+  const nav = document.getElementById('nav');
+  nav.innerHTML = '';
+
+  // Home
+  const home = PHASES[0];
+  const homeEl = document.createElement('div');
+  homeEl.className = 'nav-item' + (currentPhase === 0 ? ' active' : '');
+  homeEl.innerHTML = `<div class="nav-num">🏠</div><div class="nav-title"><div class="phase-name">Accueil</div></div>`;
+  homeEl.onclick = () => goTo(0);
+  nav.appendChild(homeEl);
+
+  // Section phases
+  const sec = document.createElement('div');
+  sec.className = 'nav-section';
+  sec.textContent = 'Les 10 Phases';
+  nav.appendChild(sec);
+
+  for (let i = 1; i <= 10; i++) {
+    const p = PHASES[i];
+    const isDone = completed.has(p.id);
+    const isActive = currentPhase === p.id;
+    const el = document.createElement('div');
+    el.className = 'nav-item' + (isActive ? ' active' : '') + (isDone ? ' done' : '');
+    el.innerHTML = `
+      <div class="nav-num">${isDone ? '✓' : i}</div>
+      <div class="nav-title">
+        <div class="phase-name">${p.nav}</div>
+        <div class="phase-sub">${p.subtitle}</div>
+      </div>
+      <div class="nav-time">${p.time}min</div>`;
+    el.onclick = () => goTo(p.id);
+    nav.appendChild(el);
+  }
+
+  // Synthèse
+  const synSec = document.createElement('div');
+  synSec.className = 'nav-section';
+  synSec.textContent = 'Bilan';
+  nav.appendChild(synSec);
+
+  const syn = PHASES[11];
+  const synEl = document.createElement('div');
+  synEl.className = 'nav-item' + (currentPhase === 11 ? ' active' : '');
+  synEl.innerHTML = `<div class="nav-num">📋</div><div class="nav-title"><div class="phase-name">Synthèse</div><div class="phase-sub">Récapitulatif</div></div>`;
+  synEl.onclick = () => goTo(11);
+  nav.appendChild(synEl);
+}
+
+// ══════════════════════════════════════════════════════════
+//  TOPBAR
+// ══════════════════════════════════════════════════════════
+function updateTopbar(phase) {
+  if (phase.home) {
+    document.getElementById('tb-phase').textContent = 'Formation';
+    document.getElementById('tb-title').textContent = 'Ultimate Closing Mastery';
+  } else if (phase.synthese) {
+    document.getElementById('tb-phase').textContent = 'Synthèse';
+    document.getElementById('tb-title').textContent = 'De l\'Attention à la Décision';
+  } else {
+    document.getElementById('tb-phase').textContent = `Phase ${phase.id} sur 10`;
+    document.getElementById('tb-title').textContent = `${phase.nav} — ${phase.subtitle}`;
+  }
+  document.getElementById('tb-time').textContent = fmtTime(remainingMinutes());
+}
+
+// ══════════════════════════════════════════════════════════
+//  RENDER FUNCTIONS
+// ══════════════════════════════════════════════════════════
+function renderHome() {
+  return `
+  <div class="home-hero">
+    <div class="home-badge">Formation Terrain Premium</div>
+    <h1>Ultimate<br><span>Closing</span></h1>
+    <p>Maîtrisez les 10 phases universelles du closing — de l'attention à la décision — sans jamais modifier un script.</p>
+    <div class="home-stats">
+      <div class="stat"><div class="val">10</div><div class="lbl">Phases</div></div>
+      <div class="stat"><div class="val">6h</div><div class="lbl">Formation</div></div>
+      <div class="stat"><div class="val">30+</div><div class="lbl">Quiz</div></div>
+      <div class="stat"><div class="val">50+</div><div class="lbl">Exercices</div></div>
+    </div>
+    <button class="btn-start" onclick="goTo(1)">▶ Commencer la Formation</button>
+  </div>
+  <div class="phases-grid">
+    ${PHASES.filter(p => p.id >= 1 && p.id <= 10).map(p => `
+    <div class="phase-card" onclick="goTo(${p.id})">
+      <div class="pc-num">Phase ${p.id}</div>
+      <div class="pc-title">${p.nav}</div>
+      <div class="pc-sub">${p.subtitle}</div>
+      <div class="pc-time">⏱ ${p.time} min</div>
+    </div>`).join('')}
+  </div>
+  <div class="quote-finale">"Le closer efficace n'impose rien. Il guide un raisonnement que le client termine de lui-même."</div>`;
+}
+
+function renderPhase(p) {
+  if (!evalStates[p.id]) evalStates[p.id] = new Array(p.autoEval.length).fill(false);
+  if (!quizStates[p.id]) quizStates[p.id] = new Array(p.quiz.length).fill(null);
+
+  const prevId = p.id > 1 ? p.id - 1 : 0;
+  const nextId = p.id < 10 ? p.id + 1 : 11;
+
+  return `
+  <div class="phase-intro">
+    <div class="phase-intro-num">${p.id}</div>
+    <div class="phase-intro-body">
+      <h2>${p.nav}</h2>
+      <div class="pi-sub">${p.subtitle} &nbsp;·&nbsp; ⏱ ${p.time} min</div>
+      <p>${p.contexte.replace(/\n\n/g, '</p><p>')}</p>
+    </div>
+  </div>
+
+  <div class="section-block">
+    <h3>🎯 Objectif</h3>
+    <p>${p.objectif}</p>
+  </div>
+
+  <div class="section-block">
+    <h3>💡 Explication</h3>
+    <p>${p.explication.replace(/\n\n/g, '</p><p>')}</p>
+    ${p.piliers.length ? `
+    <table class="piliers" style="margin-top:14px">
+      ${p.piliers.map(([k,v]) => `<tr><td>${k}</td><td>${v}</td></tr>`).join('')}
+    </table>` : ''}
+  </div>
+
+  ${renderScript(p)}
+
+  <div class="section-block">
+    <h3>🔍 Analyse Terrain</h3>
+    <p>${p.analyse.replace(/\n\n/g, '</p><p>')}</p>
+  </div>
+
+  <div class="section-block">
+    <h3>⚠️ Erreurs Fréquentes</h3>
+    <ul class="erreurs-list">
+      ${p.erreurs.map(e => `<li>${e}</li>`).join('')}
+    </ul>
+  </div>
+
+  <div class="section-block">
+    <h3>🏋️ Mini-Exercice</h3>
+    <div class="exercice-box">
+      <div class="ex-header">⚡ Entraînement terrain</div>
+      <p>${p.exercice.replace(/\n\n/g, '</p><p>').replace(/\n/g, '<br>')}</p>
+      <div class="indicateur">▶ ${p.indicateur}</div>
+    </div>
+  </div>
+
+  <div class="section-block">
+    <h3>✅ Auto-Évaluation</h3>
+    <ul class="eval-list" id="eval-${p.id}">
+      ${p.autoEval.map((item, i) => `
+      <li class="eval-item${evalStates[p.id][i] ? ' checked' : ''}" onclick="toggleEval(${p.id}, ${i})">
+        <div class="eval-check">${evalStates[p.id][i] ? '' : ''}</div>
+        <div class="eval-text">${item}</div>
+      </li>`).join('')}
+    </ul>
+    <div class="eval-score">
+      <span class="eval-score-label">Score d'auto-évaluation</span>
+      <span class="eval-score-val" id="eval-score-${p.id}">${evalStates[p.id].filter(Boolean).length} / ${p.autoEval.length}</span>
+    </div>
+  </div>
+
+  <div class="signal-box">
+    <div class="signal-icon">🟢</div>
+    <div class="signal-body">
+      <div class="signal-label">Signal — Passe à la phase suivante quand :</div>
+      <p>${p.signal}</p>
+    </div>
+  </div>
+
+  ${renderQuiz(p)}
+
+  <div class="phase-nav">
+    <button class="btn-nav btn-prev" onclick="goTo(${prevId})">← ${prevId === 0 ? 'Accueil' : 'Phase ' + prevId}</button>
+    <button class="btn-nav btn-next" onclick="completeAndNext(${p.id}, ${nextId})">
+      ${nextId === 11 ? 'Voir la Synthèse →' : 'Phase ' + nextId + ' →'}
+    </button>
+  </div>`;
+}
+
+function renderScript(p) {
+  return `
+  <div class="script-box">
+    ${p.script.map(s => `
+    <div class="script-variant">
+      <div class="script-label">${s.label}</div>
+      <div class="script-text">${escHtml(s.text)}</div>
+    </div>`).join('<hr style="border-color:rgba(201,168,76,.15);margin:16px 0">')}
+  </div>`;
+}
+
+function renderQuiz(p) {
+  return `
+  <div class="quiz-section">
+    <h3>📝 Quiz — Phase ${p.id}</h3>
+    ${p.quiz.map((q, qi) => `
+    <div class="quiz-question" id="qq-${p.id}-${qi}">
+      <div class="quiz-q-text">Q${qi + 1}. ${q.q}</div>
+      <div class="quiz-options">
+        ${q.opts.map((opt, oi) => `
+        <div class="quiz-opt${quizStates[p.id][qi] !== null ? ' locked' + (oi === q.ans ? ' correct' : (quizStates[p.id][qi] === oi ? ' wrong' : '')) : ''}"
+             onclick="answerQuiz(${p.id}, ${qi}, ${oi}, ${q.ans})">
+          <span>${String.fromCharCode(65+oi)}.</span> ${opt}
+        </div>`).join('')}
+      </div>
+      <div class="quiz-feedback ${quizStates[p.id][qi] !== null ? 'show ' + (quizStates[p.id][qi] === q.ans ? 'ok' : 'ko') : ''}">
+        ${quizStates[p.id][qi] !== null ? (quizStates[p.id][qi] === q.ans ? '✓ ' : '✗ ') + q.fb : ''}
+      </div>
+    </div>`).join('')}
+    <div class="quiz-score-bar">
+      <span class="qs-label">Score quiz phase ${p.id} :</span>
+      <span class="qs-val" id="qs-${p.id}">${quizStates[p.id].filter((a, i) => a === p.quiz[i].ans).length} / ${p.quiz.length}</span>
+    </div>
+  </div>`;
+}
+
+function renderSynthese() {
+  const totalQuiz = PHASES.filter(p => p.quiz).reduce((s, p) => s + p.quiz.length, 0);
+  const correctQuiz = PHASES.filter(p => p.quiz).reduce((s, p) => {
+    if (!quizStates[p.id]) return s;
+    return s + quizStates[p.id].filter((a, i) => a === p.quiz[i].ans).length;
+  }, 0);
+  const totalEval = PHASES.filter(p => p.autoEval).reduce((s, p) => s + p.autoEval.length, 0);
+  const checkedEval = PHASES.filter(p => p.autoEval).reduce((s, p) => {
+    if (!evalStates[p.id]) return s;
+    return s + evalStates[p.id].filter(Boolean).length;
+  }, 0);
+
+  return `
+  <div class="section-block">
+    <h3>📊 Bilan de formation</h3>
+    <div class="completion-stats">
+      <div class="cstat"><div class="cv">${completed.size}/10</div><div class="cl">Phases terminées</div></div>
+      <div class="cstat"><div class="cv">${correctQuiz}/${totalQuiz}</div><div class="cl">Réponses correctes</div></div>
+      <div class="cstat"><div class="cv">${checkedEval}/${totalEval}</div><div class="cl">Critères validés</div></div>
+    </div>
+  </div>
+
+  <div class="section-block">
+    <h3>📋 Les 10 Phases — De l'Attention à la Décision</h3>
+    <table class="synthese-table">
+      <thead>
+        <tr>
+          <th>#</th><th>Phase</th><th>Mécanique clé</th><th>Signal de passage</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td class="td-num">1</td><td class="td-phase">ATTENTION</td><td class="td-mecanique">Rupture + Silence</td><td class="td-signal">Il réagit ou s'arrête</td></tr>
+        <tr><td class="td-num">2</td><td class="td-phase">LÉGITIMITÉ</td><td class="td-mecanique">Affirmation sans demande</td><td class="td-signal">Il écoute sans partir</td></tr>
+        <tr><td class="td-num">3</td><td class="td-phase">ENGAGEMENT</td><td class="td-mecanique">Choix fermé → premier oui</td><td class="td-signal">Il dit oui au cadre</td></tr>
+        <tr><td class="td-num">4</td><td class="td-phase">CADRAGE</td><td class="td-mecanique">Poser les règles avant le jeu</td><td class="td-signal">Il valide la structure</td></tr>
+        <tr><td class="td-num">5</td><td class="td-phase">DIAGNOSTIC</td><td class="td-mecanique">4 piliers + reformulation miroir</td><td class="td-signal">Il valide "on est aligné"</td></tr>
+        <tr><td class="td-num">6</td><td class="td-phase">ÉMOTION</td><td class="td-mecanique">Descente vers le ressenti présent</td><td class="td-signal">Il parle en "je"</td></tr>
+        <tr><td class="td-num">7</td><td class="td-phase">TENSION</td><td class="td-mecanique">Contraste + silence > 3 secondes</td><td class="td-signal">Il sent l'urgence</td></tr>
+        <tr><td class="td-num">8</td><td class="td-phase">PROJECTION</td><td class="td-mecanique">Visualisation avec ses mots</td><td class="td-signal">Il parle au futur</td></tr>
+        <tr><td class="td-num">9</td><td class="td-phase">OBJECTIONS</td><td class="td-mecanique">Les 4 contraintes + une question à la fois</td><td class="td-signal">Il nomme le vrai blocage</td></tr>
+        <tr><td class="td-num">10</td><td class="td-phase">DÉCISION</td><td class="td-mecanique">Choix binaire + silence + vérification</td><td class="td-signal">Il choisit seul</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="quote-finale">
+    "Le closer efficace n'impose rien. Il guide un raisonnement que le client termine de lui-même."
+  </div>
+
+  <div class="section-block">
+    <h3>🔑 Les 4 Lois du Closer</h3>
+    <table class="piliers">
+      <tr><td>LOI DU SILENCE</td><td>Le silence est ton outil le plus puissant. Mesure-le. Protège-le. Ne le brise jamais le premier.</td></tr>
+      <tr><td>LOI DU TON</td><td>Ton calme crée l'autorité. Une voix ascendante en fin de phrase détruit instantanément ta légitimité.</td></tr>
+      <tr><td>LOI DE L'ÉCOUTE</td><td>Tu parles moins de 40 % du temps. Chaque silence de l'autre est une information. Écoute ce qu'il ne dit pas.</td></tr>
+      <tr><td>LOI DE LA CLARTÉ</td><td>Le closing n'est pas de la persuasion — c'est de la clarté. Tu poses deux chemins. Il choisit. Tu ne pousses pas.</td></tr>
+    </table>
+  </div>
+
+  <div class="phase-nav">
+    <button class="btn-nav btn-prev" onclick="goTo(10)">← Phase 10</button>
+    <button class="btn-nav btn-next" onclick="goTo(0)">🏠 Retour à l'Accueil</button>
+  </div>`;
+}
+
+// ══════════════════════════════════════════════════════════
+//  INTERACTIONS
+// ══════════════════════════════════════════════════════════
+function toggleEval(phaseId, index) {
+  evalStates[phaseId][index] = !evalStates[phaseId][index];
+  const list = document.getElementById('eval-' + phaseId);
+  if (!list) return;
+  const items = list.querySelectorAll('.eval-item');
+  items[index].classList.toggle('checked', evalStates[phaseId][index]);
+  const score = evalStates[phaseId].filter(Boolean).length;
+  const len = evalStates[phaseId].length;
+  document.getElementById('eval-score-' + phaseId).textContent = score + ' / ' + len;
+}
+
+function answerQuiz(phaseId, qi, oi, correct) {
+  if (quizStates[phaseId][qi] !== null) return; // already answered
+  quizStates[phaseId][qi] = oi;
+
+  const p = PHASES.find(x => x.id === phaseId);
+  const container = document.getElementById('qq-' + phaseId + '-' + qi);
+  if (!container) return;
+
+  const opts = container.querySelectorAll('.quiz-opt');
+  opts.forEach((el, i) => {
+    el.classList.add('locked');
+    if (i === correct) el.classList.add('correct');
+    else if (i === oi && oi !== correct) el.classList.add('wrong');
+  });
+
+  const fb = container.querySelector('.quiz-feedback');
+  fb.textContent = (oi === correct ? '✓ ' : '✗ ') + p.quiz[qi].fb;
+  fb.className = 'quiz-feedback show ' + (oi === correct ? 'ok' : 'ko');
+
+  const score = quizStates[phaseId].filter((a, i) => a === p.quiz[i].ans).length;
+  const scoreEl = document.getElementById('qs-' + phaseId);
+  if (scoreEl) scoreEl.textContent = score + ' / ' + p.quiz.length;
+}
+
+function completeAndNext(phaseId, nextId) {
+  completed.add(phaseId);
+  updateProgress();
+  renderNav();
+  goTo(nextId);
+}
+
+function goTo(id) {
+  currentPhase = id;
+  const phase = PHASES.find(p => p.id === id);
+  const content = document.getElementById('content');
+
+  if (phase.home) {
+    content.innerHTML = renderHome();
+  } else if (phase.synthese) {
+    content.innerHTML = renderSynthese();
+  } else {
+    content.innerHTML = renderPhase(phase);
+  }
+
+  content.scrollTop = 0;
+  updateTopbar(phase);
+  renderNav();
+  updateProgress();
+}
+
+function escHtml(str) {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/\n/g, '<br>');
+}
+
+// ══════════════════════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════════════════════
+goTo(0);
+</script>
+</body>
+</html>
