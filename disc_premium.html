@@ -168,8 +168,9 @@ const PH=[
   {n:3,title:'Le Stable',sub:'Profil S — Orientation harmonie',t:'45'},
   {n:4,title:'Le Consciencieux',sub:'Profil C — Orientation qualité',t:'45'},
   {n:5,title:'Adapter son Pitch',sub:'Communication cross-profils',t:'60'},
-  {n:6,title:'Auto-Diagnostic DISC',sub:'Identifie ton profil dominant',t:'30'},
-  {n:7,title:'Cas Pratiques & Synthèse',sub:'Mise en situation réelle',t:'50'}
+  {n:6,title:"Psychologie de l'Acheteur",sub:'Pourquoi les gens décident vraiment',t:'25'},
+  {n:7,title:'Auto-Diagnostic DISC',sub:'Identifie ton profil dominant',t:'30'},
+  {n:8,title:'Cas Pratiques & Synthèse',sub:'Mise en situation réelle',t:'50'}
 ];
 
 const PR={
@@ -299,6 +300,12 @@ const TQ=[
   {q:"Si tu devais choisir un mot qui te décrit le mieux :",o:[{t:"Déterminé",p:'D'},{t:"Enthousiaste",p:'I'},{t:"Fiable",p:'S'},{t:"Rigoureux",p:'C'}]}
 ];
 
+const PsyQ=[
+  {q:"La décision d'achat est prise en premier par :",o:["La logique pure et les données","L'émotion, puis justifiée par la logique","Le prix le moins élevé","La réputation de la marque"],c:1,fb:"Les neurosciences le confirment : on décide à l'émotion, puis on rationalise. C'est vrai même chez les profils C les plus analytiques."},
+  {q:"Qu'est-ce qui motive davantage un acheteur selon la psychologie comportementale ?",o:["La perspective d'un gain important","La peur de perdre ou de souffrir","La recommandation d'un pair","Un discount de 20%"],c:1,fb:"La loi de l'aversion à la perte (Kahneman) : perdre 100€ fait deux fois plus mal que gagner 100€ fait plaisir. La douleur motive plus que le gain."},
+  {q:"Le 'vrai problème' d'un prospect est en général :",o:["Ce qu'il exprime en premier dans l'entretien","Ce que son supérieur lui demande de résoudre","Plus profond que ce qu'il mentionne en surface — révélé par des questions de fond","Identique à ce qui est écrit dans l'appel d'offres"],c:2,fb:"Le problème exprimé est souvent le symptôme. Le vrai problème (caché) est révélé par des questions de second niveau : 'Et qu'est-ce que ça vous coûte concrètement ?'"}
+];
+
 // ---- HELPERS ----
 function qz(ph,qs){
   return qs.map((q,qi)=>{
@@ -321,7 +328,7 @@ function qzscore(ph,qs){
 }
 function pnav(n){
   const prev=n>0?'<button class="btn-nav btn-prev" onclick="gt('+(n-1)+')">← Précédent</button>':'<span></span>';
-  const nxt=n<7?'<button class="btn-nav btn-next" onclick="gt('+(n+1)+')">Suivant →</button>':'<span></span>';
+  const nxt=n<8?'<button class="btn-nav btn-next" onclick="gt('+(n+1)+')">Suivant →</button>':'<span></span>';
   return '<div class="phase-nav">'+prev+nxt+'</div>';
 }
 function sb(items){return items.map(a=>'<div class="signal-box"><div class="signal-icon" style="color:'+PR[a.p].c+'">'+a.p+'</div><div class="signal-body"><div class="signal-label">Face à un profil '+a.p+'</div><p>'+a.tip+'</p></div></div>').join('');}
@@ -369,6 +376,16 @@ function pg5(){
 }
 
 function pg6(){
+  return '<div class="phase-intro"><div class="phase-intro-num" style="color:#8B5CF6">6</div><div class="phase-intro-body"><h2>Psychologie de l\'Acheteur</h2><div class="pi-sub">Pourquoi les gens décident vraiment</div><p>Avant d\'adapter votre discours à un profil DISC, il faut comprendre les mécanismes universels qui gouvernent toute décision d\'achat. Ces leviers fonctionnent sur tous les profils — ils constituent le socle de la vente d\'influence.</p></div></div>'
+    +'<div class="section-block"><h3>La décision : émotion d\'abord, logique ensuite</h3><p>Les neurosciences l\'ont démontré : 95% des décisions sont prises de manière inconsciente et émotionnelle, puis rationalisées après coup. Même votre profil C le plus analytique décide d\'abord avec ses tripes — puis cherche les données pour se justifier.</p><p>Votre rôle n\'est pas de convaincre le cerveau logique. C\'est de toucher l\'émotion juste, puis de fournir les arguments qui permettent de se convaincre soi-même.</p></div>'
+    +'<div class="section-block"><h3>La douleur prime sur le gain</h3><p>Selon Daniel Kahneman (Prix Nobel d\'économie), perdre 100€ fait deux fois plus mal que gagner 100€ fait plaisir. L\'être humain est câblé pour éviter la perte bien avant de chercher le gain.</p><table class="piliers"><tr><td>Approche gain</td><td>"Vous allez économiser 30k€/an avec notre solution."</td></tr><tr><td>Approche douleur</td><td>"Chaque mois sans cette solution vous coûte 2 500€ — soit 30k€ cette année."</td></tr><tr><td>Verdict</td><td>L\'approche douleur génère 2x plus d\'engagement. Toujours cadrer le gain en perte évitée.</td></tr></table></div>'
+    +'<div class="section-block"><h3>Les 3 niveaux du problème</h3><p>Quand un prospect parle, il exprime rarement son vrai problème. Il y a toujours 3 niveaux :</p><table class="piliers"><tr><td>Niveau 1 — Surface</td><td>Ce qu\'il dit : "J\'ai besoin d\'un meilleur CRM."</td></tr><tr><td>Niveau 2 — Profond</td><td>Ce qu\'il veut vraiment : "Je perds des deals parce que mon équipe ne suit pas les prospects."</td></tr><tr><td>Niveau 3 — Caché</td><td>Ce qu\'il ne dit jamais : "J\'ai peur de perdre ma place si les ventes continuent à stagner."</td></tr></table><p style="margin-top:12px">La vente se gagne au niveau 3. Les vendeurs moyens répondent au niveau 1.</p></div>'
+    +'<div class="section-block"><h3>Les 6 déclencheurs universels d\'achat</h3><table class="piliers"><tr><td>1. Douleur évitée</td><td>Montrer ce que ça coûte de ne pas agir (résonne chez D et C)</td></tr><tr><td>2. Gain visé</td><td>ROI, résultat mesurable, statut (résonne chez D et I)</td></tr><tr><td>3. Preuve sociale</td><td>"Vos concurrents l\'ont déjà adopté" (résonne chez I et S)</td></tr><tr><td>4. Autorité</td><td>Sources, certifications, études (résonne chez C)</td></tr><tr><td>5. Réciprocité</td><td>Donner de la valeur avant de demander (universel)</td></tr><tr><td>6. Cohérence</td><td>Relier la décision à ce que le prospect a déjà dit vouloir</td></tr></table></div>'
+    +'<div class="section-block"><h3>Script — Révéler le vrai problème</h3><div class="script-box"><div class="script-text"><span class="key">Vendeur :</span> "Qu\'est-ce qui vous a poussé à prendre ce rendez-vous maintenant ?"\n<span class="key">Prospect :</span> "On cherche à améliorer notre process de vente."\n<span class="key">Vendeur :</span> "Qu\'est-ce qui ne fonctionne pas dans le process actuel ?"\n<span class="key">Prospect :</span> "On perd trop de deals en phase de closing."\n<span class="key">Vendeur :</span> "Et concrètement, ça vous coûte combien par trimestre ces deals perdus ?"\n<span class="key">Prospect :</span> "... probablement 80 à 100k€."\n<span class="key">Vendeur :</span> "Donc le sujet ce n\'est pas le process — c\'est 400k€ par an qui partent chez vos concurrents."</div></div></div>'
+    +'<div class="quiz-section"><h3>Quiz de validation</h3>'+qz(6,PsyQ)+qzscore(6,PsyQ)+'</div>'+pnav(6);
+}
+
+function pg7(){
   let inner;
   if(state.tdone){
     const sc={D:0,I:0,S:0,C:0};
@@ -395,7 +412,7 @@ function pg6(){
     inner=rtq(state.tq);
   }
   return '<div class="phase-intro"><div class="phase-intro-num">?</div><div class="phase-intro-body"><h2>Auto-Diagnostic DISC</h2><div class="pi-sub">Identifie ton profil dominant en 20 questions</div><p>Ce test te révèle ton profil DISC naturel. Il n\'y a ni bonne ni mauvaise réponse. Choisis ce qui te ressemble le plus, pas ce que tu penses devoir être.</p></div></div>'
-    +'<div id="tw">'+inner+'</div>'+pnav(6);
+    +'<div id="tw">'+inner+'</div>'+pnav(7);
 }
 
 function rtq(n){
@@ -407,63 +424,6 @@ function rtq(n){
     +'<button class="btn-nav btn-next" onclick="tn('+n+')">'+(n===TQ.length-1?'Voir mes résultats &#8594;':'Suivant &#8594;')+'</button></div></div>';
 }
 
-function pg7(){
+function pg8(){
   return '<div class="phase-intro"><div class="phase-intro-num">&#9733;</div><div class="phase-intro-body"><h2>Cas Pratiques &amp; Synthèse</h2><div class="pi-sub">Mise en situation réelle — Appliquer DISC en entretien</div><p>La théorie est acquise. Ce module vous met en situation sur 4 scénarios réels et valide votre maîtrise de la méthode complète.</p></div></div>'
-    +'<div class="section-block"><h3>Cas #1 — Le DG impatient (Profil D)</h3><p>Votre prospect arrive 10 minutes en retard, pose son téléphone sur la table, et dit : "Bon, vous avez 15 minutes, convainquez-moi."</p><div class="signal-box"><div class="signal-icon">🎯</div><div class="signal-body"><div class="signal-label">Réponse optimale</div><p>"Parfait. En 3 points : votre situation actuelle vous coûte [X]. Notre solution résout ça en [délai] pour un gain de [Y]. Deux options pour démarrer — laquelle vous convient ?"</p></div></div></div>'
-    +'<div class="section-block"><h3>Cas #2 — Le directeur commercial enthousiaste (Profil I)</h3><p>Il vous accueille chaleureusement, vous raconte 10 minutes de son week-end, montre des photos de son équipe.</p><div class="signal-box"><div class="signal-icon">🌟</div><div class="signal-body"><div class="signal-label">Réponse optimale</div><p>S\'engager dans la relation d\'abord — 5 minutes de connexion sincère. Partager un témoignage client qui lui ressemble. Présenter l\'offre en termes d\'impact visible et de reconnaissance interne.</p></div></div></div>'
-    +'<div class="section-block"><h3>Cas #3 — Le responsable qui hésite (Profil S)</h3><p>Il dit : "C\'est intéressant, mais je dois en parler à mon équipe, à mon N+1, et voir comment ça s\'intègre à notre process actuel."</p><div class="signal-box"><div class="signal-icon">🤝</div><div class="signal-body"><div class="signal-label">Réponse optimale</div><p>"Très juste. Proposons une démo avec toute l\'équipe — je prépare une présentation sur la compatibilité avec votre process existant. Pas besoin de décider avant que tout le monde soit à l\'aise."</p></div></div></div>'
-    +'<div class="section-block"><h3>Cas #4 — L\'auditeur silencieux (Profil C)</h3><p>Il a imprimé votre plaquette et l\'a annotée. Il pose des questions précises : "Votre taux de 94%, c\'est sur quelle base de calcul ?"</p><div class="signal-box"><div class="signal-icon">📊</div><div class="signal-body"><div class="signal-label">Réponse optimale</div><p>"Excellente question. Ce taux est calculé sur 412 répondants sur 18 mois selon la méthode NPS. Je vous envoie le rapport complet. Y a-t-il d\'autres points que vous souhaitez que je documente ?"</p></div></div></div>'
-    +'<div class="section-block"><h3>Tableau de synthèse finale</h3><table class="synth-table"><thead><tr><th>Profil</th><th>Déclencheur d\'achat</th><th>Pire erreur</th><th>Closing idéal</th></tr></thead><tbody>'
-    +'<tr><td class="td-l" style="color:#D94040">D</td><td>ROI chiffré + efficacité</td><td>Tourner autour du pot</td><td>2 options claires, décision maintenant</td></tr>'
-    +'<tr><td class="td-l" style="color:#D4823A">I</td><td>Relation + statut social</td><td>Sauter la phase sociale</td><td>Témoignage émotionnel + vision partagée</td></tr>'
-    +'<tr><td class="td-l" style="color:#3A9E62">S</td><td>Stabilité + confiance long terme</td><td>Urgence artificielle</td><td>Accompagnement dédié + démarrage doux</td></tr>'
-    +'<tr><td class="td-l" style="color:#3A7BD5">C</td><td>Données sourcées + rigueur</td><td>Chiffres non vérifiables</td><td>Documentation complète + phase pilote</td></tr>'
-    +'</tbody></table></div>'
-    +'<div class="completion"><div class="trophy">&#127942;</div><h2>Formation <span>Terminée</span></h2><p>Tu maîtrises les 4 profils DISC, la méthode R.A.D.A.R. et les scripts d\'adaptation cross-profils. Applique-les dès ton prochain entretien.</p><button class="btn-nav btn-next" onclick="gt(0)">Revoir depuis le début</button></div>'+pnav(7);
-}
-
-// ---- NAVIGATION ----
-function bsb(){
-  const secs=[{l:'Introduction',r:[0,0]},{l:'Les 4 Profils',r:[1,4]},{l:'Maîtrise Avancée',r:[5,7]}];
-  let html='',si=0;
-  PH.forEach((ph,i)=>{
-    if(i===secs[si].r[0]){html+='<div class="nav-section">'+secs[si].l+'</div>';}
-    else if(si<secs.length-1&&i>secs[si].r[1]){si++;html+='<div class="nav-section">'+secs[si].l+'</div>';}
-    html+='<div class="nav-item'+(state.current===i?' active':'')+(state.completed.has(i)?' done':'')+'" onclick="gt('+i+')" id="ni'+i+'"><div class="nav-num">'+(state.completed.has(i)?'&#10003;':i)+'</div><div class="nav-title"><div class="phase-name">'+ph.title+'</div><div class="phase-sub">'+ph.sub+'</div></div><div class="nav-time">'+ph.t+' min</div></div>';
-  });
-  document.getElementById('nav').innerHTML=html;
-}
-
-function upd(){
-  const pct=Math.round(state.completed.size/PH.length*100);
-  document.getElementById('prog-pct').textContent=pct+'%';
-  document.getElementById('prog-fill').style.width=pct+'%';
-  const rem=PH.reduce((a,ph,i)=>a+(state.completed.has(i)?0:parseInt(ph.t)),0);
-  document.getElementById('tb-time').textContent=rem+' min restantes';
-}
-
-function gt(n){
-  state.current=n;
-  document.getElementById('tb-phase').textContent='Module '+n;
-  document.getElementById('tb-title').textContent=PH[n].title;
-  let html;
-  if(n===0)html=pg0();
-  else if(n===1)html=pgP(1,'D');
-  else if(n===2)html=pgP(2,'I');
-  else if(n===3)html=pgP(3,'S');
-  else if(n===4)html=pgP(4,'C');
-  else if(n===5)html=pg5();
-  else if(n===6)html=pg6();
-  else html=pg7();
-  document.getElementById('content').innerHTML=html;
-  document.getElementById('main').scrollTop=0;
-  bsb();upd();
-}
-
-// ---- QUIZ ----
-function aq(ph,qi,sel,cor){
-  const k=ph+'-'+qi;
-  if(state.qa[k]!==undefined)return;
-  state.qa[k]=sel;
-  const ql=ph===0?3:ph===5?6:4;
-  const allDone=Array.from({length:ql},
+    +'<div class="section-block"><h3>Cas #1 — Le DG impatient (Profil D)</h3><p>Votre prospect arrive 10 minutes en retard,
