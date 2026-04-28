@@ -379,10 +379,16 @@ function pg6(){
     const ord=['D','I','S','C'];
     const grid=ord.map(p=>'<div class="score-cell"><div class="sc-l" style="color:'+PR[p].c+'">'+p+'</div><div class="sc-v" style="color:'+PR[p].c+'">'+sc[p]+'</div><div class="sc-s">pts / 20</div></div>').join('');
     const bars=ord.map(p=>'<div class="sbar"><div class="sbar-l" style="color:'+PR[p].c+'">'+p+'</div><div class="sbar-track"><div class="sbar-fill" style="background:'+PR[p].c+';width:'+Math.round(sc[p]/20*100)+'%"></div></div><div class="sbar-v">'+sc[p]+'</div></div>').join('');
+    localStorage.setItem('radar_profil', dom);
     inner='<div class="result-hero"><div class="result-letter" style="color:'+inf.c+'">'+dom+'</div><h2>Profil '+inf.title+'</h2><div class="r-sub">'+inf.tag+'</div><div class="score-grid">'+grid+'</div>'+bars+'</div>'
       +'<div class="section-block"><h3>Ton profil en détail</h3><p>'+inf.desc+'</p></div>'
       +'<div class="section-block"><h3>Tes axes d\'adaptation prioritaires</h3>'+sb(inf.adapt)+'</div>'
-      +'<div style="text-align:center;margin-top:20px;"><button class="btn-nav btn-prev" onclick="rtst()">Refaire le test</button></div>';
+      +'<div style="background:linear-gradient(135deg,#152238,#0D1B2A);border:1px solid rgba(201,168,76,.3);border-radius:12px;padding:28px 32px;margin-top:24px;text-align:center;">'
+      +'<div style="font-size:32px;margin-bottom:12px;">🎯</div>'
+      +'<p style="font-size:15px;line-height:1.8;color:rgba(245,245,240,.9);max-width:560px;margin:0 auto 20px;font-style:italic;">"Tu viens de comprendre comment fonctionne le DISC. Maintenant réponds le plus honnêtement possible — car ton profil <strong style=\'color:#E8C97A\'>'+dom+'</strong> va changer ta formation. Nous avons créé une formation qui s\'adapte à ton profil pour te dire exactement comment agir sur le terrain et quoi travailler en priorité."</p>'
+      +'<button class="btn-nav btn-next" onclick="window.location.href=\'radar.html\'" style="font-size:15px;padding:14px 32px;">Lancer ma formation R.A.D.A.R.™ →</button>'
+      +'</div>'
+      +'<div style="text-align:center;margin-top:16px;"><button class="btn-nav btn-prev" onclick="rtst()">Refaire le test</button></div>';
   } else if(!state.ta.length){
     inner='<div class="section-block" style="text-align:center;padding:40px 24px;"><div style="font-size:48px;margin-bottom:16px;">🎯</div><h3 style="font-size:20px;font-weight:800;margin-bottom:8px;letter-spacing:0;">20 questions · ~5 minutes</h3><p style="color:var(--gray);font-size:14px;margin-bottom:24px;line-height:1.7;">Pour chaque situation, sélectionne la réponse qui te ressemble le plus naturellement.<br>Réponds d\'instinct — ta première réaction est souvent la plus juste.</p><button class="btn-nav btn-next" onclick="stst()">Démarrer le test &#8594;</button></div>';
   } else {
@@ -460,24 +466,4 @@ function aq(ph,qi,sel,cor){
   if(state.qa[k]!==undefined)return;
   state.qa[k]=sel;
   const ql=ph===0?3:ph===5?6:4;
-  const allDone=Array.from({length:ql},(_,i)=>ph+'-'+i).every(k=>state.qa[k]!==undefined);
-  if(allDone){
-    const qs=ph===0?[{c:1},{c:1},{c:3}]:ph===5?AQ:PR[['D','I','S','C'][ph-1]].quiz;
-    const sc=Array.from({length:ql},(_,i)=>state.qa[ph+'-'+i]===qs[i].c).filter(Boolean).length;
-    if(sc>=ql*.6)state.completed.add(ph);
-  }
-  gt(state.current);
-}
-
-// ---- TEST ----
-function stst(){state.ta=new Array(TQ.length).fill(null);state.tq=0;state.tdone=false;document.getElementById('tw').innerHTML=rtq(0);}
-function pt(el,qn,oi,p){el.closest('.test-options').querySelectorAll('.test-opt').forEach(o=>o.classList.remove('sel'));el.classList.add('sel');state.ta[qn]={i:oi,p};}
-function tn(n){if(!state.ta[n])return;if(n===TQ.length-1){state.tdone=true;gt(6);}else{state.tq=n+1;document.getElementById('tw').innerHTML=rtq(n+1);}}
-function tp(n){if(n>0){state.tq=n-1;document.getElementById('tw').innerHTML=rtq(n-1);}}
-function rtst(){state.ta=[];state.tdone=false;gt(6);}
-
-gt(0);
-
-</script>
-</body>
-</html>
+  const allDone=Array.from({length:ql},
