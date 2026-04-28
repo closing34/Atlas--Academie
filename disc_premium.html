@@ -169,7 +169,8 @@ const PH=[
   {n:4,title:'Le Consciencieux',sub:'Profil C — Orientation qualité',t:'45'},
   {n:5,title:'Adapter son Pitch',sub:'Communication cross-profils',t:'60'},
   {n:6,title:'Auto-Diagnostic DISC',sub:'Identifie ton profil dominant',t:'30'},
-  {n:7,title:'Cas Pratiques & Synthèse',sub:'Mise en situation réelle',t:'50'}
+  {n:7,title:'R.A.D.A.R. Personnalisé',sub:'Adapté à ton profil dominant',t:'40'},
+  {n:8,title:'Cas Pratiques & Synthèse',sub:'Mise en situation réelle',t:'50'}
 ];
 
 const PR={
@@ -401,7 +402,85 @@ function rtq(n){
     +'<button class="btn-nav btn-next" onclick="tn('+n+')">'+(n===TQ.length-1?'Voir mes résultats &#8594;':'Suivant &#8594;')+'</button></div></div>';
 }
 
+
 function pg7(){
+  // Profil détecté dans le test Module 6
+  const sc={D:0,I:0,S:0,C:0};
+  if(state.tdone) state.ta.forEach(a=>{if(a&&a.p)sc[a.p]++;});
+  const mx=Math.max(...Object.values(sc));
+  const dom=state.tdone?Object.entries(sc).find(([k,v])=>v===mx)[0]:null;
+
+  const RADAR={
+    D:{
+      atout:"Tu <strong>Repères</strong> instantanément les profils D car tu leur ressembles — même débit, même posture, même logique résultats. Les deals D×D se closent vite.",
+      angle:"Tu passes à côté des profils S et C : tu vas trop vite, tu lis mal l'hésitation du S (besoin de sécurité) et l'interrogation du C (besoin de données). Tu confonds leur silence avec du désintérêt.",
+      erreur:"Tu sautes les étapes <strong>A–Analyser</strong> et <strong>R–Reformuler</strong> car tu closes trop tôt. Un deal perdu avec un S ou C, c'est presque toujours ça.",
+      conseil:"Avant de pitcher, force-toi 30 secondes d'observation silencieuse. Si le prospect parle lentement et mentionne 'l'équipe' → S. S'il prend des notes et pose des questions précises → C. Change de vitesse avant d'ouvrir.",
+      scripts:[
+        {profil:'D',c:'#D94040',tip:"Terrain naturel. ROI en 30s, 2 options, silence après la question de closing. Ne change rien."},
+        {profil:'I',c:'#D4823A',tip:"Force 2 minutes de connexion sincère AVANT les résultats. Pose une question sur son équipe ou son contexte perso. Ce 2 minutes vaut 10 minutes d'argumentation."},
+        {profil:'S',c:'#3A9E62',tip:"Ralentis le débit de 30%. Supprime toute urgence artificielle. Parle de continuité, de suivi, d'accompagnement. Ne challenge jamais sa décision collective."},
+        {profil:'C',c:'#3A7BD5',tip:"Viens avec des sources précises. Accepte ses questions sans impatience visible. Ne l'interromps pas. Ta rigueur dans les réponses est ton seul vrai argument."}
+      ]
+    },
+    I:{
+      atout:"Tu <strong>Décodes</strong> naturellement les besoins émotionnels et relationnels. Les profils I et S t'adorent car tu crées une connexion humaine immédiate. Ta chaleur est ton meilleur outil de prospection.",
+      angle:"Tu rates les signaux analytiques du C (il prend des notes → tu continues à raconter) et l'impatience du D (il regarde sa montre → tu ajoutes une anecdote). Tu lis les émotions, pas les comportements.",
+      erreur:"Ta reformulation est trop émotionnelle avec D et C. Avec un D, reformule en ROI chiffré. Avec un C, reformule les garanties logiques. La chaleur humaine seule ne suffit pas à les convaincre.",
+      conseil:"Crée-toi un trigger mental : dès que ton prospect regarde sa montre ou prend un stylo pour noter → coupe l'anecdote, passe aux faits. Ce switch conscient est ton plus grand levier de progression.",
+      scripts:[
+        {profil:'D',c:'#D94040',tip:"Coupe les anecdotes après 30 secondes. Donne le résultat chiffré. Deux options, tu te tais. C'est inconfortable pour toi — c'est exactement pour ça que ça fonctionne."},
+        {profil:'I',c:'#D4823A',tip:"Terrain naturel. Connexion, histoire client, vision partagée. Ton seul risque : ne jamais oser conclure. Pratique la question directe après l'écoute."},
+        {profil:'S',c:'#3A9E62',tip:"Montre stabilité et continuité. Garde la chaleur mais ajoute la dimension sécurité. Il a besoin que son équipe soit incluse — propose-le toi-même."},
+        {profil:'C',c:'#3A7BD5',tip:"Données sourcées obligatoires. Prépare des chiffres précis. Réduis les histoires à 20% de ton discours. Ta crédibilité avec lui passe par la rigueur, pas la relation."}
+      ]
+    },
+    S:{
+      atout:"Tu <strong>Analyses</strong> et écoutes avec une patience rare. Les profils S et I te font une confiance naturelle. Tu détectes les non-dits, les hésitations réelles, les besoins cachés — ce que les vendeurs pressés ratent systématiquement.",
+      angle:"Tu over-utilises la phase D (Décoder) — tu analyses tellement que tu n'oses pas Adapter. Tu retardes le closing pour éviter d'imposer. Résultat : ton prospect t'apprécie mais ne signe pas.",
+      erreur:"Tu supprimes ou adoucis la question de closing car tu perçois toute pression comme une trahison de la relation construite. Conclure n'est pas forcer — c'est l'aboutissement logique de la confiance que tu as créée.",
+      conseil:"Entraîne-toi sur cette phrase pivot : <em>'Sur la base de ce qu'on vient de voir ensemble, qu'est-ce qui t'empêche d'avancer maintenant ?'</em> C'est direct, respectueux, et ça donne au prospect la parole. Tu peux le faire.",
+      scripts:[
+        {profil:'D',c:'#D94040',tip:"Sois assertif et donne le résultat en premier. Il perçoit ton hésitation comme un manque de compétence. Force-toi à parler en premier, avec les chiffres clés."},
+        {profil:'I',c:'#D4823A',tip:"Terrain proche du tien. Connexion naturelle. Juste assez d'enthousiasme pour maintenir son énergie. Ton calme le rassure."},
+        {profil:'S',c:'#3A9E62',tip:"Terrain naturel. Continuité, sécurité, accompagnement. Ton seul travail : trouver le bon moment pour conclure sans le brusquer."},
+        {profil:'C',c:'#3A7BD5',tip:"Prépare des données sourcées. Donne-lui le temps d'analyser. Ta patience naturelle est un atout réel ici. Mais valide sa compréhension à chaque étape — il a besoin de traçabilité."}
+      ]
+    },
+    C:{
+      atout:"Tu <strong>Décodes</strong> avec précision les motivations logiques de chaque prospect. Ta préparation est imbattable — chaque objection anticipée, chaque chiffre prêt. Les profils C et D rationnels te font confiance car tu es irréprochable sur le fond.",
+      angle:"Tu Repères mal les besoins émotionnels des I et la rapidité des D. Tu sur-prépares face aux profils qui n'ont pas besoin de ta documentation, et tu peux intimidider les S avec ta rigueur analytique.",
+      erreur:"Tu utilises trop la phase D (Décoder analytique) et tu retardes la phase A (Adapter = conclure) par excès d'information. Le closing n'est pas à la fin de ton argumentaire — c'est quand le prospect est prêt.",
+      conseil:"Identifie le moment où ton prospect a compris la valeur — et close à ce moment-là, même si tu n'as pas tout dit. Test : 'Est-ce que ce qu'on vient de voir répond à votre enjeu principal ?' → Si oui, close.",
+      scripts:[
+        {profil:'D',c:'#D94040',tip:"1 chiffre clé, 2 options claires, stop. Il a compris. Ne continue pas à expliquer — il perçoit ça comme un doute sur sa capacité à décider. Silence après la question de closing."},
+        {profil:'I',c:'#D4823A',tip:"Commence par une histoire courte avant les données. Souris. La connexion humaine d'abord, les chiffres ensuite. C'est inconfortable pour toi — c'est ton territoire de progression."},
+        {profil:'S',c:'#3A9E62',tip:"Données + dimension relationnelle. Parle de stabilité, de suivi, d'équipe. Ta rigueur le rassure, ta patience le met à l'aise. Bon terrain pour toi."},
+        {profil:'C',c:'#3A7BD5',tip:"Terrain naturel. Données sourcées, rigueur, temps d'analyse. Ton seul risque : vous analysez tellement ensemble que personne ne conclut. Sois celui qui pose la question de closing."}
+      ]
+    }
+  };
+
+  let inner;
+  if(!state.tdone){
+    inner='<div class="section-block" style="text-align:center;padding:40px 24px;"><div style="font-size:48px;margin-bottom:16px;">🎯</div><h3 style="font-size:18px;font-weight:800;margin-bottom:8px;letter-spacing:0;">Complète d'abord le diagnostic</h3><p style="color:var(--gray);font-size:14px;margin-bottom:24px;line-height:1.7;">Ce module est personnalisé selon ton profil DISC.<br>Va au Module 6 pour passer le test de 20 questions.</p><button class="btn-nav btn-next" onclick="gt(6)">Faire le diagnostic →</button></div>';
+  } else {
+    const r=RADAR[dom];
+    const inf=PR[dom];
+    const scripts=r.scripts.map(s=>'<div class="signal-box" style="border-color:'+s.c+'22;background:'+s.c+'08;"><div class="signal-icon" style="color:'+s.c+'">'+s.profil+'</div><div class="signal-body"><div class="signal-label" style="color:'+s.c+';">Face à un profil '+s.profil+' ('+PR[s.profil].title+')</div><p>'+s.tip+'</p></div></div>').join('');
+    inner='<div class="profile-banner" style="border-left-color:'+inf.c+';margin-bottom:24px;"><div class="pb-letter" style="color:'+inf.c+'">'+dom+'</div><div class="pb-body"><h2>Ton profil : '+inf.title+'</h2><div class="pb-sub">'+inf.tag+'</div></div></div>'
+      +'<div class="section-block"><h3>Ton atout naturel dans R.A.D.A.R.</h3><p>'+r.atout+'</p></div>'
+      +'<div class="section-block"><h3>Ton angle mort</h3><p>'+r.angle+'</p></div>'
+      +'<div class="section-block"><h3>L'erreur que tu fais le plus souvent</h3><p>'+r.erreur+'</p></div>'
+      +'<div class="section-block"><h3>Ton conseil actionnable immédiat</h3><p>'+r.conseil+'</p></div>'
+      +'<div class="section-block"><h3>Scripts R.A.D.A.R. — adaptés selon ton prospect</h3>'+scripts+'</div>';
+  }
+
+  return '<div class="phase-intro"><div class="phase-intro-num" style="color:var(--gold)">★</div><div class="phase-intro-body"><h2>R.A.D.A.R. Personnalisé</h2><div class="pi-sub">Appliqué à ton profil DISC dominant</div><p>La méthode R.A.D.A.R. ne s'applique pas de la même façon selon ton profil naturel. Ce module t'explique exactement où tu excelles, où tu perds des deals, et les scripts spécifiques à ton profil.</p></div></div>'
+    +'<div id="radar-perso">'+inner+'</div>'+pnav(7);
+}
+
+function pg8(){
   return '<div class="phase-intro"><div class="phase-intro-num">&#9733;</div><div class="phase-intro-body"><h2>Cas Pratiques &amp; Synthèse</h2><div class="pi-sub">Mise en situation réelle — Appliquer DISC en entretien</div><p>La théorie est acquise. Ce module vous met en situation sur 4 scénarios réels et valide votre maîtrise de la méthode complète.</p></div></div>'
     +'<div class="section-block"><h3>Cas #1 — Le DG impatient (Profil D)</h3><p>Votre prospect arrive 10 minutes en retard, pose son téléphone sur la table, et dit : "Bon, vous avez 15 minutes, convainquez-moi."</p><div class="signal-box"><div class="signal-icon">🎯</div><div class="signal-body"><div class="signal-label">Réponse optimale</div><p>"Parfait. En 3 points : votre situation actuelle vous coûte [X]. Notre solution résout ça en [délai] pour un gain de [Y]. Deux options pour démarrer — laquelle vous convient ?"</p></div></div></div>'
     +'<div class="section-block"><h3>Cas #2 — Le directeur commercial enthousiaste (Profil I)</h3><p>Il vous accueille chaleureusement, vous raconte 10 minutes de son week-end, montre des photos de son équipe.</p><div class="signal-box"><div class="signal-icon">🌟</div><div class="signal-body"><div class="signal-label">Réponse optimale</div><p>S\'engager dans la relation d\'abord — 5 minutes de connexion sincère. Partager un témoignage client qui lui ressemble. Présenter l\'offre en termes d\'impact visible et de reconnaissance interne.</p></div></div></div>'
@@ -413,12 +492,12 @@ function pg7(){
     +'<tr><td class="td-l" style="color:#3A9E62">S</td><td>Stabilité + confiance long terme</td><td>Urgence artificielle</td><td>Accompagnement dédié + démarrage doux</td></tr>'
     +'<tr><td class="td-l" style="color:#3A7BD5">C</td><td>Données sourcées + rigueur</td><td>Chiffres non vérifiables</td><td>Documentation complète + phase pilote</td></tr>'
     +'</tbody></table></div>'
-    +'<div class="completion"><div class="trophy">&#127942;</div><h2>Formation <span>Terminée</span></h2><p>Tu maîtrises les 4 profils DISC, la méthode R.A.D.A.R. et les scripts d\'adaptation cross-profils. Applique-les dès ton prochain entretien.</p><button class="btn-nav btn-next" onclick="gt(0)">Revoir depuis le début</button></div>'+pnav(7);
+    +'<div class="completion"><div class="trophy">&#127942;</div><h2>Formation <span>Terminée</span></h2><p>Tu maîtrises les 4 profils DISC, la méthode R.A.D.A.R. et les scripts d\'adaptation cross-profils. Applique-les dès ton prochain entretien.</p><button class="btn-nav btn-next" onclick="gt(0)">Revoir depuis le début</button></div>'+pnav(8);
 }
 
 // ---- NAVIGATION ----
 function bsb(){
-  const secs=[{l:'Introduction',r:[0,0]},{l:'Les 4 Profils',r:[1,4]},{l:'Maîtrise Avancée',r:[5,7]}];
+  const secs=[{l:'Introduction',r:[0,0]},{l:'Les 4 Profils',r:[1,4]},{l:'Maîtrise Avancée',r:[5,8]}];
   let html='',si=0;
   PH.forEach((ph,i)=>{
     if(i===secs[si].r[0]){html+='<div class="nav-section">'+secs[si].l+'</div>';}
@@ -448,7 +527,8 @@ function gt(n){
   else if(n===4)html=pgP(4,'C');
   else if(n===5)html=pg5();
   else if(n===6)html=pg6();
-  else html=pg7();
+  else if(n===7)html=pg7();
+  else html=pg8();
   document.getElementById('content').innerHTML=html;
   document.getElementById('main').scrollTop=0;
   bsb();upd();
