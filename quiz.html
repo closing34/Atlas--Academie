@@ -284,20 +284,7 @@
   </div>
 </div>
 
-<script>
-/* ── GARDE D'ACCÈS — Redirection si non connecté ── */
-(function() {
-  try {
-    var u = JSON.parse(localStorage.getItem('atlas_user') || 'null');
-    if (!u || !u.id) {
-      localStorage.setItem('atlas_auth_return', window.location.pathname.split('/').pop());
-      window.location.href = 'auth.html';
-    }
-  } catch(e) {
-    window.location.href = 'auth.html';
-  }
-})();
-</script>
+<!-- Quiz accessible sans connexion -->
 <script src="atlas-config.js"></script>
 <script src="assets/js/supabase-client.js"></script>
 <script src="assets/js/usage.js"></script>
