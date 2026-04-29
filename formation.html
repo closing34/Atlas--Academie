@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Formation DISC Elite — E-Learning Complet</title>
+<style>
+:root{--navy:#0D1B2A;--navy2:#152238;--gold:#C9A84C;--gold-light:#E8C97A;--white:#F5F5F0;--gray:#8A9BB0;--red:#E05A5A;--green:#4CAF82;--blue:#3A7BD5;--D:#D94040;--I:#D4823A;--S:#3A9E62;--C:#3A7BD5;--sidebar-w:280px;--header-h:64px;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;font-family:'Segoe UI',Arial,sans-serif;background:var(--navy);color:var(--white);}
+#app{display:flex;height:100vh;overflow:hidden;}
+#sidebar{width:var(--sidebar-w);min-width:var(--sidebar-w);background:#08111C;display:flex;flex-direction:column;overflow-y:auto;border-right:1px solid rgba(201,168,76,.15);}
+#sidebar-header{padding:20px 16px 16px;border-bottom:1px solid rgba(201,168,76,.15);}
+#sidebar-header .logo{font-size:11px;letter-spacing:3px;color:var(--gold);text-transform:uppercase;margin-bottom:4px;}
+#sidebar-header h1{font-size:16px;font-weight:800;line-height:1.2;}
+#sidebar-header .sub{font-size:11px;color:var(--gray);margin-top:4px;}
+.global-progress{padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.05);}
+.prog-label{font-size:10px;color:var(--gray);text-transform:uppercase;letter-spacing:1px;display:flex;justify-content:space-between;margin-bottom:6px;}
+.prog-bar{height:4px;background:rgba(255,255,255,.08);border-radius:2px;}
+.prog-fill{height:100%;background:var(--gold);border-radius:2px;transition:width .4s ease;}
+#nav{flex:1;padding:8px 0;}
+.nav-section{padding:8px 16px 4px;font-size:9px;letter-spacing:2px;color:var(--gray);text-transform:uppercase;}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 16px;cursor:pointer;transition:background .15s;border-left:3px solid transparent;font-size:13px;}
+.nav-item:hover{background:rgba(201,168,76,.07);}
+.nav-item.active{background:rgba(201,168,76,.12);border-left-color:var(--gold);color:var(--gold-light);}
+.nav-item.done .nav-num{background:var(--green);border-color:var(--green);color:#fff;}
+.nav-num{width:22px;height:22px;border-radius:50%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;}
+.nav-item.active .nav-num{background:var(--gold);border-color:var(--gold);color:#000;}
+.nav-title{flex:1;line-height:1.2;}
+.nav-title .phase-name{font-weight:600;font-size:13px;}
+.nav-title .phase-sub{font-size:10px;color:var(--gray);}
+.nav-time{font-size:10px;color:var(--gray);flex-shrink:0;}
+#main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+#topbar{height:var(--header-h);min-height:var(--header-h);background:rgba(13,27,42,.95);border-bottom:1px solid rgba(255,255,255,.07);display:flex;align-items:center;padding:0 32px;gap:20px;}
+.topbar-phase{font-size:11px;color:var(--gold);text-transform:uppercase;letter-spacing:2px;}
+.topbar-title{font-size:18px;font-weight:800;flex:1;}
+.topbar-badge{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--gray);background:rgba(255,255,255,.06);padding:6px 12px;border-radius:20px;}
+.time-dot{width:6px;height:6px;border-radius:50%;background:var(--gold);}
+#content{flex:1;overflow-y:auto;padding:32px;}
+#content::-webkit-scrollbar{width:6px;}
+#content::-webkit-scrollbar-thumb{background:rgba(201,168,76,.3);border-radius:3px;}
+.phase-intro{background:linear-gradient(135deg,#152238,#0D1B2A);border:1px solid rgba(201,168,76,.2);border-radius:12px;padding:28px 32px;margin-bottom:28px;display:flex;gap:24px;align-items:flex-start;}
+.phase-intro-num{font-size:64px;font-weight:900;color:rgba(201,168,76,.15);line-height:1;flex-shrink:0;min-width:80px;}
+.phase-intro-body h2{font-size:26px;font-weight:800;color:var(--gold-light);margin-bottom:4px;}
+.phase-intro-body .pi-sub{font-size:14px;color:var(--gray);margin-bottom:12px;}
+.phase-intro-body p{font-size:14px;line-height:1.75;color:rgba(245,245,240,.85);}
+.profile-banner{background:linear-gradient(135deg,#152238,#0D1B2A);border-radius:12px;padding:24px 28px;margin-bottom:28px;border-left:5px solid var(--gold);display:flex;gap:20px;align-items:center;}
+.pb-letter{font-size:52px;font-weight:900;line-height:1;flex-shrink:0;}
+.pb-body h2{font-size:24px;font-weight:800;margin-bottom:3px;}
+.pb-body .pb-sub{font-size:14px;color:var(--gray);font-style:italic;margin-bottom:8px;}
+.pb-tags{display:flex;gap:6px;flex-wrap:wrap;}
+.tag{font-size:11px;padding:3px 10px;border-radius:12px;font-weight:600;background:rgba(255,255,255,.08);color:var(--gray);}
+.section-block{background:rgba(21,34,56,.5);border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:24px;margin-bottom:20px;}
+.section-block h3{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.section-block h3::after{content:'';flex:1;height:1px;background:rgba(201,168,76,.2);}
+.section-block p{font-size:14px;line-height:1.75;color:rgba(245,245,240,.85);}
+.section-block p+p{margin-top:10px;}
+.piliers{width:100%;border-collapse:collapse;margin-top:8px;}
+.piliers tr{border-bottom:1px solid rgba(255,255,255,.05);}
+.piliers td{padding:10px 12px;font-size:13px;line-height:1.5;}
+.piliers td:first-child{font-weight:700;color:var(--gold);white-space:nowrap;width:220px;font-size:12px;letter-spacing:.5px;}
+.script-box{background:#060E18;border:1px solid var(--gold);border-radius:10px;padding:24px;margin-bottom:20px;position:relative;}
+.script-box::before{content:'SCRIPT VERBATIM';display:block;font-size:9px;letter-spacing:3px;color:var(--gold);text-transform:uppercase;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid rgba(201,168,76,.2);}
+.script-text{font-family:'Consolas','Courier New',monospace;font-size:13px;line-height:2;color:#E8DFC8;white-space:pre-wrap;}
+.script-text .key{color:var(--gold);font-weight:700;}
+.erreurs-list{list-style:none;}
+.erreurs-list li{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:13px;line-height:1.6;color:rgba(245,245,240,.85);}
+.erreurs-list li:last-child{border-bottom:none;}
+.erreurs-list li::before{content:'x';color:var(--red);font-weight:900;flex-shrink:0;margin-top:1px;}
+.signal-box{background:rgba(76,175,130,.07);border:1px solid rgba(76,175,130,.25);border-radius:10px;padding:16px 20px;margin-bottom:12px;display:flex;gap:14px;align-items:flex-start;}
+.signal-icon{font-size:18px;font-weight:900;flex-shrink:0;min-width:24px;line-height:1.4;}
+.signal-body .signal-label{font-size:10px;color:var(--green);letter-spacing:2px;text-transform:uppercase;font-weight:700;margin-bottom:6px;}
+.signal-body p{font-size:13px;line-height:1.65;color:rgba(245,245,240,.85);}
+.quiz-section{margin-top:28px;}
+.quiz-section h3{font-size:11px;letter-spacing:3px;color:var(--gold);text-transform:uppercase;margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+.quiz-section h3::after{content:'';flex:1;height:1px;background:rgba(201,168,76,.2);}
+.quiz-question{background:rgba(21,34,56,.7);border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:20px;margin-bottom:14px;}
+.quiz-q-text{font-size:14px;font-weight:600;margin-bottom:14px;line-height:1.5;}
+.quiz-options{display:flex;flex-direction:column;gap:8px;}
+.quiz-opt{padding:11px 14px;border-radius:7px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.03);cursor:pointer;font-size:13px;line-height:1.4;transition:all .15s;display:flex;gap:10px;align-items:flex-start;}
+.quiz-opt:hover:not(.locked){border-color:rgba(201,168,76,.4);background:rgba(201,168,76,.06);}
+.quiz-opt.correct{border-color:var(--green);background:rgba(76,175,130,.1);color:var(--green);}
+.quiz-opt.wrong{border-color:var(--red);background:rgba(224,90,90,.1);color:var(--red);}
+.quiz-opt.locked{cursor:default;}
+.quiz-feedback{margin-top:10px;padding:10px 14px;border-radius:7px;font-size:12px;line-height:1.5;display:none;}
+.quiz-feedback.show{display:block;}
+.quiz-feedback.ok{background:rgba(76,175,130,.1);color:var(--green);}
+.quiz-feedback.ko{background:rgba(224,90,90,.1);color:var(--red);}
+.quiz-score-bar{padding:14px 20px;background:rgba(21,34,56,.8);border-radius:10px;display:flex;gap:20px;align-items:center;margin-top:8px;}
+.qs-label{font-size:12px;color:var(--gray);}
+.qs-val{font-size:20px;font-weight:800;}
+.phase-nav{display:flex;justify-content:space-between;align-items:center;margin-top:32px;padding-top:24px;border-top:1px solid rgba(255,255,255,.08);}
+.btn-nav{padding:11px 24px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;border:none;transition:all .2s;display:inline-flex;align-items:center;gap:8px;}
+.btn-prev{background:rgba(255,255,255,.07);color:var(--white);}
+.btn-prev:hover{background:rgba(255,255,255,.12);}
+.btn-next{background:var(--gold);color:#000;}
+.btn-next:hover{background:var(--gold-light);}
+.test-q-card{background:rgba(21,34,56,.7);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:24px;max-width:680px;margin:0 auto;}
+.test-q-num{font-size:10px;color:var(--gold);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;}
+.test-q-text{font-size:16px;font-weight:700;margin-bottom:18px;line-height:1.5;}
+.test-options{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.test-opt{padding:14px;border:1px solid rgba(255,255,255,.1);border-radius:8px;cursor:pointer;font-size:13px;line-height:1.4;transition:all .2s;text-align:left;background:rgba(255,255,255,.02);color:var(--white);}
+.test-opt:hover{border-color:rgba(201,168,76,.4);background:rgba(201,168,76,.06);}
+.test-opt.sel{border-color:var(--gold);background:rgba(201,168,76,.12);color:var(--gold-light);}
+.test-nav{display:flex;align-items:center;justify-content:space-between;margin-top:24px;}
+.test-prog-bar{height:3px;background:rgba(255,255,255,.08);border-radius:2px;margin-bottom:28px;}
+.test-prog-fill{height:100%;background:var(--gold);border-radius:2px;transition:width .3s ease;}
+.result-hero{text-align:center;padding:40px 24px;background:linear-gradient(135deg,#152238,#0D1B2A);border-radius:16px;border:1px solid rgba(201,168,76,.2);margin-bottom:24px;}
+.result-letter{font-size:72px;font-weight:900;line-height:1;margin-bottom:8px;}
+.result-hero h2{font-size:28px;font-weight:800;margin-bottom:4px;}
+.result-hero .r-sub{font-size:14px;color:var(--gray);font-style:italic;margin-bottom:20px;}
+.score-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;}
+.score-cell{background:rgba(21,34,56,.8);border-radius:10px;padding:14px;text-align:center;}
+.score-cell .sc-l{font-size:18px;font-weight:900;margin-bottom:4px;}
+.score-cell .sc-v{font-size:22px;font-weight:900;}
+.score-cell .sc-s{font-size:11px;color:var(--gray);margin-top:2px;}
+.sbar{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.sbar-l{width:20px;font-weight:800;font-size:14px;}
+.sbar-track{flex:1;height:8px;background:rgba(255,255,255,.08);border-radius:4px;overflow:hidden;}
+.sbar-fill{height:100%;border-radius:4px;transition:width 1s ease;}
+.sbar-v{width:32px;font-size:12px;color:var(--gray);text-align:right;}
+.synth-table{width:100%;border-collapse:collapse;margin-top:8px;}
+.synth-table th{padding:10px 12px;text-align:left;font-size:10px;letter-spacing:2px;color:var(--gold);text-transform:uppercase;border-bottom:1px solid rgba(201,168,76,.2);}
+.synth-table td{padding:12px;font-size:13px;line-height:1.5;border-bottom:1px solid rgba(255,255,255,.05);vertical-align:top;}
+.synth-table tr:hover td{background:rgba(201,168,76,.04);}
+.synth-table .td-l{font-weight:700;font-size:14px;}
+.completion{text-align:center;padding:60px 20px;}
+.completion .trophy{font-size:72px;margin-bottom:20px;}
+.completion h2{font-size:32px;font-weight:900;margin-bottom:12px;}
+.completion h2 span{color:var(--gold);}
+.completion p{color:var(--gray);font-size:15px;max-width:480px;margin:0 auto 28px;line-height:1.6;}
+@media(max-width:768px){:root{--sidebar-w:0px;}#sidebar{display:none;}.phase-intro{flex-direction:column;}.test-options{grid-template-columns:1fr;}#content{padding:16px;}}
+
+.obj-card{background:rgba(21,34,56,.7);border:1px solid rgba(255,255,255,.07);border-radius:10px;margin-bottom:10px;overflow:hidden;}
+.obj-head{padding:14px 18px;display:flex;gap:12px;align-items:center;cursor:pointer;}
+.obj-head:hover{background:rgba(201,168,76,.05);}
+.obj-num{width:26px;height:26px;border-radius:50%;background:rgba(201,168,76,.15);border:1px solid rgba(201,168,76,.3);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:var(--gold);flex-shrink:0;}
+.obj-q{font-size:14px;font-weight:600;font-style:italic;}
+.obj-body{display:none;padding:14px 18px 16px;border-top:1px solid rgba(255,255,255,.05);font-size:13px;line-height:1.75;color:rgba(245,245,240,.8);}
+.obj-body.open{display:block;}
+.obj-rep{margin-top:10px;background:#060E18;border-left:3px solid var(--gold);padding:12px 16px;border-radius:0 8px 8px 0;font-family:'Consolas','Courier New',monospace;font-size:12px;color:#E8DFC8;line-height:1.9;white-space:pre-wrap;}
+.disc-tip{border-radius:10px;padding:20px 24px;margin-bottom:20px;border:1px solid;}
+.disc-tip h4{font-size:11px;letter-spacing:3px;text-transform:uppercase;font-weight:700;margin-bottom:10px;}
+.disc-tip p{font-size:13px;line-height:1.7;color:rgba(245,245,240,.9);}
+.tip-work{margin-top:10px;padding:10px 14px;border-radius:7px;font-size:12px;font-weight:600;}
+.disc-D{background:rgba(217,64,64,.08);border-color:rgba(217,64,64,.3);}
+.disc-D h4,.disc-D .tip-work{color:#D94040;}.disc-D .tip-work{background:rgba(217,64,64,.1);}
+.disc-I{background:rgba(212,130,58,.08);border-color:rgba(212,130,58,.3);}
+.disc-I h4,.disc-I .tip-work{color:#D4823A;}.disc-I .tip-work{background:rgba(212,130,58,.1);}
+.disc-S{background:rgba(58,158,98,.08);border-color:rgba(58,158,98,.3);}
+.disc-S h4,.disc-S .tip-work{color:#3A9E62;}.disc-S .tip-work{background:rgba(58,158,98,.1);}
+.disc-C{background:rgba(58,123,213,.08);border-color:rgba(58,123,213,.3);}
+.disc-C h4,.disc-C .tip-work{color:#3A7BD5;}.disc-C .tip-work{background:rgba(58,123,213,.1);}
+.no-profil{background:rgba(201,168,76,.05);border:1px solid rgba(201,168,76,.3);border-radius:10px;padding:20px 24px;margin-bottom:20px;}
+.no-profil p{font-size:13px;color:var(--gray);margin-bottom:12px;}
+.profil-btns{display:flex;gap:8px;flex-wrap:wrap;}
+.profil-btn{padding:8px 16px;border-radius:8px;border:1px solid;font-size:12px;font-weight:700;cursor:pointer;transition:all .2s;background:transparent;}
+.check-list{list-style:none;}
+.check-list li{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:13px;line-height:1.6;color:rgba(245,245,240,.85);}
+.check-list li:last-child{border-bottom:none;}
+.check-list li::before{content:'v';color:var(--green);font-weight:900;flex-shrink:0;}
+.plan-card{border-radius:12px;padding:24px;margin-bottom:16px;border:1px solid rgba(255,255,255,.1);}
+.plan-card h4{font-size:16px;font-weight:800;margin-bottom:6px;}
+.plan-card .psub{font-size:12px;color:var(--gray);margin-bottom:14px;}
+.plan-card ul{list-style:none;}
+.plan-card ul li{font-size:13px;line-height:1.7;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.05);display:flex;gap:8px;}
+.plan-card ul li::before{content:'>';color:var(--gold);font-weight:700;flex-shrink:0;}
+.btn-gold{background:rgba(201,168,76,.15);color:var(--gold);border:1px solid rgba(201,168,76,.3);}
+.synth-table{width:100%;border-collapse:collapse;margin-top:8px;}
+.synth-table th{padding:10px 12px;text-align:left;font-size:10px;letter-spacing:2px;color:var(--gold);text-transform:uppercase;border-bottom:1px solid rgba(201,168,76,.2);}
+.synth-table td{padding:12px;font-size:13px;line-height:1.5;border-bottom:1px solid rgba(255,255,255,.05);vertical-align:top;}
+.synth-table .td-l{font-weight:700;font-size:14px;}
+</style>
+</head>
+<body>
+<div id="app">
+<nav id="sidebar">
+  <div id="sidebar-header">
+    <div class="logo">Formation Elite</div>
+    <h1 id="sb-title">Profiling DISC</h1>
+    <div class="sub">8 Modules &middot; 5h30</div>
+  </div>
+  <div class="global-progress">
+    <div class="prog-label"><span>Progression</span><span id="prog-pct">0%</span></div>
+    <div class="prog-bar"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
+  </div>
+  <div id="nav"></div>
+</nav>
+<main id="main">
+  <div id="topbar">
+    <div>
+      <div class="topbar-phase" id="tb-phase">Module 0</div>
+      <div class="topbar-title" id="tb-title">Fondations &amp; Mindset</div>
+    </div>
+    <div class="topbar-badge"><div class="time-dot"></div><span id="tb-time">330 min restantes</span></div>
+  </div>
+  <div id="content"></div>
+</main>
+</div>
+<script>
+
+var state={current:0,completed:new Set(),qa:{},ta:[],tq:0,tdone:false};
+var mode='disc';
+var userProfil=null;
+var rstate={cur:1,done:new Set(),qa:{}};
+
+var PH=[
+  {n:0,title:'Fondations & Mindset',sub:'Pourquoi le profiling change tout',t:'30'},
+  {n:1,title:'Le Dominant',sub:'Profil D — Orientation résultats',t:'45'},
+  {n:2,title:"L'Influent",sub:'Profil I — Orientation relations',t:'45'},
+  {n:3,title:'Le Stable',sub:'Profil S — Orientation harmonie',t:'45'},
+  {n:4,title:'Le Consciencieux',sub:'Profil C — Orientation qualité',t:'45'},
+  {n:5,title:'Adapter son Pitch',sub:'Communication cross-profils',t:'60'},
+  {n:6,title:'Auto-Diagnostic DISC',sub:'Identifie ton profil dominant',t:'30'},
+  {n:7,title:'Cas Pratiques & Synthèse',sub:'Mise en situation réelle',t:'50'}
+];
+
+var PR={
+  D:{c:'#D94040',title:'Dominant',tag:'Je décide, donc je suis.',kw:['Résultats','Contrôle','Efficacité','Challenge'],
+    desc:"Le Dominant est direct, orienté résultats et décisionnaire. Il va à l'essentiel, déteste perdre son temps et cherche à garder le contrôle. En vente, il veut savoir quel ROI il obtient, en combien de temps, et pourquoi votre solution est la meilleure option disponible.",
+    fears:"Perdre le contrôle · Manque d'efficacité · Décisions imposées",
+    script:"Voici ce que ça vous rapporte : [résultat chiffré] en [délai]. Deux options pour démarrer — laquelle correspond à vos priorités ?",
+    dont:["Ne jamais détailler inutilement","Ne jamais créer d'urgence artificielle","Ne jamais remettre en question sa compétence"],
+    adapt:[{p:'I',tip:"Accorde 2 minutes de relation sincère avant les résultats."},{p:'S',tip:"Ralentis le tempo. Présente stabilité et suivi long terme."},{p:'C',tip:"Prépare des données sourcées. Anticipe ses questions précises."}],
+    quiz:[
+      {q:"Comment ouvre-t-on idéalement un entretien avec un Dominant ?",
+       o:["Par des détails techniques approfondis","Par une anecdote personnelle chaleureuse","Par le ROI et les résultats concrets en 30 secondes","Par un long tour de table collaboratif"],c:2,
+       fb:"Le D déteste perdre son temps. L'ouverture parfaite : résultat chiffré + délai + question de closing."},
+      {q:"Quelle phrase déclenchera le plus l'intérêt d'un profil D ?",
+       o:["Nos clients adorent notre service !","Nos données montrent 23% d'économies en Q1.","On peut prendre le temps de tout voir ensemble.","Je vais vous expliquer notre méthode étape par étape."],c:1,
+       fb:"Le D pense en chiffres et résultats. La précision (23%, Q1) crédibilise immédiatement."},
+      {q:"Face à 'C'est trop cher' d'un profil D, la meilleure réponse est :",
+       o:["Je comprends tout à fait votre inquiétude...","Par rapport à quel budget travaillez-vous ?","Le coût est X — le gain annuel est Y. Le ROI est atteint en Z mois.","On peut peut-être revoir notre offre."],c:2,
+       fb:"Le D raisonne en ROI. Reformuler l'objection prix en termes de gain net est la seule réponse pertinente."},
+      {q:"L'erreur fatale avec un Dominant ?",
+       o:["Parler trop vite","Arriver sans données","Tourner autour du pot sans aller à l'essentiel","Poser trop de questions ouvertes"],c:2,
+       fb:"Le D supporte très mal le manque de clarté. Allez droit au but."}
+    ]},
+  I:{c:'#D4823A',title:'Influent',tag:"Je suis aimé, donc j'existe.",kw:['Relations','Reconnaissance','Enthousiasme','Visibilité'],
+    desc:"L'Influent est chaleureux, expressif et orienté relations humaines. Il achète d'abord la personne, ensuite la solution. Il veut être enthousiasmé, valorisé, et voir comment votre offre le met en valeur auprès de ses pairs.",
+    fears:"Rejet social · Indifférence · Routine sans reconnaissance",
+    script:"J'ai un client dans une situation très proche de la vôtre — [histoire courte + résultat émotionnel]. Ce que j'aime dans votre projet, c'est que vous allez pouvoir [bénéfice visible par les autres].",
+    dont:["Ne jamais être froid ou trop factuel","Ne jamais l'interrompre quand il raconte","Ne jamais sauter la phase sociale"],
+    adapt:[{p:'D',tip:"Coupe les anecdotes. Présente le résultat en 30 secondes."},{p:'S',tip:"Baisse l'intensité. Montre continuité et tranquillité."},{p:'C',tip:"Prévoie des données précises et sourcées."}],
+    quiz:[
+      {q:"L'Influent prend sa décision principalement en fonction de :",
+       o:["La qualité technique du produit","La relation et la confiance avec le vendeur","Le prix le plus bas","Un processus d'appel d'offres rigoureux"],c:1,
+       fb:"L'I achète la relation avant le produit. Sans connexion humaine, pas de signature."},
+      {q:"Comment créer de la confiance instantanée avec un profil I ?",
+       o:["Envoyer une liste de caractéristiques techniques","Partager une anecdote client qui lui ressemble","Présenter un tableau ROI détaillé","Demander immédiatement la signature"],c:1,
+       fb:"L'I est conquis par les histoires et la résonance émotionnelle."},
+      {q:"L'erreur classique du vendeur face à un profil I est :",
+       o:["Parler trop de prix","Sauter la phase de relation et aller trop vite aux arguments","Proposer trop d'options","Poser trop de questions"],c:1,
+       fb:"Brusquer la relation avec un I est fatal. Le lien doit d'abord être établi."},
+      {q:"Quelle formulation touchera le plus un profil Influent ?",
+       o:["Le ROI est atteint en 8 mois selon nos données.","Notre processus est certifié ISO 9001.","Vos associés vont parler de ce choix — vous serez parmi les premiers.","Je vous envoie la documentation complète."],c:2,
+       fb:"L'I est sensible à la reconnaissance sociale. Visibilité et statut sont des déclencheurs puissants."}
+    ]},
+  S:{c:'#3A9E62',title:'Stable',tag:"Je protège ce que j'ai construit.",kw:['Harmonie','Fiabilité','Continuité','Confiance'],
+    desc:"Le Stable est patient, loyal et orienté vers le collectif et la continuité. Il ne décide pas seul — il a besoin de s'assurer que tout le monde est aligné. Il craint le changement brutal et cherche un partenaire de confiance pour le long terme.",
+    fears:"Instabilité · Pression · Décisions précipitées · Conflit",
+    script:"Je ne vais pas vous demander de décider aujourd'hui. Ce que je propose, c'est qu'on explore ensemble comment ça s'intégrerait dans votre fonctionnement actuel, sans bousculer ce qui marche déjà.",
+    dont:["Ne jamais créer d'urgence artificielle","Ne jamais le brusquer","Ne jamais parler que de résultats sans mentionner l'équipe"],
+    adapt:[{p:'D',tip:"Sois assertif et direct. Le S peut percevoir l'hésitation comme un manque de compétence."},{p:'I',tip:"Montre enthousiasme mais aussi stabilité."},{p:'C',tip:"Reste dans les faits, cite les sources."}],
+    quiz:[
+      {q:"Le Stable prend sa décision en accord avec :",
+       o:["Ses seuls critères personnels","Son équipe et les parties prenantes impliquées","Le vendeur qui a été le plus convaincant","Le premier à lui proposer le prix le plus bas"],c:1,
+       fb:"Le S ne décide jamais seul. Identifier les autres parties prenantes et les inclure est clé."},
+      {q:"Comment aborder la résistance au changement d'un profil S ?",
+       o:["En insistant sur l'urgence d'agir maintenant","En le rassurant sur la continuité et le support inclus","En le challengeant sur ses résultats actuels","En envoyant directement le contrat"],c:1,
+       fb:"Le S a besoin de voir que le changement ne détruira pas ce qui fonctionne."},
+      {q:"La phrase qui tue avec un profil Stable est :",
+       o:["Prenons 2h pour tout analyser.","C'est une offre valable jusqu'à vendredi — décidez vite.","Votre concurrent a déjà signé.","Notre solution s'intègre à votre process existant."],c:1,
+       fb:"La fausse urgence est une manipulation évidente pour le S. Il la ressent immédiatement et perd confiance."},
+      {q:"Quel élément est le plus rassurant pour un Stable ?",
+       o:["Un ROI élevé","Une garantie de résultats rapides","Un account manager dédié et un support long terme inclus","Une mise en place en 24h"],c:2,
+       fb:"Le S achète la relation long terme et la stabilité opérationnelle avant le résultat financier."}
+    ]},
+  C:{c:'#3A7BD5',title:'Consciencieux',tag:"J'ai raison parce que j'ai tout vérifié.",kw:['Précision','Qualité','Méthode','Fiabilité data'],
+    desc:"Le Consciencieux est analytique, rigoureux et orienté qualité. Il a déjà fait ses recherches avant de vous recevoir. Il posera des questions précises, cherchera des incohérences et ne signera que s'il est convaincu logiquement.",
+    fears:"Erreurs · Imprécision · Décisions non documentées",
+    script:"Voici une étude de cas détaillée avec les métriques avant/après sur 6 mois. En page 3, vous trouverez la méthodologie exacte. Je vous laisse analyser — y a-t-il des aspects techniques sur lesquels vous voulez qu'on creuse ?",
+    dont:["Ne jamais improviser des chiffres","Ne jamais minimiser ses questions","Ne jamais le presser"],
+    adapt:[{p:'D',tip:"1 chiffre clé + 1 résultat + 2 options. Les détails seulement si demandés."},{p:'I',tip:"Ajoute de la chaleur humaine. Partage une histoire, souris."},{p:'S',tip:"Partage données ET dimension relationnelle."}],
+    quiz:[
+      {q:"Le Consciencieux sera convaincu principalement par :",
+       o:["Votre enthousiasme et votre énergie","Des données précises, sourcées et vérifiables","Une offre limitée dans le temps","Le prestige des autres clients"],c:1,
+       fb:"Le C décide avec sa tête, pas ses émotions. Les données vérifiables sont son seul vrai argument."},
+      {q:"Comment répondre à 'D'où vient ce chiffre ?' d'un profil C ?",
+       o:["C'est notre estimation basée sur l'expérience.","Tous nos clients le confirment.","C'est issu d'une étude sur 127 entreprises sur 18 mois — je vous envoie la source.","Vous pouvez me faire confiance."],c:2,
+       fb:"Le C veut la source primaire, le périmètre exact, la méthodologie."},
+      {q:"L'erreur la plus commune face à un Consciencieux est :",
+       o:["Lui envoyer trop de documentation","Lui promettre des résultats chiffrés impossibles à tenir","Poser des questions ouvertes","Proposer une phase pilote"],c:1,
+       fb:"Inventer ou exagérer des chiffres avec un C est le moyen le plus rapide de perdre sa confiance."},
+      {q:"La meilleure façon de traiter une objection technique d'un profil C est :",
+       o:["De la minimiser pour avancer","De promettre de vérifier plus tard","De valider l'objection, apporter la preuve précise et proposer un échange dédié","De raconter une anecdote client rassurante"],c:2,
+       fb:"Le C respecte la rigueur. Valider son objection comme légitime avant d'y répondre renforce votre crédibilité."}
+    ]}
+};
+
+var AQ=[
+  {q:"Un prospect dit : 'Donnez-moi juste le chiffre clé.' Son profil est probablement :",
+   o:['Consciencieux','Influent','Stable','Dominant'],c:3,
+   fb:"Le D cherche l'efficacité maximale. Il veut le résultat en 30 secondes."},
+  {q:"Vous êtes D naturellement. Vous parlez à un profil S. La première chose à faire est :",
+   o:["Aller directement au ROI","Ralentir le rythme et demander comment va son équipe","Envoyer les spécifications techniques","Créer une urgence"],c:1,
+   fb:"Le S a besoin de sécurité et de lien. Brûler la phase relationnelle avec un S est une erreur critique."},
+  {q:"Face à un profil C qui demande 'D'où vient ce chiffre ?', la bonne réponse est :",
+   o:["C'est notre estimation.","Vous pouvez me faire confiance.","C'est tiré d'une étude sur 89 entreprises — je vous envoie la source.","Tous nos clients observent ce résultat."],c:2,
+   fb:"Le C veut la traçabilité. Citer la source précise + proposer de la partager = réponse parfaite."},
+  {q:"Un client I dit 'Qu'est-ce que mes associés vont penser ?' Cela révèle son besoin de :",
+   o:["Données chiffrées","Validation sociale et reconnaissance","Stabilité opérationnelle","Contrôle du processus"],c:1,
+   fb:"L'I est profondément influencé par l'image que les autres ont de lui."},
+  {q:"La méthode R.A.D.A.R. commence par quelle étape ?",
+   o:["Argumenter","Repérer les signaux du profil","Reformuler la proposition","Répondre aux objections"],c:1,
+   fb:"R = Repérer. Avant tout argument, on observe les signaux du profil pour adapter son approche."},
+  {q:"Quel signal identifie un profil S lors d'une présentation ?",
+   o:["Il interrompt pour aller plus vite","Il mentionne plusieurs fois 'l'équipe' ou 'les collègues'","Il pose des questions techniques très précises","Il parle uniquement des résultats financiers"],c:1,
+   fb:"Le S pense collectif. Les références répétées à l'équipe sont sa signature."}
+];
+
+var TQ=[
+  {q:"En réunion, tu as tendance à :",o:[{t:"Couper la parole pour aller à l'essentiel",p:'D'},{t:"Raconter une anecdote pour illustrer ton point",p:'I'},{t:"Écouter attentivement avant de parler",p:'S'},{t:"Poser des questions précises et prendre des notes",p:'C'}]},
+  {q:"Face à une objection difficile, ton réflexe est :",o:[{t:"Tenir ta position et argumenter fermement",p:'D'},{t:"Créer de la complicité pour désamorcer",p:'I'},{t:"Chercher à vraiment comprendre ce qui se passe",p:'S'},{t:"Demander plus d'infos pour trouver la faille logique",p:'C'}]},
+  {q:"Quand tu dois prendre une décision rapide :",o:[{t:"Tu décides vite sur la base de l'intuition et des résultats",p:'D'},{t:"Tu suis ton enthousiasme et ta vision positive",p:'I'},{t:"Tu prends le temps de consulter les parties concernées",p:'S'},{t:"Tu rassembles le maximum d'informations avant",p:'C'}]},
+  {q:"Ton principal moteur au travail est :",o:[{t:"Atteindre les objectifs et gagner",p:'D'},{t:"Les relations et la reconnaissance",p:'I'},{t:"La stabilité et l'harmonie de l'équipe",p:'S'},{t:"La qualité et l'exactitude du travail",p:'C'}]},
+  {q:"Quand un projet déraille, ta première réaction est :",o:[{t:"Reprendre le contrôle et agir immédiatement",p:'D'},{t:"Motiver l'équipe et trouver l'aspect positif",p:'I'},{t:"Calmer le jeu et chercher un consensus",p:'S'},{t:"Analyser ce qui a merdé et établir un plan correctif",p:'C'}]},
+  {q:"Comment tu prépares un rendez-vous important ?",o:[{t:"Quelques points clés, je m'adapte sur le vif",p:'D'},{t:"Je pense à comment créer une bonne impression",p:'I'},{t:"Je me prépare pour que tout se passe en douceur",p:'S'},{t:"Je prépare chaque détail et anticipe toutes les questions",p:'C'}]},
+  {q:"Ton style de communication naturel est :",o:[{t:"Direct et concis — tu vas à l'essentiel",p:'D'},{t:"Expressif et enthousiaste — tu colores tout",p:'I'},{t:"Doux et patient — tu prends le temps d'écouter",p:'S'},{t:"Précis et structuré — tu cites tes sources",p:'C'}]},
+  {q:"Ce qui t'irrite le plus chez les autres :",o:[{t:"La lenteur et l'indécision",p:'D'},{t:"La froideur et le manque d'enthousiasme",p:'I'},{t:"Le manque de considération pour l'équipe",p:'S'},{t:"L'imprécision et les affirmations non vérifiées",p:'C'}]},
+  {q:"Dans un conflit, tu :",o:[{t:"L'affrontes directement pour le résoudre vite",p:'D'},{t:"Cherches à minimiser et créer une atmosphère positive",p:'I'},{t:"L'évites et cherches à préserver l'harmonie",p:'S'},{t:"Analyses objectivement les faits avant d'intervenir",p:'C'}]},
+  {q:"Comment tu vois le changement ?",o:[{t:"C'est une opportunité — j'aime innover",p:'D'},{t:"C'est excitant — j'adore les nouvelles expériences",p:'I'},{t:"C'est à gérer avec précaution pour l'équipe",p:'S'},{t:"C'est à évaluer rigoureusement avant d'adopter",p:'C'}]},
+  {q:"Quand quelqu'un te fait un retour négatif :",o:[{t:"Tu l'écoutes si c'est factuel, sinon tu pousses en retour",p:'D'},{t:"Tu ressens le besoin d'être rétabli dans une bonne image",p:'I'},{t:"Tu prends le temps de comprendre pour ne pas décevoir",p:'S'},{t:"Tu analyses si la critique est fondée sur des faits",p:'C'}]},
+  {q:"Ton rapport au temps est :",o:[{t:"Priorité absolue — perdre du temps est insupportable",p:'D'},{t:"Flexible — les bonnes conversations méritent du temps",p:'I'},{t:"Patient — les bonnes choses prennent le temps qu'il faut",p:'S'},{t:"Nécessaire — je prends le temps de bien faire",p:'C'}]},
+  {q:"Comment tu motives ton équipe ?",o:[{t:"En fixant des objectifs ambitieux et en challengeant",p:'D'},{t:"En créant une énergie positive et en valorisant chacun",p:'I'},{t:"En créant un environnement stable et de confiance",p:'S'},{t:"En donnant des processus clairs et des critères précis",p:'C'}]},
+  {q:"Ce qui compte le plus dans une solution professionnelle :",o:[{t:"Les résultats et le ROI mesurable",p:'D'},{t:"L'expérience et la relation avec le prestataire",p:'I'},{t:"La fiabilité et le support sur le long terme",p:'S'},{t:"La qualité technique et les données vérifiables",p:'C'}]},
+  {q:"Quand tu as trop de tâches à la fois :",o:[{t:"Tu priorises brutalement et tu élimines le reste",p:'D'},{t:"Tu cherches quelqu'un pour t'aider et délègues",p:'I'},{t:"Tu t'organises calmement et communiques les ajustements",p:'S'},{t:"Tu établis une liste détaillée et traites par priorité",p:'C'}]},
+  {q:"Quelle phrase te ressemble le plus ?",o:[{t:"Allons-y, on apprendra en faisant.",p:'D'},{t:"C'est une aventure, ça va être super !",p:'I'},{t:"Prenons le temps de bien faire pour tout le monde.",p:'S'},{t:"Avant d'avancer, je veux comprendre chaque implication.",p:'C'}]},
+  {q:"En situation de stress, tu :",o:[{t:"Deviens encore plus directif et prends le contrôle",p:'D'},{t:"Cherches du soutien social et de la validation",p:'I'},{t:"Te retires et évites les confrontations",p:'S'},{t:"Analyses encore plus en détail pour trouver la solution",p:'C'}]},
+  {q:"Ton rapport à l'autorité est :",o:[{t:"Tu la questionnes si elle n'est pas légitime",p:'D'},{t:"Tu aimes être apprécié par tes supérieurs",p:'I'},{t:"Tu respectes la hiérarchie pour maintenir l'harmonie",p:'S'},{t:"Tu la respectes si elle est basée sur la compétence",p:'C'}]},
+  {q:"Après une erreur, tu :",o:[{t:"Passes à autre chose rapidement — tirer les leçons et avancer",p:'D'},{t:"Cherches à réparer la relation et être rétabli positivement",p:'I'},{t:"T'assures que les personnes impactées vont bien",p:'S'},{t:"Analyses exhaustivement pour éviter que ça se reproduise",p:'C'}]},
+  {q:"Si tu devais choisir un mot qui te décrit le mieux :",o:[{t:"Déterminé",p:'D'},{t:"Enthousiaste",p:'I'},{t:"Fiable",p:'S'},{t:"Rigoureux",p:'C'}]}
+];
+
+// ---- HELPERS ----
+function qz(ph,qs){
+  return qs.map((q,qi)=>{
+    const k=ph+'-'+qi,ans=state.qa[k];
+    const opts=q.o.map((o,oi)=>{
+      let c='quiz-opt';
+      if(ans!==undefined){c+=' locked';if(oi===q.c)c+=' correct';else if(oi===ans&&ans!==q.c)c+=' wrong';}
+      const cl=ans===undefined?'onclick="aq('+ph+','+qi+','+oi+','+q.c+')"':'';
+      return '<div class="'+c+'" '+cl+'><span>'+String.fromCharCode(65+oi)+'. </span>'+o+'</div>';
+    }).join('');
+    const fb=ans!==undefined?'<div class="quiz-feedback show '+(ans===q.c?'ok':'ko')+'">'+(ans===q.c?'Correct — ':'Incorrect — ')+q.fb+'</div>':'';
+    return '<div class="quiz-question"><div class="quiz-q-text">'+(qi+1)+'. '+q.q+'</div><div class="quiz-options">'+opts+'</div>'+fb+'</div>';
+  }).join('');
+}
+function qzscore(ph,qs){
+  if(!qs.every((_,qi)=>state.qa[ph+'-'+qi]!==undefined))return '';
+  const s=qs.filter((q,qi)=>state.qa[ph+'-'+qi]===q.c).length,t=qs.length;
+  const col=s===t?'var(--green)':s>=t*.6?'var(--gold)':'var(--red)';
+  return '<div class="quiz-score-bar"><div class="qs-label">Score module</div><div class="qs-val" style="color:'+col+'">'+s+'/'+t+'</div><div style="flex:1"></div><span style="font-size:12px;color:var(--gray)">'+(s===t?'Parfait !':s>=t*.6?'Module validé':'Revois les sections')+'</span></div>';
+}
+function pnav(n){
+  const prev=n>0?'<button class="btn-nav btn-prev" onclick="gt('+(n-1)+')">← Précédent</button>':'<span></span>';
+  const nxt=n<7?'<button class="btn-nav btn-next" onclick="gt('+(n+1)+')">Suivant →</button>':'<span></span>';
+  return '<div class="phase-nav">'+prev+nxt+'</div>';
+}
+function sb(items){return items.map(a=>'<div class="signal-box"><div class="signal-icon" style="color:'+PR[a.p].c+'">'+a.p+'</div><div class="signal-body"><div class="signal-label">Face à un profil '+a.p+'</div><p>'+a.tip+'</p></div></div>').join('');}
+function tags(kw){return kw.map(k=>'<span class="tag">'+k+'</span>').join('');}
+function li(arr){return arr.map(s=>'<li>'+s+'</li>').join('');}
+
+// ---- PAGES ----
+function pg0(){
+  const q=[
+    {q:"Que représente le R dans R.A.D.A.R. ?",o:["Résoudre les objections","Repérer les signaux du profil","Reformuler la proposition","Rappeler le client après"],c:1,fb:"R = Repérer. C'est l'étape d'observation initiale — avant tout argument, on lit les signaux."},
+    {q:"Un vendeur qui communique selon son propre style naturel fait quelle erreur ?",o:["Il manque de confiance","L'erreur du miroir : il communique comme lui veut, pas comme le client a besoin","Il ne maîtrise pas son produit","Il ne pose pas assez de questions"],c:1,fb:"L'erreur du miroir est la cause principale des ventes perdues sans raison apparente."},
+    {q:"Quel profil identifie-t-on quand le client dit 'Comment vous justifiez ce chiffre ?' ?",o:["Dominant","Influent","Stable","Consciencieux"],c:3,fb:"La demande de justification précise et sourcée est la signature du profil C."}
+  ];
+  return '<div class="phase-intro"><div class="phase-intro-num">0</div><div class="phase-intro-body"><h2>Fondations &amp; Mindset</h2><div class="pi-sub">Pourquoi 80% des commerciaux vendent mal</div><p>La vente ne se perd pas sur le prix. Elle se perd sur une incompréhension fondamentale : vous communiquez comme <em>vous</em> aimeriez qu\'on vous communique, pas comme votre client a besoin de l\'entendre. Le profiling DISC est l\'antidote à cette erreur invisible.</p></div></div>'
+    +'<div class="section-block"><h3>Le problème du miroir</h3><p>Si vous êtes un profil D, vous allez à l\'essentiel — ROI, chiffres, décision. C\'est parfait avec un autre D. Mais face à un S, vous passez pour quelqu\'un de brusque qui crée de l\'insécurité. Résultat : il dit "je vais réfléchir" et ne répond plus jamais.</p><p>La méthode DISC n\'est pas une manipulation. C\'est de l\'empathie structurée. Vous apprenez à parler la langue de chaque client.</p></div>'
+    +'<div class="section-block"><h3>Les 4 profils en 4 lignes</h3><table class="piliers"><tr><td>D — Dominant</td><td>Résultats, efficacité, contrôle. Pense en ROI et en décisions rapides.</td></tr><tr><td>I — Influent</td><td>Relations, reconnaissance, enthousiasme. Pense en connexions et en histoires.</td></tr><tr><td>S — Stable</td><td>Harmonie, fidélité, continuité. Pense en équipe et en long terme.</td></tr><tr><td>C — Consciencieux</td><td>Précision, qualité, méthode. Pense en données et en processus vérifiés.</td></tr></table></div>'
+    +'<div class="section-block"><h3>La méthode R.A.D.A.R.</h3><table class="piliers"><tr><td>R — Repérer</td><td>Observer les signaux verbaux et non-verbaux dans les 3 premières minutes.</td></tr><tr><td>A — Analyser</td><td>Confirmer ou infirmer l\'hypothèse de profil avec 1-2 questions clés.</td></tr><tr><td>D — Décoder</td><td>Identifier les motivations profondes et les craintes du profil identifié.</td></tr><tr><td>A — Adapter</td><td>Ajuster votre rythme, vos arguments et votre closing au profil.</td></tr><tr><td>R — Reformuler</td><td>Valider la compréhension mutuelle avant de passer à l\'étape suivante.</td></tr></table></div>'
+    +'<div class="section-block"><h3>Signaux rapides d\'identification</h3><table class="piliers"><tr><td>"Allez, on va à l\'essentiel."</td><td>Profil D</td></tr><tr><td>"En fait, il m\'est arrivé quelque chose..."</td><td>Profil I</td></tr><tr><td>"Il faut que j\'en parle à mon équipe."</td><td>Profil S</td></tr><tr><td>"Comment vous justifiez ce chiffre ?"</td><td>Profil C</td></tr></table></div>'
+    +'<div class="quiz-section"><h3>Quiz de validation</h3>'+qz(0,q)+qzscore(0,q)+'</div>'+pnav(0);
+}
+
+function pgP(n,l){
+  const p=PR[l];
+  return '<div class="phase-intro"><div class="phase-intro-num" style="color:'+p.c+'">'+l+'</div><div class="phase-intro-body"><h2>'+PH[n].title+'</h2><div class="pi-sub">'+PH[n].sub+'</div><p>'+p.desc+'</p></div></div>'
+    +'<div class="profile-banner" style="border-left-color:'+p.c+'"><div class="pb-letter" style="color:'+p.c+'">'+l+'</div><div class="pb-body"><h2>'+p.title+'</h2><div class="pb-sub">'+p.tag+'</div><div class="pb-tags">'+tags(p.kw)+'</div></div></div>'
+    +'<div class="section-block"><h3>Ce qu\'il redoute</h3><p>'+p.fears+'</p></div>'
+    +'<div class="section-block"><h3>Script verbatim</h3><div class="script-box"><div class="script-text">'+p.script+'</div></div></div>'
+    +'<div class="section-block"><h3>Ce qu\'il ne faut jamais faire</h3><ul class="erreurs-list">'+li(p.dont)+'</ul></div>'
+    +'<div class="section-block"><h3>S\'adapter aux autres profils</h3>'+sb(p.adapt)+'</div>'
+    +'<div class="quiz-section"><h3>Quiz de validation</h3>'+qz(n,p.quiz)+qzscore(n,p.quiz)+'</div>'+pnav(n);
+}
+
+function pg5(){
+  return '<div class="phase-intro"><div class="phase-intro-num" style="color:#8B5CF6">5</div><div class="phase-intro-body"><h2>Adapter son Pitch</h2><div class="pi-sub">Communication cross-profils et R.A.D.A.R. avancée</div><p>Connaître les 4 profils, c\'est bien. Switcher instantanément d\'un mode à l\'autre en entretien, c\'est la maîtrise. Ce module traite des situations mixtes, des tensions inter-profils et des scripts d\'adaptation en temps réel.</p></div></div>'
+    +'<div class="section-block"><h3>Tableau d\'adaptation croisée</h3><table class="synth-table"><thead><tr><th>Ton profil</th><th>Client D</th><th>Client I</th><th>Client S</th><th>Client C</th></tr></thead><tbody>'
+    +'<tr><td class="td-l" style="color:#D94040">Tu es D</td><td>Terrain neutre</td><td>+2 min relation sincère avant résultats</td><td>Ralentis. Parle de l\'équipe et du suivi</td><td>Prépare tes sources. Accepte ses questions</td></tr>'
+    +'<tr><td class="td-l" style="color:#D4823A">Tu es I</td><td>Coupe les anecdotes — ROI en 30s</td><td>Terrain neutre</td><td>Montre stabilité + continuité</td><td>Prépare des données précises et sourcées</td></tr>'
+    +'<tr><td class="td-l" style="color:#3A9E62">Tu es S</td><td>Sois assertif. Donne le résultat d\'abord</td><td>Montre de l\'enthousiasme, raconte une histoire</td><td>Terrain neutre</td><td>Apporte des données chiffrées et sourcées</td></tr>'
+    +'<tr><td class="td-l" style="color:#3A7BD5">Tu es C</td><td>1 chiffre clé, 2 options — détails si demandés</td><td>Connexion émotionnelle, sourire, histoire</td><td>Données + dimension relationnelle</td><td>Terrain neutre</td></tr>'
+    +'</tbody></table></div>'
+    +'<div class="section-block"><h3>Signaux non-verbaux par profil</h3><table class="piliers"><tr><td style="color:#D94040">D</td><td>Posture en avant, débit rapide, coupe la parole, regarde sa montre, regard direct</td></tr><tr><td style="color:#D4823A">I</td><td>Sourire large, gestes expressifs, digressions fréquentes, cherche le contact visuel</td></tr><tr><td style="color:#3A9E62">S</td><td>Posture fermée au départ, hochements de tête, parle de "nous" et "l\'équipe", rythme lent</td></tr><tr><td style="color:#3A7BD5">C</td><td>Note tout, posture neutre, questions précises, peu de gestuelle, lit les documents</td></tr></table></div>'
+    +'<div class="section-block"><h3>Gérer la tension D vs C</h3><div class="script-box"><div class="script-text"><span class="key">D :</span> "Vos chiffres sont bons, mais vous prenez trop de temps à vous décider."\n<span class="key">C :</span> "Je ne signe rien sans avoir analysé tous les risques. C\'est mon rôle."\n\n<span class="key">Script médiateur :</span> "Je comprends les deux positions. [Au D] : le ROI est de X% — solide. [Au C] : la documentation complète est en page 4 — y a-t-il d\'autres points à documenter ?"</div></div></div>'
+    +'<div class="section-block"><h3>Les 5 erreurs d\'adaptation les plus coûteuses</h3><ul class="erreurs-list"><li>Appliquer la même urgence à tous les profils (fatal avec S et C)</li><li>Parler uniquement chiffres à un profil I (il veut d\'abord une histoire)</li><li>Utiliser des témoignages non sourcés avec un C (il les vérifiera)</li><li>Sauter la phase sociale avec un S ou un I (ils achètent d\'abord la personne)</li><li>Sur-expliquer les détails à un D (il perçoit ça comme un manque de confiance)</li></ul></div>'
+    +'<div class="quiz-section"><h3>Quiz de validation</h3>'+qz(5,AQ)+qzscore(5,AQ)+'</div>'+pnav(5);
+}
+
+function pg6(){
+  let inner;
+  if(state.tdone){
+    const sc={D:0,I:0,S:0,C:0};
+    state.ta.forEach(a=>{if(a&&a.p)sc[a.p]++;});
+    const mx=Math.max(...Object.values(sc));
+    const dom=Object.entries(sc).find(([k,v])=>v===mx)[0];
+    const inf=PR[dom];
+    const ord=['D','I','S','C'];
+    const grid=ord.map(p=>'<div class="score-cell"><div class="sc-l" style="color:'+PR[p].c+'">'+p+'</div><div class="sc-v" style="color:'+PR[p].c+'">'+sc[p]+'</div><div class="sc-s">pts / 20</div></div>').join('');
+    const bars=ord.map(p=>'<div class="sbar"><div class="sbar-l" style="color:'+PR[p].c+'">'+p+'</div><div class="sbar-track"><div class="sbar-fill" style="background:'+PR[p].c+';width:'+Math.round(sc[p]/20*100)+'%"></div></div><div class="sbar-v">'+sc[p]+'</div></div>').join('');
+    inner='<div class="result-hero"><div class="result-letter" style="color:'+inf.c+'">'+dom+'</div><h2>Profil '+inf.title+'</h2><div class="r-sub">'+inf.tag+'</div><div class="score-grid">'+grid+'</div>'+bars+'</div>'
+      +'<div class="section-block"><h3>Ton profil en détail</h3><p>'+inf.desc+'</p></div>'
+      +'<div class="section-block"><h3>Tes axes d\'adaptation prioritaires</h3>'+sb(inf.adapt)+'</div>'
+      +'<div style="text-align:center;margin-top:20px;"><button class="btn-nav btn-prev" onclick="rtst()">Refaire le test</button></div>';
+  } else if(!state.ta.length){
+    inner='<div class="section-block" style="text-align:center;padding:40px 24px;"><div style="font-size:48px;margin-bottom:16px;">🎯</div><h3 style="font-size:20px;font-weight:800;margin-bottom:8px;letter-spacing:0;">20 questions · ~5 minutes</h3><p style="color:var(--gray);font-size:14px;margin-bottom:24px;line-height:1.7;">Pour chaque situation, sélectionne la réponse qui te ressemble le plus naturellement.<br>Réponds d\'instinct — ta première réaction est souvent la plus juste.</p><button class="btn-nav btn-next" onclick="stst()">Démarrer le test &#8594;</button></div>';
+  } else {
+    inner=rtq(state.tq);
+  }
+  return '<div class="phase-intro"><div class="phase-intro-num">?</div><div class="phase-intro-body"><h2>Auto-Diagnostic DISC</h2><div class="pi-sub">Identifie ton profil dominant en 20 questions</div><p>Ce test te révèle ton profil DISC naturel. Il n\'y a ni bonne ni mauvaise réponse. Choisis ce qui te ressemble le plus, pas ce que tu penses devoir être.</p></div></div>'
+    +'<div id="tw">'+inner+'</div>'+pnav(6);
+}
+
+function rtq(n){
+  const q=TQ[n],pct=Math.round(((n+1)/TQ.length)*100);
+  const opts=q.o.map((o,i)=>'<button class="test-opt'+(state.ta[n]&&state.ta[n].i===i?' sel':'')+'" onclick="pt(this,'+n+','+i+',\''+o.p+'\')">'+o.t+'</button>').join('');
+  return '<div class="test-prog-bar"><div class="test-prog-fill" style="width:'+pct+'%"></div></div>'
+    +'<div class="test-q-card"><div class="test-q-num">Question '+(n+1)+' / '+TQ.length+'</div><div class="test-q-text">'+q.q+'</div><div class="test-options">'+opts+'</div>'
+    +'<div class="test-nav"><button class="btn-nav btn-prev" onclick="tp('+n+')" style="'+(n===0?'visibility:hidden':'')+'">&#8592; Précédent</button>'
+    +'<button class="btn-nav btn-next" onclick="tn('+n+')">'+(n===TQ.length-1?'Voir mes résultats &#8594;':'Suivant &#8594;')+'</button></div></div>';
+}
+
+function pg7(){
+  return '<div class="phase-intro"><div class="phase-intro-num">&#9733;</div><div class="phase-intro-body"><h2>Cas Pratiques &amp; Synthèse</h2><div class="pi-sub">Mise en situation réelle — Appliquer DISC en entretien</div><p>La théorie est acquise. Ce module vous met en situation sur 4 scénarios réels et valide votre maîtrise de la méthode complète.</p></div></div>'
+    +'<div class="section-block"><h3>Cas #1 — Le DG impatient (Profil D)</h3><p>Votre prospect arrive 10 minutes en retard, pose son téléphone sur la table, et dit : "Bon, vous avez 15 minutes, convainquez-moi."</p><div class="signal-box"><div class="signal-icon">🎯</div><div class="signal-body"><div class="signal-label">Réponse optimale</div><p>"Parfait. En 3 points : votre situation actuelle vous coûte [X]. Notre solution résout ça en [délai] pour un gain de [Y]. Deux options pour démarrer — laquelle vous convient ?"</p></div></div></div>'
+    +'<div class="section-block"><h3>Cas #2 — Le directeur commercial enthousiaste (Profil I)</h3><p>Il vous accueille chaleureusement, vous raconte 10 minutes de son week-end, montre des photos de son équipe.</p><div class="signal-box"><div class="signal-icon">🌟</div><div class="signal-body"><div class="signal-label">Réponse optimale</div><p>S\'engager dans la relation d\'abord — 5 minutes de connexion sincère. Partager un témoignage client qui lui ressemble. Présenter l\'offre en termes d\'impact visible et de reconnaissance interne.</p></div></div></div>'
+    +'<div class="section-block"><h3>Cas #3 — Le responsable qui hésite (Profil S)</h3><p>Il dit : "C\'est intéressant, mais je dois en parler à mon équipe, à mon N+1, et voir comment ça s\'intègre à notre process actuel."</p><div class="signal-box"><div class="signal-icon">🤝</div><div class="signal-body"><div class="signal-label">Réponse optimale</div><p>"Très juste. Proposons une démo avec toute l\'équipe — je prépare une présentation sur la compatibilité avec votre process existant. Pas besoin de décider avant que tout le monde soit à l\'aise."</p></div></div></div>'
+    +'<div class="section-block"><h3>Cas #4 — L\'auditeur silencieux (Profil C)</h3><p>Il a imprimé votre plaquette et l\'a annotée. Il pose des questions précises : "Votre taux de 94%, c\'est sur quelle base de calcul ?"</p><div class="signal-box"><div class="signal-icon">📊</div><div class="signal-body"><div class="signal-label">Réponse optimale</div><p>"Excellente question. Ce taux est calculé sur 412 répondants sur 18 mois selon la méthode NPS. Je vous envoie le rapport complet. Y a-t-il d\'autres points que vous souhaitez que je documente ?"</p></div></div></div>'
+    +'<div class="section-block"><h3>Tableau de synthèse finale</h3><table class="synth-table"><thead><tr><th>Profil</th><th>Déclencheur d\'achat</th><th>Pire erreur</th><th>Closing idéal</th></tr></thead><tbody>'
+    +'<tr><td class="td-l" style="color:#D94040">D</td><td>ROI chiffré + efficacité</td><td>Tourner autour du pot</td><td>2 options claires, décision maintenant</td></tr>'
+    +'<tr><td class="td-l" style="color:#D4823A">I</td><td>Relation + statut social</td><td>Sauter la phase sociale</td><td>Témoignage émotionnel + vision partagée</td></tr>'
+    +'<tr><td class="td-l" style="color:#3A9E62">S</td><td>Stabilité + confiance long terme</td><td>Urgence artificielle</td><td>Accompagnement dédié + démarrage doux</td></tr>'
+    +'<tr><td class="td-l" style="color:#3A7BD5">C</td><td>Données sourcées + rigueur</td><td>Chiffres non vérifiables</td><td>Documentation complète + phase pilote</td></tr>'
+    +'</tbody></table></div>'
+    +'<div class="completion"><div class="trophy">&#127942;</div><h2>Formation <span>Terminée</span></h2><p>Tu maîtrises les 4 profils DISC, la méthode R.A.D.A.R. et les scripts d\'adaptation cross-profils. Applique-les dès ton prochain entretien.</p><button class="btn-nav btn-next" onclick="gt(0)">Revoir depuis le début</button></div>'+pnav(7);
+}
+
+// ---- NAVIGATION ----
+function bsb(){
+  var html='';
+  if(mode==='disc'){
+    var secs=[{l:'Introduction',r:[0,0]},{l:'Les 4 Profils',r:[1,4]},{l:'Maitrise Avancee',r:[5,7]}];
+    var si=0;
+    PH.forEach(function(ph,i){
+      if(i===secs[si].r[0]){html+='<div class="nav-section">'+secs[si].l+'</div>';}
+      else if(si<secs.length-1&&i>secs[si].r[1]){si++;html+='<div class="nav-section">'+secs[si].l+'</div>';}
+      html+='<div class="nav-item'+(state.current===i?' active':'')+(state.completed.has(i)?' done':'')+'" onclick="gt('+i+')"><div class="nav-num">'+(state.completed.has(i)?'&#10003;':i)+'</div><div class="nav-title"><div class="phase-name">'+ph.title+'</div><div class="phase-sub">'+ph.sub+'</div></div><div class="nav-time">'+ph.t+' min</div></div>';
+    });
+  } else {
+    html+='<div class="nav-section">Formation R.A.D.A.R.</div>';
+    PH_radar.forEach(function(ph){
+      var cls='nav-item'+(rstate.cur===ph.n?' active':'')+(rstate.done.has(ph.n)?' done':'');
+      html+='<div class="'+cls+'" onclick="rgt('+ph.n+')"><div class="nav-num">'+(rstate.done.has(ph.n)?'&#10003;':ph.n)+'</div><div class="nav-title"><div class="phase-name">'+ph.title+'</div><div class="phase-sub">'+ph.sub+'</div></div><div class="nav-time">'+ph.t+' min</div></div>';
+    });
+    html+='<div style="padding:12px 16px;margin-top:8px;border-top:1px solid rgba(255,255,255,.05);"><button class="btn-nav btn-prev" onclick="enterDisc()" style="width:100%;font-size:11px;">&#8592; Retour DISC</button></div>';
+  }
+  document.getElementById('nav').innerHTML=html;
+  var sbTitle=document.getElementById('sb-title');
+  var sbSub=document.getElementById('sb-sub');
+  var sbBadge=document.getElementById('sb-badge');
+  if(sbTitle){
+    if(mode==='disc'){sbTitle.textContent='Profiling DISC';sbSub.textContent='8 Modules · 5h30';sbBadge.style.display='none';}
+    else{sbTitle.textContent='R.A.D.A.R. — Closing';sbSub.textContent='7 Modules · 3h30';
+      if(userProfil&&PR[userProfil]){sbBadge.style.display='block';sbBadge.style.color=PR[userProfil].c;sbBadge.textContent='Profil '+userProfil+' — '+PR[userProfil].title;}
+    }
+  }
+}
+
+function upd(){
+  var pct,rem;
+  if(mode==='disc'){
+    pct=Math.round(state.completed.size/PH.length*100);
+    rem=PH.reduce(function(a,ph,i){return a+(state.completed.has(i)?0:parseInt(ph.t));},0);
+  } else {
+    pct=Math.round(rstate.done.size/PH_radar.length*100);
+    rem=PH_radar.reduce(function(a,ph){return a+(rstate.done.has(ph.n)?0:ph.t);},0);
+  }
+  document.getElementById('prog-pct').textContent=pct+'%';
+  document.getElementById('prog-fill').style.width=pct+'%';
+  document.getElementById('tb-time').textContent=rem+' min restantes';
+}
+
+function gt(n){
+  state.current=n;
+  document.getElementById('tb-phase').textContent='Module '+n;
+  document.getElementById('tb-title').textContent=PH[n].title;
+  let html;
+  if(n===0)html=pg0();
+  else if(n===1)html=pgP(1,'D');
+  else if(n===2)html=pgP(2,'I');
+  else if(n===3)html=pgP(3,'S');
+  else if(n===4)html=pgP(4,'C');
+  else if(n===5)html=pg5();
+  else if(n===6)html=pg6();
+  else html=pg7();
+  document.getElementById('content').innerHTML=html;
+  document.getElementById('main').scrollTop=0;
+  bsb();upd();
+}
+
+// ---- QUIZ ----
+function aq(ph,qi,sel,cor){
+  const k=ph+'-'+qi;
+  if(state.qa[k]!==undefined)return;
+  state.qa[k]=sel;
+  const ql=ph===0?3:ph===5?6:4;
+  const allDone=Array.from({length:ql},(_,i)=>ph+'-'+i).every(k=>state.qa[k]!==undefined);
+  if(allDone){
+    const qs=ph===0?[{c:1},{c:1},{c:3}]:ph===5?AQ:PR[['D','I','S','C'][ph-1]].quiz;
+    const sc=Array.from({length:ql},(_,i)=>state.qa[ph+'-'+i]===qs[i].c).filter(Boolean).length;
+    if(sc>=ql*.6)state.completed.add(ph);
+  }
+  gt(state.current);
+}
+
+// ---- TEST ----
+function stst(){state.ta=new Array(TQ.length).fill(null);state.tq=0;state.tdone=false;document.getElementById('tw').innerHTML=rtq(0);}
+function pt(el,qn,oi,p){el.closest('.test-options').querySelectorAll('.test-opt').forEach(o=>o.classList.remove('sel'));el.classList.add('sel');state.ta[qn]={i:oi,p};}
+function tn(n){if(!state.ta[n])return;if(n===TQ.length-1){state.tdone=true;gt(6);}else{state.tq=n+1;document.getElementById('tw').innerHTML=rtq(n+1);}}
+function tp(n){if(n>0){state.tq=n-1;document.getElementById('tw').innerHTML=rtq(n-1);}}
+function rtst(){state.ta=[];state.tdone=false;gt(6);}
+
+
+var PH_radar=[
+  {n:1,title:'Psychologie de l Acheteur',sub:'Comprendre les declencheurs d achat',t:20},
+  {n:2,title:'Le Profiling en Vente',sub:'Lire un prospect en 60 secondes',t:25},
+  {n:3,title:'Les Besoins Caches',sub:'Reveler le vrai probleme',t:25},
+  {n:4,title:'Gestion des Objections',sub:'12 objections + reponses exactes',t:35},
+  {n:5,title:'Influence et Persuasion',sub:'Les leviers qui font decider',t:30},
+  {n:6,title:'Le Closing R.A.D.A.R.',sub:'7 techniques par profil',t:35},
+  {n:7,title:'Cas Pratiques et Simulations',sub:'3 scenarios complets',t:40}
+];
+
+function enterRadar(){
+  var sc={D:0,I:0,S:0,C:0};
+  state.ta.forEach(function(a){if(a&&a.p)sc[a.p]++;});
+  var mx=Math.max(sc.D,sc.I,sc.S,sc.C);
+  var ks=['D','I','S','C'],dom=ks[0];
+  for(var i=0;i<ks.length;i++){if(sc[ks[i]]===mx){dom=ks[i];break;}}
+  userProfil=dom;
+  mode='radar';
+  rgt(1);
+}
+function enterDisc(){mode='disc';gt(6);}
+function setProfil(p){userProfil=p;bsb();rgt(rstate.cur);}
+
+function discTip(D,I,S,C,Dw,Iw,Sw,Cw){
+  var p=userProfil;
+  if(!p){
+    var btns=['D','I','S','C'].map(function(k){
+      return '<button class="profil-btn" style="border-color:'+PR[k].c+';color:'+PR[k].c+';" onclick="setProfil(''+k+'')">'+k+' &mdash; '+PR[k].title+'</button>';
+    }).join('');
+    return '<div class="no-profil"><p>Selectionne ton profil DISC pour debloquer les conseils personnalises :</p><div class="profil-btns">'+btns+'</div></div>';
+  }
+  var tips={D:{body:D,work:Dw},I:{body:I,work:Iw},S:{body:S,work:Sw},C:{body:C,work:Cw}};
+  var t=tips[p];
+  return '<div class="disc-tip disc-'+p+'"><h4>Conseil personnalise &mdash; Profil '+p+' ('+PR[p].title+')</h4><p>'+t.body+'</p><div class="tip-work">Ton exercice : '+t.work+'</div></div>';
+}
+function obj(num,q,expl,rep){
+  return '<div class="obj-card"><div class="obj-head" onclick="tobj(this)"><div class="obj-num">'+num+'</div><div class="obj-q">&laquo; '+q+' &raquo;</div></div><div class="obj-body"><p>'+expl+'</p><div class="obj-rep">'+rep+'</div></div></div>';
+}
+function tobj(el){el.nextElementSibling.classList.toggle('open');}
+
+function rqz(ph,qs){
+  return qs.map(function(q,qi){
+    var k=ph+'-'+qi,ans=rstate.qa[k];
+    var opts=q.o.map(function(o,oi){
+      var cls='quiz-opt';
+      if(ans!==undefined){cls+=' locked';if(oi===q.c)cls+=' correct';else if(oi===ans)cls+=' wrong';}
+      var clk=ans===undefined?'onclick="raq('+ph+','+qi+','+oi+','+q.c+')"':'';
+      return '<div class="'+cls+'" '+clk+'><span>'+String.fromCharCode(65+oi)+'. </span>'+o+'</div>';
+    }).join('');
+    var fb=ans!==undefined?'<div class="quiz-feedback show '+(ans===q.c?'ok':'ko')+'">'+(ans===q.c?'Correct : ':'Incorrect : ')+q.fb+'</div>':'';
+    return '<div class="quiz-question"><div class="quiz-q-text">'+(qi+1)+'. '+q.q+'</div><div class="quiz-options">'+opts+'</div>'+fb+'</div>';
+  }).join('');
+}
+function rqzsc(ph,qs){
+  var allDone=qs.every(function(_,qi){return rstate.qa[ph+'-'+qi]!==undefined;});
+  if(!allDone)return '';
+  var s=qs.filter(function(q,qi){return rstate.qa[ph+'-'+qi]===q.c;}).length;
+  var col=s===qs.length?'var(--green)':s>=qs.length*.6?'var(--gold)':'var(--red)';
+  if(s>=qs.length*.6)rstate.done.add(ph);
+  return '<div class="quiz-score-bar"><div class="qs-label">Score</div><div class="qs-val" style="color:'+col+'">'+s+'/'+qs.length+'</div><div style="flex:1"></div><span style="font-size:12px;color:var(--gray)">'+(s===qs.length?'Parfait !':s>=qs.length*.6?'Module valide':'Revois les sections')+'</span></div>';
+}
+function raq(ph,qi,sel,cor){
+  if(rstate.qa[ph+'-'+qi]!==undefined)return;
+  rstate.qa[ph+'-'+qi]=sel;
+  rgt(rstate.cur);
+}
+function rpnav(n){
+  var prev=n>1?'<button class="btn-nav btn-prev" onclick="rgt('+(n-1)+')">&#8592; Precedent</button>':'<button class="btn-nav btn-gold" onclick="enterDisc()">&#8592; Retour DISC</button>';
+  var nxt=n<7?'<button class="btn-nav btn-next" onclick="rgt('+(n+1)+')">Suivant &#8594;</button>':'<span></span>';
+  return '<div class="phase-nav">'+prev+nxt+'</div>';
+}
+function rgt(n){
+  rstate.cur=n;
+  var ph=PH_radar[n-1];
+  document.getElementById('tb-phase').textContent='MODULE 0'+n;
+  document.getElementById('tb-title').textContent=ph.title;
+  var fns=[null,rpg1,rpg2,rpg3,rpg4,rpg5,rpg6,rpg7];
+  try{document.getElementById('content').innerHTML=fns[n]();}
+  catch(e){document.getElementById('content').innerHTML='<div class="section-block"><p style="color:var(--red)">Erreur : '+e.message+'</p></div>';}
+  document.getElementById('content').scrollTop=0;
+  bsb();upd();
+}
+
+/* =========== MODULE 01 =========== */
+function rpg1(){
+  var q=[
+    {q:"Quelle est la vraie raison pour laquelle les gens ach tent ?",o:["Parce que le produit est objectivement le meilleur","Decision emotionnelle d abord, justifiee par la logique ensuite","Parce que le prix est le plus bas","Parce que le vendeur a bien argumente"],c:1,fb:"La decision d achat est emotionnelle. La logique vient apres pour la justifier."},
+    {q:"Un client dit je veux un meilleur logiciel de reporting. Son besoin profond est probablement :",o:["Un logiciel avec plus de fonctionnalites","Impressionner sa direction et paraitre competent","Un outil moins cher","Automatiser ses taches"],c:1,fb:"Derriere le besoin exprime se cache toujours un besoin profond - souvent lie a l image, la peur ou l ambition."},
+    {q:"Quelle affirmation sur les acheteurs est FAUSSE ?",o:["Chaque profil a des declencheurs d achat differents","Un vendeur qui communique comme lui-meme perd des prospects","Tous les acheteurs decidend principalement sur les donnees","L emotion precede toujours la logique dans une decision"],c:2,fb:"Seuls les profils C decidend principalement sur les donnees. Les D veulent les resultats, les I l emotion, les S la securite."}
+  ];
+  var html='';
+  html+='<div class="phase-intro"><div class="phase-intro-num">01</div><div class="phase-intro-body"><h2>Psychologie de l Acheteur</h2><div class="pi-sub">Comprendre pourquoi les gens achetent - et pourquoi ils disent non</div><p>Avant d apprendre a vendre, il faut comprendre comment fonctionne un cerveau qui achete. La decision d achat n est pas rationnelle - elle est emotionnelle. La logique ne sert qu a la justifier apres coup. Si tu ne parles qu aux arguments rationnels, tu parles a 10% du cerveau de ton prospect.</p></div></div>';
+  html+='<div class="section-block"><h3>La regle fondamentale de l achat</h3><p>Les gens n achetent pas un produit. Ils achetent une <strong style="color:var(--gold-light)">transformation</strong> - une version amelioree de leur situation, ou l elimination d une douleur. Personne n achete une perceuse : ils achetent un trou dans le mur. Personne n achete une formation : ils achetent le sentiment de maitrise et les resultats qui en decoulent.</p><p>La premiere question a toujours te poser face a un prospect : "Quelle transformation cherche-t-il vraiment ?"</p></div>';
+  html+='<div class="section-block"><h3>Les 3 moteurs de decision</h3><table class="piliers"><tr><td>Fuir la douleur</td><td>Eviter une perte, un risque, une situation inconfortable. Le moteur le plus puissant. "Je ne veux plus perdre de clients."</td></tr><tr><td>Obtenir du plaisir</td><td>Atteindre un objectif desirable, progresser, etre reconnu. "Je veux etre le meilleur vendeur de mon equipe."</td></tr><tr><td>Reduire l incertitude</td><td>Prendre la decision la plus sure possible, minimiser le risque d erreur. "Je veux etre sur que ca va marcher."</td></tr></table></div>';
+  html+='<div class="section-block"><h3>Le modele Iceberg - besoin exprime vs besoin reel</h3><p>Ce que le prospect dit n est presque jamais ce qu il veut vraiment. Le besoin exprime est la partie visible de l iceberg. Le besoin reel - la motivation profonde - est invisible sous la surface.</p><table class="piliers" style="margin-top:14px"><tr><td>Ce qu il dit</td><td>Ce qu il veut vraiment</td></tr><tr><td>"Je veux reduire mes couts."</td><td>Il a peur pour son poste si les chiffres ne s ameliorent pas.</td></tr><tr><td>"Je veux un meilleur CRM."</td><td>Il veut que son equipe l admire pour avoir pris une bonne decision.</td></tr><tr><td>"J ai besoin d une formation."</td><td>Il sent qu il plafonne et que ca l angoisse.</td></tr><tr><td>"Je veux comparer les options."</td><td>Il a peur de prendre la mauvaise decision.</td></tr></table></div>';
+  html+='<div class="section-block"><h3>Les 4 types d acheteurs</h3><table class="piliers" style="margin-top:8px"><tr><td style="color:#D94040">Oriente Resultats (D)</td><td>Achete sur le ROI, l efficacite et la rapidite. Veut gagner, dominer, etre le premier.</td></tr><tr><td style="color:#D4823A">Oriente Relations (I)</td><td>Achete sur l emotion et la connexion. Veut etre reconnu et faire partie de quelque chose.</td></tr><tr><td style="color:#3A9E62">Oriente Securite (S)</td><td>Achete sur la confiance et la continuite. Veut ne pas regretter, ne pas brusquer son equipe.</td></tr><tr><td style="color:#3A7BD5">Oriente Logique (C)</td><td>Achete sur les donnees et la rigueur. Veut comprendre, verifier, avoir raison de decider.</td></tr></table></div>';
+  html+='<div class="section-block"><h3>Pourquoi les gens disent non</h3><p>Un "non" n est presque jamais un refus definitif. Les 5 raisons principales :</p><ul class="erreurs-list"><li>Ils n ont pas compris comment ca resout leur probleme precis</li><li>Ils ne font pas encore assez confiance au vendeur ou a la solution</li><li>Le bon declencheur emotionnel n a pas ete active</li><li>Ils ont une objection cachee qu ils n ont pas ose exprimer</li><li>Le timing est mauvais - mais ca peut changer</li></ul></div>';
+  html+=discTip(
+    'Tu penses naturellement en ROI et en resultats. Ton angle mort : tu assumes que ton prospect fonctionne comme toi. Quand quelqu un hesite, tu penses qu il manque d informations. En realite, il a peut-etre juste besoin d etre rassure emotionnellement.',
+    'Tu comprends instinctivement les acheteurs emotionnels. Ton angle mort : tu as tendance a rester dans l emotion et a oublier de valider la logique. Un prospect qui dit oui avec enthousiasme mais ne signe pas 48h apres a souvent eu le temps de rationaliser.',
+    'Tu comprends parfaitement les acheteurs orientes securite. Ton angle mort : tu as tendance a croire que tout le monde a besoin de temps. Certains prospects (D) ont besoin qu on les aide a decider vite - attendre les irrite.',
+    'Tu t appuies naturellement sur les donnees et la logique. Ton angle mort : tu traites tes prospects comme des C. Mais 75% d entre eux decidend avec leurs emotions. Un prospect I ne sera jamais convaincu par 10 slides de donnees.',
+    'Sur tes 3 prochains RDV, identifie si le prospect fuit une douleur ou cherche un plaisir - et adapte ton angle d attaque.',
+    'Prepare pour chaque prospect une phrase logique qui valide leur decision emotionnelle : donnees, garantie, etude de cas chiffre.',
+    'Identifie sur tes prochains RDV si le prospect fuit l incertitude (tu geres) ou cherche l efficacite (pratique le rythme accelere).',
+    'Pour chaque argument logique que tu prepares, cree une version emotionnelle. Ex : "Le cout baisse de 23%" → "Tu vas enfin pouvoir respirer en fin de mois."'
+  );
+  html+='<div class="quiz-section"><h3>Quiz de validation</h3>'+rqz(1,q)+rqzsc(1,q)+'</div>';
+  html+=rpnav(1);
+  return html;
+}
+
+/* =========== MODULE 02 =========== */
+function rpg2(){
+  var q=[
+    {q:"Un prospect dit 'Bon, on a combien de temps ?' en s asseyant. Son profil probable est :",o:["Stable - il veut s assurer qu on a le temps","Consciencieux - il prepare ses questions","Dominant - il veut aller a l essentiel","Influent - il est curieux"],c:2,fb:"La gestion du temps comme priorite immediate est une signature D. Il ne veut pas perdre de temps."},
+    {q:"La meilleure facon de confirmer qu un prospect est profil C ?",o:["Lui poser une question sur son equipe","Observer ses gestes expressifs","Lui soumettre un chiffre approximatif et voir s il demande la source","Voir s il coupe la parole"],c:2,fb:"Le C reagit immediatement aux imprecisions. Un chiffre non source lui declenchera une demande de verification."},
+    {q:"Un prospect parle de 'nous' et 'l equipe' 3 fois en 2 minutes. Son profil est :",o:["Dominant","Influent","Stable","Consciencieux"],c:2,fb:"La pensee collective et les references constantes a l equipe sont la signature du profil S."}
+  ];
+  var html='';
+  html+='<div class="phase-intro"><div class="phase-intro-num">02</div><div class="phase-intro-body"><h2>Le Profiling en Vente</h2><div class="pi-sub">Lire un prospect des les premieres secondes</div><p>Tu as environ 60 secondes pour lire ton prospect avant qu il commence a se fermer ou s ouvrir en fonction de ton approche. Le profiling n est pas une manipulation - c est comprendre le langage naturel de l autre pour lui repondre dans ce meme langage.</p></div></div>';
+  html+='<div class="section-block"><h3>La fenetre des 60 secondes</h3><p>Les 60 premieres secondes d un entretien revelent presque tout. Avant de parler de ton offre, observe trois choses : le rythme de parole, la premiere question posee, et la posture physique. Ces trois signaux ensemble donnent une lecture initiale fiable a 80%.</p><p>N attends pas 10 minutes d entretien pour profiler - c est trop tard. Ton cerveau sera deja en mode argumentaire et tu auras rate les signaux. Entraine-toi a observer avant de parler.</p></div>';
+  html+='<div class="section-block"><h3>Les 3 types de signaux</h3><table class="piliers"><tr><td>Verbaux</td><td>Les mots choisis, les questions posees, ce qu il met en avant spontanement. "ROI", "equipe", "donnees", "c etait super" - chaque mot revele une priorite.</td></tr><tr><td>Para-verbaux</td><td>La vitesse d elocution, le volume, les intonations, les silences. Debit rapide + voix forte = souvent D. Debit lent + voix douce = souvent S.</td></tr><tr><td>Non-verbaux</td><td>La posture, les gestes, le contact visuel. Expressif et souriant = I. Penche en avant, regard fixe = D. Carnet a la main = C.</td></tr></table></div>';
+  html+='<div class="section-block"><h3>Signaux par profil</h3><table class="synth-table"><thead><tr><th>Profil</th><th>Verbal</th><th>Para-verbal</th><th>Non-verbal</th></tr></thead><tbody><tr><td class="td-l" style="color:#D94040">D</td><td>"Resultats", "combien de temps", "prouvez-moi", coupe la parole</td><td>Rapide, fort, phrases courtes</td><td>Penche en avant, regard direct, regarde sa montre</td></tr><tr><td class="td-l" style="color:#D4823A">I</td><td>Anecdotes, "c est super", votre prenom souvent, digresse</td><td>Enthousiaste, intonations fortes, rit facilement</td><td>Grands gestes, sourire large, cherche le contact visuel</td></tr><tr><td class="td-l" style="color:#3A9E62">S</td><td>"Nous", "l equipe", "doucement", pose des questions sur le suivi</td><td>Lent, doux, hesitations</td><td>Posture fermee au debut, hochements de tete</td></tr><tr><td class="td-l" style="color:#3A7BD5">C</td><td>Questions precises, "comment calculez-vous ca", prend des notes</td><td>Lent, mesure, pauses longues</td><td>Neutre, peu de gestes, stylo en main, lit les documents</td></tr></tbody></table></div>';
+  html+='<div class="section-block"><h3>Confirmer ton hypothese de profil</h3><table class="piliers"><tr><td>Tester D vs C</td><td>"Qu est-ce qui compte le plus pour vous dans cette decision ?" → D : "Les resultats" / C : "La rigueur du processus"</td></tr><tr><td>Tester I vs S</td><td>"Comment vous avez choisi votre dernier prestataire ?" → I : "On s entendait bien..." / S : "L equipe etait alignee"</td></tr><tr><td>Tester D vs I</td><td>Observe face a un silence. D le rompt vite pour avancer. I le rompt avec une anecdote.</td></tr><tr><td>Tester S vs C</td><td>"Qu est-ce qui vous retient dans une decision ?" → S : "L impact sur l equipe" / C : "Les zones d incertitude"</td></tr></table></div>';
+  html+='<div class="section-block"><h3>Erreurs frequentes de profiling</h3><ul class="erreurs-list"><li>Confondre quelqu un de silencieux avec un C. Un S peut aussi etre reserve - cherche les references a l equipe.</li><li>Confondre enthousiasme avec profil I. Un D enthousiasme par les resultats peut sembler chaleureux.</li><li>Changer d avis trop vite sur le profil. Ton hypothese initiale est souvent bonne. Confirme-la avant de l abandonner.</li></ul></div>';
+  html+=discTip(
+    'Tu reperes les autres Ds immediatement. Ton angle mort : tu classes les C comme froids ou hostiles parce qu ils ne montrent pas d enthousiasme. Un C neutre est en train d analyser, pas de te rejeter.',
+    'Tu lis naturellement les emotions. Ton angle mort : les Ds qui n ont pas le temps te destabilisent - tu interpretes leur bruscherie comme un rejet personnel. Ce n est pas personnel - c est leur style.',
+    'Tu detectes tres bien les I et les autres S. Ton angle mort : les Ds t intimident. Leur energie directe peut te faire percevoir chaque RDV comme un interrogatoire. Ce n est pas le cas.',
+    'Tu analyses bien les comportements mais tu peux sur-analyser et changer d avis sur le profil au lieu de le tester. Fais confiance a ta premiere lecture puis confirme avec 1 question test.',
+    'Sur ton prochain RDV, attends 5 secondes supplementaires apres chaque reponse avant de parler. Observe ce qui se passe.',
+    'Note apres chaque RDV : Profil detecte - signal cle qui m a mis sur la piste. Fais ca 10 fois et ton instinct va s affuter.',
+    'Simule mentalement un RDV avec un prospect D tres direct. Prepare l ouverture : "Je sais que vous etes presse - en 30 secondes : [resultat + delai + question]."',
+    'Entraine-toi a identifier le profil d une personne dans les 90 premieres secondes lors de ta prochaine conversation - pas forcement un client.'
+  );
+  html+='<div class="quiz-section"><h3>Quiz de validation</h3>'+rqz(2,q)+rqzsc(2,q)+'</div>';
+  html+=rpnav(2);
+  return html;
+}
+
+/* =========== MODULE 03 =========== */
+function rpg3(){
+  var q=[
+    {q:"Un client dit 'J ai besoin de meilleurs outils de suivi'. Quelle question revele le besoin profond ?",o:["Quel budget avez-vous pour ces outils ?","Quels outils utilisez-vous actuellement ?","Qu est-ce qui se passe concretement si vous ne resolvez pas ca dans 6 mois ?","Combien de personnes seraient concernees ?"],c:2,fb:"La question qu est-ce qui se passe si... force le prospect a articuler les consequences reelles. C est la que le vrai besoin apparait."},
+    {q:"Apres avoir pose une question cle, la bonne pratique est :",o:["Enchainer rapidement pour garder le rythme","Attendre au minimum 7 secondes en silence","Reformuler immediatement","Poser une deuxieme question"],c:1,fb:"Le silence apres une question decisive est une technique puissante. Le prospect continue a parler et revele souvent l information la plus importante."},
+    {q:"La technique des 5 Pourquoi consiste a :",o:["Poser 5 questions differentes sur le budget","Demander pourquoi en boucle pour descendre aux causes profondes","Identifier 5 besoins simultanement","Reformuler 5 fois la meme question"],c:1,fb:"Chaque pourquoi descend d un niveau. Au 3e ou 4e pourquoi, on touche generalement la vraie motivation."}
+  ];
+  var html='';
+  html+='<div class="phase-intro"><div class="phase-intro-num">03</div><div class="phase-intro-body"><h2>Les Besoins Caches</h2><div class="pi-sub">Reveler le vrai probleme derriere le probleme</div><p>80% des vendeurs s arretent au premier besoin exprime. Les 20% qui ferment la plupart des deals savent que le premier besoin enonce est rarement le vrai probleme. Ce module te donne les outils pour descendre sous la surface.</p></div></div>';
+  html+='<div class="section-block"><h3>Besoin exprime vs besoin reel</h3><p>Un prospect qui dit "je veux reduire mes couts" veut peut-etre dire "j ai peur de perdre mon job si les resultats n evoluent pas". Un autre qui dit "je cherche une formation" veut peut-etre dire "je me sens depasse et ca m angoisse".</p><p>Le besoin exprime est utilitaire. Le besoin reel est emotionnel. Si tu vends uniquement sur le besoin exprime, tu te bats sur les fonctionnalites et le prix. Si tu vends sur le besoin reel, tu deviens la seule solution qui comprend vraiment le prospect.</p></div>';
+  html+='<div class="section-block"><h3>La technique des 5 Pourquoi</h3><p>Chaque "pourquoi" te fait descendre d un niveau vers la vraie motivation.</p>';
+  html+='<div class="script-box"><div class="script-text">';
+  html+='<span class="key">Prospect :</span> "J ai besoin d une solution de gestion de projet."\n';
+  html+='<span class="key">Vendeur :</span> "Pourquoi maintenant ?"\n';
+  html+='<span class="key">Prospect :</span> "Parce que les projets prennent du retard."\n';
+  html+='<span class="key">Vendeur :</span> "Pourquoi ces retards posent-ils probleme ?"\n';
+  html+='<span class="key">Prospect :</span> "On rate des livraisons clients."\n';
+  html+='<span class="key">Vendeur :</span> "Et quel est l impact de ces rates ?"\n';
+  html+='<span class="key">Prospect :</span> "On perd des clients fidelses. 2 gros clients en 6 mois."\n\n';
+  html+='→ Ce n est plus gestion de projet - c est une urgence de survie commerciale.';
+  html+='</div></div></div>';
+  html+='<div class="section-block"><h3>Les 6 questions qui revelent tout</h3><table class="piliers"><tr><td>"Qu est-ce qui vous a amene a chercher ca maintenant ?"</td><td>Revele l element declencheur - souvent la vraie urgence.</td></tr><tr><td>"Qu avez-vous deja essaye ?"</td><td>Revele les frustrations passees et les criteres caches.</td></tr><tr><td>"Qu est-ce qui se passe si vous ne reglez pas ca ?"</td><td>Amplifie la douleur et la rend concrete.</td></tr><tr><td>"Qui d autre est impacte par ce probleme ?"</td><td>Revele les vrais decideurs et les parties prenantes cachees.</td></tr><tr><td>"Comment vous saurez que le probleme est resolu ?"</td><td>Revele les criteres de succes - ce qui compte vraiment.</td></tr><tr><td>"Qu est-ce que ca represente pour vous personnellement ?"</td><td>La question la plus puissante. Accede au besoin emotionnel profond.</td></tr></table></div>';
+  html+='<div class="section-block"><h3>La technique du thermometre</h3>';
+  html+='<div class="script-box"><div class="script-text">';
+  html+='<span class="key">Vendeur :</span> "Sur une echelle de 1 a 10, a quel point resoudre ca est une priorite cette annee ?"\n\n';
+  html+='Si 8 ou plus → prospect qualifie, urgence reelle. Avance.\n';
+  html+='Si 5 a 7 → probleme identifie mais pas encore douloureux. Amplifie les consequences.\n';
+  html+='Si 4 ou moins → mauvais timing ou mauvais contact. Qualifie mieux avant d investir du temps.';
+  html+='</div></div></div>';
+  html+='<div class="section-block"><h3>Le pouvoir du silence</h3><p>Apres une question profonde, la plupart des vendeurs ont peur du silence et parlent trop vite. C est une erreur. Le silence de 5 a 10 secondes apres une question cle est l outil le plus sous-estime de la vente.</p><ul class="check-list"><li>Pose ta question decisive</li><li>Ferme la bouche - 7 secondes minimum</li><li>Maintiens le contact visuel calmement</li><li>Ne romps JAMAIS le silence en premier</li></ul></div>';
+  html+=discTip(
+    'Tu es impatient face au questionnement. Tu veux aller aux solutions rapidement - c est ta nature. Mais un D qui propose une solution avant d avoir vraiment creuse le probleme va souvent proposer quelque chose qui ne colle pas vraiment au prospect.',
+    'Tu adores les histoires et tu es naturellement doue pour creer un espace ou les gens se confient. Ton piege : tu peux t emballer dans la relation et oublier de creuser le probleme precis.',
+    'Tu es naturellement doue pour l ecoute profonde. Ton piege : par politesse, tu n oses pas pousser assez loin. Quand le prospect semble mal a l aise avec une question, tu recules. Or c est souvent la que se cache le vrai probleme.',
+    'Tu poses d excellentes questions analytiques. Ton probleme : tu peux faire sentir au prospect qu il passe un entretien d embauche. Trop de questions precises d affilee sans chaleur humaine cree de la resistance.',
+    'Sur ton prochain RDV, force-toi a poser minimum 3 questions avant de mentionner quoi que ce soit sur ton offre.',
+    'Apres chaque conversation chaleureuse, resume en 2 phrases le besoin reel identifie. Si tu ne peux pas, tu n as pas encore assez creuse.',
+    'Entraine-toi a la question : "Qu est-ce qui se passe si vous ne resolvez pas ca ?" et tiens-toi pret a rester dans le silence inconfortable qui suit.',
+    'Dans ton prochain RDV, glisse une question emotionnelle parmi tes questions analytiques : "Et comment ca vous affecte personnellement ?"'
+  );
+  html+='<div class="quiz-section"><h3>Quiz de validation</h3>'+rqz(3,q)+rqzsc(3,q)+'</div>';
+  html+=rpnav(3);
+  return html;
+}
+
+/* =========== MODULE 04 =========== */
+function rpg4(){
+  var q=[
+    {q:"Un prospect dit 'Je dois reflechir'. La meilleure reponse est :",o:["Bien sur, prenez le temps qu il vous faut.","Je comprends. Qu est-ce qui vous ferait pencher d un cote ou de l autre ?","On peut peut-etre revoir le prix ?","Je vous envoie plus d informations par email."],c:1,fb:"Je dois reflechir cache toujours une objection non exprimee. La bonne reponse ouvre la conversation pour la reveler - sans pression."},
+    {q:"Face a 'Vos concurrents font pareil mais moins cher', on repond :",o:["Notre prix est justifie par notre qualite.","Vraiment ? Qu est-ce qu ils proposent exactement ?","On peut s aligner sur leur tarif.","Notre solution est differente car..."],c:1,fb:"Avant de defendre ton prix, assure-toi de comprendre exactement ce que le concurrent propose. Souvent la comparaison n est pas identique."},
+    {q:"La technique du retournement doux consiste a :",o:["Contester directement l objection","Transformer l objection en question et la retourner au prospect","Ignorer l objection et continuer le pitch","Proposer une remise immediatement"],c:1,fb:"On transforme l objection en question ouverte et on la renvoie : Je dois reflechir → Qu est-ce qui vous ferait pencher d un cote ou de l autre ?"}
+  ];
+  var html='';
+  html+='<div class="phase-intro"><div class="phase-intro-num">04</div><div class="phase-intro-body"><h2>Gestion des Objections</h2><div class="pi-sub">12 objections courantes + reponses exactes + technique du retournement</div><p>Les objections ne sont pas des refus. Ce sont des demandes d information deguisees, des peurs non exprimees, ou des signaux que quelque chose n est pas encore aligne. Apprendre a les accueillir et les transformer est l une des competences les plus rentables d un vendeur.</p></div></div>';
+  html+='<div class="section-block"><h3>Le principe fondamental</h3><p>Avant de repondre a n importe quelle objection, fais deux choses : accuse reception ("je comprends") et pose une question pour comprendre l objection derriere l objection. Ne contre-attaque jamais directement - ca declenche de la resistance.</p><p>Structure en 3 temps : <strong style="color:var(--gold-light)">Accueillir → Creuser → Repondre.</strong> La plupart des vendeurs sautent les deux premieres etapes.</p></div>';
+  html+='<div class="section-block"><h3>Les 12 objections (clique pour ouvrir)</h3>';
+  html+=obj(1,"C est trop cher","Cette objection cache generalement une de ces trois choses : le prospect n a pas encore compris la valeur, il compare avec un concurrent moins cher, ou il n a pas le budget mais ne veut pas le dire.",'→ "Par rapport a quoi ?" [pause]\n→ "Le cout est X. Le gain sur 12 mois est Y. Le ROI est atteint en Z mois."\n→ "Si le budget n etait pas un obstacle, c est quelque chose que vous voudriez faire ?"');
+  html+=obj(2,"Je dois reflechir","C est la plus courante et la plus vague. Elle cache presque toujours une objection reelle non exprimee - prix, confiance, timing ou decideur manquant.",'→ "Bien sur. Qu est-ce qui vous ferait pencher d un cote ou de l autre ?"\n→ "Y a-t-il quelque chose de specifique qui vous retient ?"\n→ "Sur quoi voulez-vous reflechir en particulier ?"');
+  html+=obj(3,"J en parle a mon N+1 / associe","Deux cas : soit il y a vraiment un decideur manquant, soit c est un pretexte pour eviter la decision. Identifie lequel.",'→ "Bien sur. Est-ce qu on pourrait organiser un echange a trois ?"\n→ "Qu est-ce que vous lui diriez si vous lui en parliez aujourd hui ?"\n→ "Qu est-ce qu il voudra savoir en priorite ?"');
+  html+=obj(4,"On n a pas le budget","Souvent faux ou une priorite de budget pas encore accordee.",'→ "Je comprends. Si le budget etait alloue, c est quelque chose que vous voudriez faire avancer ?"\n→ "Quand est-ce que les budgets sont reevalues chez vous ?"\n→ "Quels projets sont actuellement prioritaires - comment se situe celui-ci ?"');
+  html+=obj(5,"On travaille deja avec quelqu un","Le prospect a un fournisseur actuel mais ca ne veut pas dire qu il est satisfait.",'→ "Super. Qu est-ce qui vous satisfait le plus chez eux ?"\n→ "Et si vous pouviez changer quelque chose dans ce que vous avez aujourd hui, ce serait quoi ?"\n→ "Qu est-ce qui vous a amene a me recevoir malgre ca ?"');
+  html+=obj(6,"Ce n est pas le bon moment","Parfois vrai, parfois un evitement. Qualifie l urgence reelle.",'→ "Qu est-ce qui changerait dans votre situation si on attendait 6 mois ?"\n→ "Qu est-ce qui devrait se passer pour que le timing soit bon ?"\n→ "Qu est-ce qui se passe si le probleme actuel reste non resolu pendant 6 mois ?"');
+  html+=obj(7,"J ai besoin de comparer","C est sain. Aide-le a comparer intelligemment - en definissant les bons criteres.",'→ "Tres bien. Sur quels criteres allez-vous comparer ?"\n→ "Que devrait avoir la solution ideale que vous n avez pas encore trouvee ?"');
+  html+=obj(8,"Je ne suis pas sur que ca marche pour moi","Objection de risque - le prospect a peur de se tromper.",'→ "Qu est-ce qui vous ferait dire que ca marche pour vous ?"\n→ "Quelles seraient les conditions pour que vous considerez ca comme un succes ?"\n→ "Est-ce que vous seriez a l aise avec une phase pilote de 30 jours ?"');
+  html+=obj(9,"Envoyez-moi une documentation","Souvent un moyen poli de se debarrasser d un vendeur. Ne pas obtemperer sans creuser.",'→ "Je vais le faire. Pour vous envoyer ce qui est le plus utile - qu est-ce qui vous interesse le plus ?"\n→ "Apres l avoir lue, on pourrait faire 15 minutes pour en parler - mardi ou jeudi ?"');
+  html+=obj(10,"C est trop complique a mettre en place","Objection d effort - le prospect anticipe une charge de travail difficile.",'→ "Qu est-ce qui vous parait le plus complexe ? On peut commencer par ca."\n→ "Nos clients dans la meme situation ont mis X jours pour demarrer - voici comment ca s est passe."\n→ "Et si on definissait ensemble les 3 premieres etapes - juste pour voir ce que ca implique vraiment ?"');
+  html+=obj(11,"Vos concurrents font pareil mais moins cher","Avant de defendre ton prix, verifie que la comparaison est valide.",'→ "Vraiment ? Qu est-ce qu ils proposent exactement ?"\n→ "Ce sont peut-etre des offres similaires en surface - voila les differences concretes sur [point cle]."\n→ "Le prix est souvent ce qu on compare en premier. Qu est-ce qui compte le plus pour vous dans ce choix ?"');
+  html+=obj(12,"J ai encore besoin d y reflechir (repete)","Si c est la 2e ou 3e fois, il y a une objection cachee forte. Il faut la faire sortir.",'→ "Est-ce que c est le prix, le timing, ou autre chose qui vous retient ?"\n→ "Si ce n etait pas ca [nommer l objection probable], on pourrait avancer ?"');
+  html+='</div>';
+  html+=discTip(
+    'Tu as le bon instinct pour les objections des Ds - tu reponds directement et ca marche. Ton probleme : avec les S et les C, ta reponse directe peut sembler agressive. Un S qui dit "je dois en parler a mon equipe" a besoin d etre rassure, pas challenge.',
+    'Tu geres bien les objections emotionnelles avec de l humour ou de la chaleur. Ton angle mort : les C ont besoin de vraies reponses factuelles. "Faites-moi confiance" ne marche pas avec eux.',
+    'Tu as tendance a accepter trop vite les objections comme definitives. "Je dois reflechir" est un signal - pas une fin de conversation.',
+    'Quand tu geres une objection, tu as tendance a sur-expliquer. La sur-explication donne l impression que tu te justifies - et se justifier affaiblit ta position.',
+    'Prepare une version soft de ta reponse aux 3 objections que tu entends le plus souvent. Pratique-la a voix haute.',
+    'Pour tes 3 objections les plus frequentes, prepare une reponse factuelle avec un chiffre precis ou un cas client documente.',
+    'Entraine-toi a la reponse au "je dois reflechir" : "Bien sur. Qu est-ce qui vous ferait pencher d un cote ou de l autre ?" Repete jusqu a ce que ca sorte naturellement.',
+    'Regle des 2 phrases : reponds a chaque objection en maximum 2 phrases, puis pose une question.'
+  );
+  html+='<div class="quiz-section"><h3>Quiz de validation</h3>'+rqz(4,q)+rqzsc(4,q)+'</div>';
+  html+=rpnav(4);
+  return html;
+}
+
+/* =========== MODULE 05 =========== */
+function rpg5(){
+  var q=[
+    {q:"Le principe d ancrage consiste a :",o:["Creer une relation de confiance avant de pitcher","Presenter un prix eleve en premier pour orienter la perception","Prouver sa credibilite avec des references","Creer une urgence artificielle"],c:1,fb:"L ancrage est le premier chiffre presente qui devient le point de reference. Toujours ancrer haut."},
+    {q:"Pour un profil C, le levier d influence le plus efficace est :",o:["La sympathie - il faut qu il t appre ie","La rarete - places limitees","L autorite - donnees sourcees, methodologie prouvee","La reciprocite - donner avant de demander"],c:2,fb:"Le C decide avec sa tete. Les donnees sourcees, les certifications, les etudes de cas documentees sont ses vrais declencheurs."},
+    {q:"Quelle phrase applique le principe de preuve sociale correctement ?",o:["Faites-moi confiance, ca marche tres bien.","Nous sommes les meilleurs dans notre domaine.","12 directeurs commerciaux de votre secteur ont deja fait ce choix ce trimestre.","Notre produit est reconnu internationalement."],c:2,fb:"La preuve sociale est precise, chiffree, et ressemblante. 12 directeurs commerciaux de votre secteur = similitude + nombre + recence."}
+  ];
+  var html='';
+  html+='<div class="phase-intro"><div class="phase-intro-num">05</div><div class="phase-intro-body"><h2>Influence et Persuasion</h2><div class="pi-sub">Les leviers psychologiques qui font decider</div><p>La persuasion n est pas de la manipulation. C est comprendre les mecanismes cognitifs qui influencent les decisions et les utiliser pour aider ton prospect a prendre la meilleure decision. Ce module couvre 8 leviers d influence appliques a la vente.</p></div></div>';
+  html+='<div class="section-block"><h3>Levier 1 - La reciprocite</h3><p>Les gens se sentent obliges de rendre ce qu ils ont recu. Si tu donnes de la valeur avant de demander quoi que ce soit, le prospect se sent naturellement enclin a rendre la pareille.</p><p>En pratique : partage un insight gratuit sur leur secteur, fais un audit rapide sans engagement, envoie un article pertinent. Donne avant de demander.</p></div>';
+  html+='<div class="section-block"><h3>Levier 2 - L engagement et la coherence</h3><p>Une fois qu une personne a dit oui a une petite chose, elle est psychologiquement motivee a rester coherente. Obtenir des micro-accords tout au long de l entretien prepare le terrain pour le closing final.</p>';
+  html+='<div class="script-box"><div class="script-text">';
+  html+='<span class="key">Micro-accords en cascade :</span>\n';
+  html+='"Vous etes d accord que ce probleme vous coute du temps ?" → Oui.\n';
+  html+='"Et si on pouvait le reduire de moitie, ca aurait de la valeur pour vous ?" → Oui.\n';
+  html+='"Donc si on trouvait une solution fiable qui fait ca - ca merite qu on en parle serieusement ?" → Oui.\n\n';
+  html+='→ Chaque oui construit le suivant.';
+  html+='</div></div></div>';
+  html+='<div class="section-block"><h3>Levier 3 - La preuve sociale</h3><p>Les gens regardent ce que font les autres pour decider quoi faire eux-memes. La preuve sociale la plus efficace est specifique, ressemblante et recente.</p><table class="piliers"><tr><td>Specifique</td><td>"23 directeurs commerciaux" est bien mieux que "beaucoup de clients"</td></tr><tr><td>Ressemblante</td><td>"dans votre secteur" est bien mieux que "des entreprises"</td></tr><tr><td>Recente</td><td>"ce trimestre" est bien mieux que "depuis nos debuts"</td></tr></table></div>';
+  html+='<div class="section-block"><h3>Levier 4 - L autorite</h3><p>Les gens font confiance aux experts. Tu n as pas besoin d etre le plus connu - tu dois etre le plus credible sur le probleme precis de ton prospect.</p><ul class="check-list"><li>Cite tes sources et tes donnees avec precision</li><li>Mentionne tes certifications et formations pertinentes</li><li>Partage des etudes de cas avec des metriques reelles</li><li>Exprime-toi avec assurance - l hesitation detruit l autorite</li></ul></div>';
+  html+='<div class="section-block"><h3>Levier 5 - La sympathie</h3><p>On achete a ceux qu on aime et a ceux qui nous ressemblent. La sympathie se construit sur 3 piliers : points communs, interet sincere pour l autre, et compliments authentiques.</p><p>Particulierement puissant avec les profils I et S. Avec les D et les C, ne force pas la sympathie - concentre-toi sur la credibilite et les resultats.</p></div>';
+  html+='<div class="section-block"><h3>Levier 6 - La rarete et l urgence</h3><p>Les gens valorisent davantage ce qui est rare ou limite. Mais attention - la fausse urgence est immediatement detectee et detruit la confiance. N utilise la rarete que si elle est reelle.</p><p><strong style="color:#E05A5A">Attention :</strong> Ce levier est contre-productif avec les profils S - il les stresse et cree de la mefiance.</p></div>';
+  html+='<div class="section-block"><h3>Levier 7 - Le cadrage</h3><p>La facon dont tu presentes une information change radicalement sa perception.</p><table class="piliers"><tr><td>"Ca coute 1 200 euros par an"</td><td>→ "Moins de 3,30 euros par jour"</td></tr><tr><td>"Taux de succes de 72%"</td><td>→ "7 clients sur 10 voient des resultats des le 1er mois"</td></tr><tr><td>"Formation de 8 heures"</td><td>→ "1 journee qui peut changer tes 12 prochains mois"</td></tr></table></div>';
+  html+='<div class="section-block"><h3>Levier 8 - L ancrage</h3><p>Le premier chiffre evoque devient le point de reference de toute la suite. Ancre toujours haut.</p>';
+  html+='<div class="script-box"><div class="script-text">';
+  html+='<span class="key">Ancre haute sur le probleme :</span>\n';
+  html+='"Ce type de probleme coute generalement entre 50 000 et 200 000 euros par an aux entreprises de votre taille. [pause] Voyons ce que ca represente pour vous."\n\n';
+  html+='<span class="key">Ancre haute sur la solution :</span>\n';
+  html+='"L offre complete est a 3 900 euros. Mais en fonction de ce qu on a dit, l offre qui vous correspond est a 990 euros."\n\n';
+  html+='→ 990 euros parait raisonnable apres 3 900 euros.';
+  html+='</div></div></div>';
+  html+=discTip(
+    'Tes leviers naturels : autorite et rarete. Ca marche parfaitement avec les Ds. Ton point de travail : avec les S, l urgence artificielle cree de la mefiance. Remplace la rarete par la reciprocite : donne de la valeur d abord.',
+    'Tes leviers naturels : sympathie et preuve sociale. Tu crées naturellement de la connexion. Ton point de travail : certains prospects (C) ont besoin d autorite et de donnees en plus de tes histoires. Integre 1 chiffre precis dans chaque story.',
+    'Tes leviers naturels : reciprocite et engagement progressif. Tu donnes naturellement avant de demander. Ton point de travail : tu evites la rarete car elle te semble manipulatrice. Mais une vraie urgence est legitime a partager.',
+    'Tes leviers naturels : autorite et preuve sociale documentee. Tu es credible et rigoureux. Ton point de travail : tu sous-utilises la sympathie et la reciprocite. Un C qui presente ses donnees sans chaleur humaine perd les acheteurs emotionnels.',
+    'Prepare une phrase d ancrage haute sur le probleme de tes prospects. Teste-la sur tes 3 prochains RDV.',
+    'Prends ton meilleur temoignage client et reformule-le avec : un profil ressemblant + un resultat chiffre + un delai. Memorise-le.',
+    'Identifie une vraie contrainte dans ton offre actuelle (delai, disponibilite, prix qui change) et formule-la de facon naturelle et honnete.',
+    'Lors de ton prochain RDV, commence par 2 minutes de connexion sincere avant d entrer dans les donnees.'
+  );
+  html+='<div class="quiz-section"><h3>Quiz de validation</h3>'+rqz(5,q)+rqzsc(5,q)+'</div>';
+  html+=rpnav(5);
+  return html;
+}
+
+/* =========== MODULE 06 =========== */
+function rpg6(){
+  var q=[
+    {q:"Face a un profil D qui hesite au moment de signer, la bonne approche est :",o:["Attendre qu il se decide tout seul","Dire : Je comprends, prenez le temps qu il vous faut","Demander : Qu est-ce qui vous retient ? puis proposer 2 options pour avancer","Baisser le prix pour accelerer"],c:2,fb:"Le D hesite rarement sur le prix. Une question directe sur le bloquant + 2 options = son mode de decision naturel."},
+    {q:"Le closing alternatif consiste a :",o:["Proposer deux solutions differentes avec des prix differents","Proposer deux facons de demarrer - jamais si/non - toujours quand/comment","Alterner entre soft et hard closing","Proposer une alternative moins chere si le prospect hesite"],c:1,fb:"Le closing alternatif elimine la question oui/non. Tu veux demarrer le 1er ou le 15 ? - les deux options presupposent l accord."},
+    {q:"Le signal d achat pose des questions sur la mise en oeuvre signifie :",o:["Le prospect cherche des raisons de ne pas acheter","Le prospect se projette dans l utilisation - signe d interet fort","Le prospect veut juste de l information generale","Le prospect compare encore avec d autres options"],c:1,fb:"Quand un prospect pose des questions sur comment ca marche concretement, il se projette deja. C est un signal fort - engage le closing."},
+    {q:"Apres avoir pose la question de closing, la regle absolue est :",o:["Enchainer sur les benefices pour renforcer la decision","Proposer une remise si le prospect hesite","Se taire et ne jamais parler en premier","Recapituler les points cles une derniere fois"],c:2,fb:"Apres la question de closing, le premier qui parle perd. Le silence est ton meilleur allie."}
+  ];
+  var html='';
+  html+='<div class="phase-intro"><div class="phase-intro-num">06</div><div class="phase-intro-body"><h2>Le Closing R.A.D.A.R.</h2><div class="pi-sub">7 techniques de closing adaptees a chaque profil</div><p>Le closing n est pas un moment de pression - c est l aboutissement naturel d un entretien bien conduit. Si tout ce qui precede a ete bien fait (besoin identifie, confiance etablie, objections traitees), le closing devient une formalite. Ce module te donne les 7 techniques et les signaux pour choisir le bon moment.</p></div></div>';
+  html+='<div class="section-block"><h3>Lire les signaux d achat</h3><table class="piliers"><tr><td>Verbaux</td><td>"Ca marche comment exactement ?", "Et si je voulais commencer quand ?", "Qu est-ce qui se passe apres la signature ?"</td></tr><tr><td>Physiques</td><td>Se penche en avant, prend des notes, relit les documents, hoche la tete plus souvent</td></tr><tr><td>Changement de questions</td><td>Les questions passent de "qu est-ce que c est ?" a "comment ca marche pour moi ?"</td></tr></table></div>';
+  html+='<div class="section-block"><h3>La sequence de closing en 5 temps</h3><ul class="check-list"><li><strong>Resumer le probleme</strong> - montre que tu as compris et ecoute</li><li><strong>Confirmer l alignement</strong> - verifie que la solution correspond bien</li><li><strong>Traiter la derniere objection</strong> - si une reste, elle ressort ici</li><li><strong>Poser la question de closing</strong> - claire, directe, sans ambiguite</li><li><strong>Se taire</strong> - ne jamais parler en premier apres la question de closing</li></ul></div>';
+  html+='<div class="section-block"><h3>Les 7 techniques de closing</h3><table class="piliers"><tr><td style="color:#D94040">1. Direct (D)</td><td>"On y va ?" Simple, assume, efficace avec les profils D qui apprecient la directness.</td></tr><tr><td style="color:#D4823A">2. Vision (I)</td><td>"Imagine-toi dans 3 mois - ton equipe maitrise ca, tes resultats ont change. On commence ?" Ferme sur le sentiment.</td></tr><tr><td style="color:#3A9E62">3. Accompagnement (S)</td><td>"Par ou tu veux qu on commence ? Je suis la pour t accompagner a chaque etape." Progressif, securisant.</td></tr><tr><td style="color:#3A7BD5">4. Logique (C)</td><td>"Si les donnees confirment ce qu on a vu ensemble, tu es pret a avancer ?" Conditionnel et rationnel.</td></tr><tr><td style="color:var(--gold)">5. Alternatif</td><td>"Tu veux demarrer le 1er ou le 15 ?" Elimine le oui/non. Les deux options presupposent l accord.</td></tr><tr><td style="color:var(--gold)">6. Recapitulatif</td><td>"Tu m as dit que X etait urgent, Y important, et Z ton objectif. Cette solution coche les 3 cases. On avance ?"</td></tr><tr><td style="color:var(--gold)">7. Pilote</td><td>"Et si on commencait par 30 jours pour que tu voies les resultats toi-meme ?" Reduit le risque percu.</td></tr></table></div>';
+  html+=discTip(
+    'Tes closes naturels : Direct, Alternatif, Recapitulatif. Tu n as aucun probleme a poser la question de closing. Ton risque : tu closes trop tot, avant d avoir laisse le prospect traiter. Et parfois tu relances trop vite apres le silence.',
+    'Tu as du mal a poser la question de closing car tu as peur de briser la belle energie de l entretien. Resultat : tu termines sur "je vous recontacte" au lieu d une vraie question de decision. Tes closes naturels : Vision et Recapitulatif.',
+    'Tu hesites a closer car ca te semble agressif. Le closing n est pas une agression - c est un service. Si ton prospect a un vrai probleme et que tu peux le resoudre, ne pas closer c est le laisser avec son probleme. Tes closes naturels : Accompagnement et Pilote.',
+    'Tes closes naturels : Logique et Pilote. Tu es a l aise avec les conditions et les etapes. Ton piege : tu peux tellement bien expliquer qu une phase pilote transforme une decision en un nouveau cycle d analyse infini. Fixe une date de decision finale des le depart.',
+    'Sur tes 3 prochains closings, compte jusqu a 10 en silence apres ta question de closing avant d intervenir.',
+    'Decide d une phrase de closing que tu vas utiliser ce mois. Juste une. Apprends-la par coeur et dis-la a la fin de chaque entretien.',
+    'Reformule dans ta tete le closing comme "une aide a la decision" plutot qu une pression. Pratique Accompagnement (#3) a voix haute 5 fois avant ton prochain RDV.',
+    'Quand tu proposes un pilote, enchaîne immediatement : "Et a la fin des 30 jours, si ca correspond, on signe - on se donne rendez-vous le [date] pour faire le point ?" Verrouille le calendrier.'
+  );
+  html+='<div class="quiz-section"><h3>Quiz de validation</h3>'+rqz(6,q)+rqzsc(6,q)+'</div>';
+  html+=rpnav(6);
+  return html;
+}
+
+/* =========== MODULE 07 =========== */
+function rpg7(){
+  var html='';
+  html+='<div class="phase-intro"><div class="phase-intro-num">07</div><div class="phase-intro-body"><h2>Cas Pratiques et Simulations</h2><div class="pi-sub">3 scenarios complets de vente de A a Z</div><p>La theorie est acquise. Ce module te met en situation sur 3 scenarios reels - chacun avec un profil prospect different - et te montre comment appliquer la methode R.A.D.A.R. du debut a la fin d un entretien de vente.</p></div></div>';
+
+  html+='<div class="section-block"><h3>Scenario 1 - Le DG Presse (Profil D)</h3><p><strong>Contexte :</strong> Thomas, 47 ans, DG d une PME de 85 personnes. Il arrive avec 5 minutes de retard, pose son telephone sur la table, et dit : "Bon, vous avez 20 minutes, convainquez-moi."</p><div class="signal-box"><div><div class="signal-label">Signaux D detectes</div><p>Retard assume, limite de temps imposee, "convainquez-moi" = il teste d emblee. Aucun small talk.</p></div></div>';
+  html+='<div class="script-box"><div class="script-text">';
+  html+='<span class="key">Ouverture :</span>\n';
+  html+='"Parfait. En 30 secondes : les entreprises comme la votre perdent en moyenne [X] par an sur [probleme]. On a aide 3 DGs dans votre secteur a reduire ca de 40% en 8 semaines. Est-ce que c est une priorite cette annee ?"\n\n';
+  html+='<span class="key">Creuser le besoin :</span>\n';
+  html+='"Qu est-ce qui vous a amene a me recevoir aujourd hui ?" [laisser repondre - ne pas couper]\n\n';
+  html+='<span class="key">Objection : C est trop cher</span>\n';
+  html+='"Par rapport a quoi ? [pause] Le cout de notre accompagnement est X. Le gain identifie chez vos homologues est Y. Le ROI est atteint en Z mois."\n\n';
+  html+='<span class="key">Closing :</span>\n';
+  html+='"Sur la base de ce qu on vient de voir - deux options pour demarrer. Le 1er ou le 15 du mois prochain ?"';
+  html+='</div></div></div>';
+
+  html+='<div class="section-block"><h3>Scenario 2 - La Directrice Enthousiaste (Profil I)</h3><p><strong>Contexte :</strong> Camille, 38 ans, Directrice Marketing. Elle vous accueille chaleureusement, parle de son equipe avec beaucoup d enthousiasme, montre des photos de leur dernier seminaire.</p><div class="signal-box"><div><div class="signal-label">Signaux I detectes</div><p>Energie positive immediate, parle beaucoup, valorise l equipe et les experiences, photos sur le bureau.</p></div></div>';
+  html+='<div class="script-box"><div class="script-text">';
+  html+='<span class="key">Ouverture (5 min de connexion sincere) :</span>\n';
+  html+='"Super ambiance sur ces photos ! C etait quand le dernier seminaire ? [ecouter]\nJe vais vous raconter quelque chose : une de mes clientes, directrice marketing aussi, etait exactement dans cet etat d esprit - et ce qu elle a fait ensuite a change ses resultats de facon spectaculaire..."\n\n';
+  html+='<span class="key">Transition vers le besoin :</span>\n';
+  html+='"Ce qui m interesse - avec toute cette energie, ou vous voulez aller dans 6 mois ?"\n\n';
+  html+='<span class="key">Objection : Je dois y reflechir</span>\n';
+  html+='"Bien sur. Qu est-ce qui vous ferait dire que c est le bon choix ? [ecouter]\nDonc si on pouvait confirmer que [reponse prospect], vous seriez prete ?"\n\n';
+  html+='<span class="key">Closing Vision :</span>\n';
+  html+='"Imaginez votre equipe dans 3 mois, avec les resultats qu on a evoques. On commence quand ?"';
+  html+='</div></div></div>';
+
+  html+='<div class="section-block"><h3>Scenario 3 - Le Responsable Methodique (Profil S + C)</h3><p><strong>Contexte :</strong> Laurent, 52 ans, Responsable des Operations. Il arrive avec vos documents imprimes et annotes. "J ai relu tout ca. J ai quelques questions precises. Et il faudra que j en parle a mon directeur."</p><div class="signal-box"><div><div class="signal-label">Signaux S + C detectes</div><p>Documents annotes (C), reference au directeur (S), "quelques questions precises" (C). Profil mixte - prepare donnees ET rassurance.</p></div></div>';
+  html+='<div class="script-box"><div class="script-text">';
+  html+='<span class="key">Ouverture :</span>\n';
+  html+='"Merci d avoir pris le temps de relire ca - vos questions vont m aider a aller droit au but.\nJe vais repondre a tout ce que vous avez note, et on verra comment ca s integrerait dans votre fonctionnement actuel sans tout bousculer."\n\n';
+  html+='<span class="key">Repondre aux questions (C) :</span>\n';
+  html+='Repondre precisement. Citer les sources si besoin. Ne jamais estimer - dire "je verifie et je reviens" si necessaire.\n\n';
+  html+='<span class="key">Objection : Je dois en parler a mon directeur</span>\n';
+  html+='"Absolument normal. Qu est-ce qui est le plus important pour lui dans ce type de decision ? [ecouter]\nEst-ce qu il serait possible d organiser un echange a trois - 30 minutes - pour que je reponde directement a ses questions ?"\n\n';
+  html+='<span class="key">Closing Pilote :</span>\n';
+  html+='"Je propose qu on commence par une phase pilote de 30 jours. On se donne rendez-vous le [date] pour decider de la suite. Ca vous convient ?"';
+  html+='</div></div></div>';
+
+  html+='<div class="section-block"><h3>Tableau de synthese R.A.D.A.R.</h3><table class="synth-table"><thead><tr><th>Profil</th><th>Ouverture ideale</th><th>Question cle</th><th>Closing naturel</th><th>Erreur fatale</th></tr></thead><tbody><tr><td class="td-l" style="color:#D94040">D</td><td>ROI + delai en 30 secondes</td><td>"Qu est-ce qui vous a amene a me recevoir ?"</td><td>Direct ou Alternatif</td><td>Tourner autour du pot</td></tr><tr><td class="td-l" style="color:#D4823A">I</td><td>5 min de connexion sincere + histoire</td><td>"Ou voulez-vous etre dans 6 mois ?"</td><td>Vision ou Recapitulatif</td><td>Sauter la phase relation</td></tr><tr><td class="td-l" style="color:#3A9E62">S</td><td>Rassurance sur la continuite</td><td>"Comment votre equipe vit-elle ca actuellement ?"</td><td>Accompagnement ou Pilote</td><td>Urgence artificielle</td></tr><tr><td class="td-l" style="color:#3A7BD5">C</td><td>Validation de ses questions d abord</td><td>"Quelles informations vous manquent encore ?"</td><td>Logique ou Pilote</td><td>Chiffres non sources</td></tr></tbody></table></div>';
+
+  /* Plan d action personnalise */
+  var p=userProfil;
+  var plans={
+    D:{color:'#D94040',force:'Ta directness, ton assurance, ta capacite a decider et a pousser la decision.',actions:['Ralentis avant de conclure - pose 3 questions avant de pitcher','Prepare une version douce de tes reponses aux objections pour les S','Apprends 1 technique de closing non-direct (Vision ou Accompagnement)','Integre 10 secondes de silence systematique apres ta question de closing','Sur chaque RDV : identifie si le prospect est S ou C AVANT de placer ton premier argument']},
+    I:{color:'#D4823A',force:'Ton energie, ta capacite a creer de la connexion, ton talent pour rendre une solution desirable.',actions:['Prepare 1 argument chiffre precis pour chaque RDV','Choisis 1 phrase de closing et dis-la a la fin de chaque entretien ce mois','Structure ton pitch en 3 temps : probleme → solution → resultat (max 5 min)','Avant chaque anecdote cliente, demande-toi : est-ce que ca resout SON probleme ?','Fixe la prochaine etape avant de raccrocher - evite les "on verra"']},
+    S:{color:'#3A9E62',force:'Ta patience, ton ecoute, ta capacite a creer une confiance durable qui fidelise.',actions:['Prepare 1 phrase de closing (Accompagnement) et dis-la a chaque entretien','Face a un prospect D : prepare l ouverture ROI en 30 secondes et entraine-toi','Quand le prospect dit je reflechis, reponds toujours avec une question','Fixe une date de suivi avant la fin de chaque appel','Identifie 1 vraie urgence dans ton offre actuelle et formule-la naturellement']},
+    C:{color:'#3A7BD5',force:'Ta credibilite, ta rigueur, ton expertise - les prospects te font confiance sur les donnees.',actions:['Limite chaque argument a 2 phrases max, puis pose une question','Prepare 1 histoire emotionnelle (client qui te ressemble) pour tes prochains RDV','Quand tu presentes des donnees, ajoute une phrase ce que ca veut dire pour vous','Sur chaque closing, fixe une date de decision concrete avec le prospect','Commence chaque RDV par 2 minutes de connexion sincere avant les chiffres']}
+  };
+  if(p&&plans[p]){
+    var pl=plans[p];
+    html+='<div class="plan-card" style="border-color:'+pl.color+';background:rgba(0,0,0,.2)"><h4 style="color:'+pl.color+'">Ton plan d action - Profil '+p+'</h4><div class="psub">Ta force naturelle : '+pl.force+'</div><ul>'+pl.actions.map(function(a){return '<li>'+a+'</li>';}).join('')+'</ul></div>';
+  } else {
+    html+='<div class="no-profil"><p>Selectionne ton profil DISC pour debloquer ton plan d action personnalise :</p><div class="profil-btns">'+Object.keys(PF).map(function(k){return '<button class="profil-btn" style="background:rgba(255,255,255,.04);border-color:'+PF[k].c+';color:'+PF[k].c+';" onclick="setProfil(\''+k+'\')">'+k+' - '+PF[k].name+'</button>';}).join('')+'</div></div>';
+  }
+
+  html+='<div class="completion"><div class="trophy">🏆</div><h2>Formation <span>R.A.D.A.R. Complete</span></h2><p>Tu maitrises maintenant la psychologie de l acheteur, le profiling, les besoins caches, la gestion des objections, les leviers d influence et les 7 techniques de closing. Applique des ton prochain entretien.</p><div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:16px;"><button class="btn-nav btn-prev" onclick="rgt(1)">Revoir depuis le debut</button><button class="btn-nav btn-next" onclick="window.location.return false;" onclick="gt(0)"">Retour a l accueil</button></div></div>';
+  html+=rpnav(7);
+  return html;
+}
+
+gt(0);
+
+</script>
+</body>
+</html>
